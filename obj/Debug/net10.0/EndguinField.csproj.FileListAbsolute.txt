@@ -95,3 +95,4 @@ D:\ProjectUniversity\EndguinField\obj\Debug\net10.0\refint\EndguinField.dll
 D:\ProjectUniversity\EndguinField\obj\Debug\net10.0\EndguinField.pdb
 D:\ProjectUniversity\EndguinField\obj\Debug\net10.0\EndguinField.genruntimeconfig.cache
 D:\ProjectUniversity\EndguinField\obj\Debug\net10.0\ref\EndguinField.dll
+D:\ProjectUniversity\EndguinField\obj\Debug\net10.0\EndguinField.sourcelink.json

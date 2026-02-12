@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EndguinField")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aa9a7b9125ec3a350187a8a2b1f07347ba646721")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+555e16cda5ca3c1c54c417ec9d883ab1e9389ed1")]
 [assembly: System.Reflection.AssemblyProductAttribute("EndguinField")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EndguinField")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
