@@ -1,0 +1,14 @@
+@model CommentViewModel
+
+@{
+var localComment = new CommentViewModel {
+    UserName = "YourBro",
+    Content = "What a great event!",
+};
+}
+
+<div class="text-center">
+    <h1 class="display-4">awdawdwadaw</h1>
+</div>
+
+<partial name="_Comment" model="localComment" />
