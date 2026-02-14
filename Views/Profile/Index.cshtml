@@ -1,0 +1,13 @@
+@model EndguinField.Models.ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+<link rel="stylesheet" href="~/css/profile-card.css"/>
+
+<div class="container">
+    <partial name="_ProfileCard" model="Model" />
+</div>
+
+@section Scripts {
+    <script src="~/js/profile-card.js"></script>
+}

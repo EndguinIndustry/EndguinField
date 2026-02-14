@@ -1,0 +1,19 @@
+namespace EndguinField.Models
+{
+    public class User
+    {
+        public int Id { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+        public string? Bio { get; set; }
+        public string? Image { get; set; }
+        public string? Contact { get; set; }
+        public DateTime JoinWhen { get; set; }
+        public List<User> Friends { get; set; } = new List<User>();
+        public List<User> BlockLists { get; set; } = new List<User>();
+        public List<Enroll> Enrolls { get; set; } = new List<Enroll>();
+        public DateTime? BanUntil { get; set; }
+        public List<FriendRequest> FriendRequests { get; set; } = new List<FriendRequest>();
+    }
+}
