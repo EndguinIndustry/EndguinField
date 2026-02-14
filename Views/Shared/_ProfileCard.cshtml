@@ -4,7 +4,7 @@
     @if (Model.IsBanned)
     {
         <div class="ban-notice">
-            <span>Account Banned Until: @Model.BanUntil?.ToString("MMM dd, yyyy")</span>
+            <span>Account Banned Until: @Model.BanUntil?.ToString("dd-MM-yyyy", System.Globalization.CultureInfo.GetCultureInfo("en-US"))</span>
         </div>
     }
     
