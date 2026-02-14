@@ -3,10 +3,9 @@ function editProfile(userId) {
 }
 
 function viewFriendRequests(userId) {
-    window.location.href = `/Profile/FriendRequests/${userId}`;
+    window.location.href = `/Profile/FriendRequests`;
 }
 
-//Loading animation
 document.addEventListener('DOMContentLoaded', function() {
     const profileCard = document.querySelector('.profile-card');
     
@@ -23,12 +22,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const statItems = document.querySelectorAll('.stat-item');
         statItems.forEach((item, index) => {
             item.style.cursor = 'pointer';
+            
+            const userId = window.location.pathname.split('/')[2];
+            
             item.addEventListener('click', function() {
                 const label = this.querySelector('.stat-label').textContent.trim();
                 if (label.includes('Friends')) {
-                    window.location.href = '/Profile/Friends';
+                    window.location.href = `/Profile/${userId}/Friends`;
                 } else if (label.includes('Pending')) {
-                    window.location.href = '/Profile/FriendRequests';
+                    window.location.href = `/Profile/FriendRequests`;
                 }
             });
         });
