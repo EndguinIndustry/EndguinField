@@ -92,13 +92,31 @@ public class ProfileController : Controller
 
     private User? GetUserById(int id)
     {
-        if (id <= 0) return null;
+        if (id != 1) {
+            var notUser1 = new User
+            {
+                Id = id,
+                Email = "ayaka.kamisato@inazuma.com",
+                Name = "Ayaka Kamisato",
+                Role = "User",
+                Bio = $"I am not user number 1, but I am user number: {id} of EndguinField.",
+                Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNI8DM4P98gl2Q9AAhD6XlQKS0oaxKsVcJ0w&s", 
+                Contact = "+1234567890",
+                JoinWhen = new DateTime(2026, 2, 14),
+                Friends = new List<User>(), 
+                Enrolls = new List<Enroll>(), 
+                FriendRequests = new List<FriendRequest>(),
+                BanUntil = null
+            };
+
+            return notUser1;
+        };
         
         var user = new User
         {
             Id = id,
             Email = "chen.qianyu@endguin.com",
-            Name = $"Chen Qianyu",
+            Name = "Chen Qianyu",
             Role = "User",
             Bio = $"EndguinField is a platform for wiring and dancing with Chen. And I am user number: {id} of EndguinField.",
             Image = "https://preview.redd.it/the-origin-of-chen-sticker-v0-aulsmkoceg0g1.png?width=300&format=png&auto=webp&s=9578b04c0a2fa42f1472ed9bb29b07651ee5effd", 
