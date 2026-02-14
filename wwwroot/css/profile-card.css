@@ -217,4 +217,5 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    padding-top: 24px;
 }

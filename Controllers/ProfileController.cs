@@ -11,7 +11,7 @@ public class ProfileController : Controller
         var user = new User
         {
             Id = 1,
-            Email = "chen.qianyu@example.com",
+            Email = "chen.qianyu@endguin.com",
             Name = "Chen Qianyu",
             Role = "User",
             Bio = "EndguinField is a platform for wiring and dancing with Chen.",

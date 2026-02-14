@@ -27,8 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const label = this.querySelector('.stat-label').textContent.trim();
                 if (label.includes('Friends')) {
                     window.location.href = '/Profile/Friends';
-                } else if (label.includes('Enrollments')) {
-                    window.location.href = '/Profile/Enrollments';
                 } else if (label.includes('Pending')) {
                     window.location.href = '/Profile/FriendRequests';
                 }
