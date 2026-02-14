@@ -8,27 +8,21 @@ public class ProfileController : Controller
 {
     public IActionResult Index()
     {
-        // Example: This would typically come from a database
         var user = new User
         {
             Id = 1,
             Email = "chen.qianyu@example.com",
             Name = "Chen Qianyu",
             Role = "User",
-            Bio = "Passionate about learning and technology. Currently studying Computer Science.",
-            Image = "/images/avatar.png", // or null for placeholder
+            Bio = "EndguinField is a platform for wiring and dancing with Chen.",
+            Image = "https://preview.redd.it/the-origin-of-chen-sticker-v0-aulsmkoceg0g1.png?width=300&format=png&auto=webp&s=9578b04c0a2fa42f1472ed9bb29b07651ee5effd", 
             Contact = "+1234567890",
-            JoinWhen = new DateTime(2024, 10, 15),
-            Friends = new List<User>(), // Add 5 friends for demo
-            Enrolls = new List<Enroll>(), // Add 3 enrollments for demo
+            JoinWhen = new DateTime(2026, 2, 14),
+            Friends = new List<User>(), 
+            Enrolls = new List<Enroll>(), 
             FriendRequests = new List<FriendRequest>(),
             BanUntil = null
         };
-        
-        for (int i = 0; i < 5; i++)
-            user.Friends.Add(new User());
-        for (int i = 0; i < 3; i++)
-            user.Enrolls.Add(new Enroll());
         
         var viewModel = ProfileViewModel.FromUser(user);
         return View(viewModel);

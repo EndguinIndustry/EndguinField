@@ -28,7 +28,7 @@ namespace EndguinField.Models
                 Bio = user.Bio,
                 ImageUrl = user.Image,
                 Contact = user.Contact,
-                JoinedDate = user.JoinWhen.ToString("MM-dd-yyyy"),
+                JoinedDate = user.JoinWhen.ToString("dd-MM-yyyy", new System.Globalization.CultureInfo("en-US")),
                 FriendsCount = user.Friends?.Count ?? 0,
                 EnrollsCount = user.Enrolls?.Count ?? 0,
                 IsBanned = user.BanUntil.HasValue && user.BanUntil.Value > DateTime.Now,
