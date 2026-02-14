@@ -1,14 +1,122 @@
-@model CommentViewModel
-
 @{
-var localComment = new CommentViewModel {
-    UserName = "YourBro",
-    Content = "What a great event!",
-};
+	var thisEvent = new Event {
+		EventId = 1,
+		OwnerId = 1,
+		Name = "Let's make the factory great again!!!",
+		Description = "AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
+		Images = new List<string> {
+			"https://static.zerochan.net/Endministrator.%28Female%29.full.4654013.jpg",
+			"https://static.zerochan.net/Endministrator.%28Female%29.full.4654013.jpg"
+		},
+		BackgroundImage = "https://i.redd.it/n30vilg6ap6g1.jpeg",
+		StartTime = DateTime.Now,
+		EndTime = DateTime.Now.AddHours(2),
+		Enrolls = new List<string> {
+			"User1",
+			"User2",
+			"User3"
+		},
+		MaxEnrolls = 100,
+		Category = "Factory",
+		Location = "Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4",
+		Comments = new List<Comment> {
+			new Comment {
+				Id = "1",
+				Content = "This is a comment.",
+				TimeStamp = DateTime.Now,
+				SenderId = 1,
+				RepliedMessageId = null
+			},
+			new Comment {
+				Id = "2",
+				Content = "This is another comment.",
+				TimeStamp = DateTime.Now,
+				SenderId = 2,
+				RepliedMessageId = "1"
+			}
+		}
+	};
 }
 
-<div class="text-center">
-    <h1 class="display-4">awdawdwadaw</h1>
+<div class="container bg-body rounded-4 p-4">
+	<h1>@thisEvent.Name</h1>
+	
+	<div class="row">
+		<div class="col-6 justify-content-center">
+			<div id="eventCarousel" class="carousel slide">
+				<div class="carousel-indicators">
+					@foreach (var image in thisEvent.Images)
+					{
+						<button
+							type="button"
+							data-bs-target="#eventCarousel"
+							data-bs-slide-to="@thisEvent.Images.IndexOf(image)"
+							class="@(image == thisEvent.Images.First() ? "active" : "")"
+							aria-current="true"
+							aria-label="Slide @(thisEvent.Images.IndexOf(image) + 1)"
+						>
+						</button>
+					}
+				</div>
+
+				<div class="carousel-inner">
+					@foreach (var image in thisEvent.Images)
+					{
+						<div class="carousel-item @(image == thisEvent.Images.First() ? "active" : "")">
+							<img src="@image" class="d-block w-100 rounded-3" alt="...">
+						</div>
+					}
+				</div>
+
+				<button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Previous</span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Next</span>
+				</button>
+			</div>
+
+			<div class="container mt-4 m">
+				<h2>Participants (@thisEvent.Enrolls.Count / @thisEvent.MaxEnrolls)</h2>
+				<ul>
+					@foreach (var enroll in thisEvent.Enrolls)
+					{
+						<li>@enroll</li>
+					}
+				</ul>
+			</div>
+		</div>
+
+		<div class="col-4">
+			<div class="container">
+				<h2>Details</h2>
+				<p class="text-wrap ms-5">@thisEvent.Description</p>
+			</div>
+
+			<div class="container">
+				<h2>Location</h2>
+				<p class="text-wrap ms-5">@thisEvent.Location</p>
+			</div>
+
+			<div class="container">
+				<h2>Date</h2>
+				<p class="text-wrap ms-5">@thisEvent.StartTime.ToString("yyyy-MM-dd HH:mm") - @thisEvent.EndTime.ToString("yyyy-MM-dd HH:mm")</p>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<div>
+		<h2>Comments</h2>
+		@foreach (var comment in thisEvent.Comments)
+		{
+			@Html.Partial("_Comment", comment)
+		}
+	</div>
 </div>
 
-<partial name="_Comment" model="localComment" />
+<img class="event-background" src="@thisEvent.BackgroundImage"/>

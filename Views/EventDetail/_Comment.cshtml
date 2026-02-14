@@ -1,5 +1,11 @@
-@model CommentViewModel
+@model Comment
 
-<div>YAY</div>
-<div>@Model.UserName</div>
-<div>@Model.Content</div>
+@{
+	var avatarUrl = "https://static.zerochan.net/Endministrator.%28Female%29.1024.4086419.webp";
+}
+
+<div id="@Model.Id" class="container">
+	<img class="avatar" src="@avatarUrl"/>
+	<div>@Model.SenderId</div>
+	<p>@Model.Content</p>
+</div>
