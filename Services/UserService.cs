@@ -86,7 +86,7 @@ namespace EndguinField.Services
                     Name = "Yoimiya Naganohara",
                     Role = "User",
                     Bio = "Let's light up the sky with fireworks!",
-                    Image = "https://media.tenor.com/nfYv2UZADtgAAAAe/genshin-yoimiya.png", // Will use placeholder
+                    Image = "https://media.tenor.com/nfYv2UZADtgAAAAe/genshin-yoimiya.png",
                     Contact = "+5566778899",
                     JoinWhen = new DateTime(2026, 1, 15),
                     Friends = new List<User>(),
