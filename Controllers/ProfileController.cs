@@ -1,25 +1,12 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using EndguinField.Models;
-<<<<<<< HEAD
-=======
 using EndguinField.Services;
->>>>>>> 8882e52f98dfb7f8838add3e015fccd05f0a00a8
 
 namespace EndguinField.Controllers;
 
 public class ProfileController : Controller
 {
-<<<<<<< HEAD
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-=======
     private readonly IUserService _userService;
 
     public ProfileController(IUserService userService)
@@ -44,7 +31,7 @@ public class ProfileController : Controller
             return NotFound();
         }
         
-        var viewModel = ProfileViewModel.FromUser(user);
+        var viewModel = ProfileViewModel.FromUser(user,_userService);
         return View(viewModel);
     }
 
@@ -109,7 +96,6 @@ public class ProfileController : Controller
         }
         
         return View(user.FriendRequests);
->>>>>>> 8882e52f98dfb7f8838add3e015fccd05f0a00a8
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -117,8 +103,4 @@ public class ProfileController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 8882e52f98dfb7f8838add3e015fccd05f0a00a8
