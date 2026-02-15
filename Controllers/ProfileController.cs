@@ -1,11 +1,16 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using EndguinField.Models;
+<<<<<<< HEAD
+=======
+using EndguinField.Services;
+>>>>>>> 8882e52f98dfb7f8838add3e015fccd05f0a00a8
 
 namespace EndguinField.Controllers;
 
 public class ProfileController : Controller
 {
+<<<<<<< HEAD
     public IActionResult Index()
     {
         return View();
@@ -14,6 +19,97 @@ public class ProfileController : Controller
     public IActionResult Privacy()
     {
         return View();
+=======
+    private readonly IUserService _userService;
+
+    public ProfileController(IUserService userService)
+    {
+        _userService = userService;
+    }
+
+    public IActionResult Index()
+    {
+        int currentUserId = 1; 
+        return RedirectToAction("View", new { id = currentUserId });
+    }
+
+    [Route("Profile/{id}")]
+    [Route("Profile/View/{id}")]
+    public IActionResult View(int id)
+    {
+        var user = _userService.GetUserById(id);
+        
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        var viewModel = ProfileViewModel.FromUser(user);
+        return View(viewModel);
+    }
+
+    [HttpGet]
+    [Route("Profile/Edit/{id}")]
+    public IActionResult Edit(int id)
+    {
+        var user = _userService.GetUserById(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        return View(user);
+    }
+
+    [HttpPost]
+    [Route("Profile/Edit/{id}")]
+    public IActionResult Edit(int id, User updatedUser)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(updatedUser);
+        }
+        
+        return RedirectToAction("View", new { id = id });
+    }
+
+    [Route("Profile/{id}/Friends")]
+    public IActionResult Friends(int id)
+    {
+        var user = _userService.GetUserById(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        return View(user.Friends);
+    }
+
+    [Route("Profile/{id}/Enrollments")]
+    public IActionResult Enrollments(int id)
+    {
+        var user = _userService.GetUserById(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        return View(user.Enrolls);
+    }
+
+    [Route("Profile/FriendRequests")]
+    public IActionResult FriendRequests()
+    {
+        int currentUserId = 1; 
+        var user = _userService.GetUserById(currentUserId);
+        
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        return View(user.FriendRequests);
+>>>>>>> 8882e52f98dfb7f8838add3e015fccd05f0a00a8
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -21,4 +117,8 @@ public class ProfileController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 8882e52f98dfb7f8838add3e015fccd05f0a00a8
