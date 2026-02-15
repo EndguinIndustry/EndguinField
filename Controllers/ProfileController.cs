@@ -60,44 +60,6 @@ public class ProfileController : Controller
         return RedirectToAction("View", new { id = id });
     }
 
-    [Route("Profile/{id}/Friends")]
-    public IActionResult Friends(int id)
-    {
-        var user = _userService.GetUserById(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
-        
-        return View(user.Friends);
-    }
-
-    [Route("Profile/{id}/Enrollments")]
-    public IActionResult Enrollments(int id)
-    {
-        var user = _userService.GetUserById(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
-        
-        return View(user.Enrolls);
-    }
-
-    [Route("Profile/FriendRequests")]
-    public IActionResult FriendRequests()
-    {
-        int currentUserId = 1; 
-        var user = _userService.GetUserById(currentUserId);
-        
-        if (user == null)
-        {
-            return NotFound();
-        }
-        
-        return View(user.FriendRequests);
-    }
-
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
