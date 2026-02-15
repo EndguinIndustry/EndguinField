@@ -21,7 +21,7 @@ public class CreateEventController : Controller
         var imageUrl = await _s3Service.UploadFileAsync(image);
 
         await _eventService.UploadEventImageAsync(imageUrl);
-        
+
         return Ok(new { message = "Upload successful", url = imageUrl });
     }
 
