@@ -1,8 +1,13 @@
+using DotNetEnv;
+
+Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<EndguinField.Services.IUserService, EndguinField.Services.UserService>();
+builder.Services.AddSingleton<MongoDbService>();
 
 var app = builder.Build();
 
