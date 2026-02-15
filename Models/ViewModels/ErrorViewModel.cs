@@ -1,4 +1,4 @@
-namespace EndguinField.Models;
+namespace EndguinField.Models.ViewModels;
 
 public class ErrorViewModel
 {

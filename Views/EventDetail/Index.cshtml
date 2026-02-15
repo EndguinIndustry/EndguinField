@@ -1,122 +1,114 @@
-@{
-	var thisEvent = new Event {
-		EventId = 1,
-		OwnerId = 1,
-		Name = "Let's make the factory great again!!!",
-		Description = "AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
-		Images = new List<string> {
-			"https://static.zerochan.net/Endministrator.%28Female%29.full.4654013.jpg",
-			"https://static.zerochan.net/Endministrator.%28Female%29.full.4654013.jpg"
-		},
-		BackgroundImage = "https://i.redd.it/n30vilg6ap6g1.jpeg",
-		StartTime = DateTime.Now,
-		EndTime = DateTime.Now.AddHours(2),
-		Enrolls = new List<string> {
-			"User1",
-			"User2",
-			"User3"
-		},
-		MaxEnrolls = 100,
-		Category = "Factory",
-		Location = "Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4",
-		Comments = new List<Comment> {
-			new Comment {
-				Id = "1",
-				Content = "This is a comment.",
-				TimeStamp = DateTime.Now,
-				SenderId = 1,
-				RepliedMessageId = null
-			},
-			new Comment {
-				Id = "2",
-				Content = "This is another comment.",
-				TimeStamp = DateTime.Now,
-				SenderId = 2,
-				RepliedMessageId = "1"
+@model EventDetailViewModel
+
+<div class="event-detail-container">
+	<partial name="_Header" model="Model" />
+
+	<div class="event-layout-grid">
+		<div class="event-main-content">
+			<partial name="_ImageSlide" model="Model" />
+			<partial name="_Participants" model="Model" />
+		</div>
+
+		<div class="event-side-content">
+			<div class="event-actions-wrapper">
+				<partial name="_DetailsSection" model="Model" />
+				<partial name="_CommentsSection" model="Model" />
+			</div>
+
+			@if (Model.IsOwner)
+			{
+				<button class="btn btn-danger delete-event-btn" type="button">
+					<img src="~/assets/icons/delete.svg" alt="Delete" class="icon-white icon" asp-append-version="true" />
+					Delete Event
+				</button>
 			}
-		}
-	};
-}
-
-<div class="container bg-body rounded-4 p-4">
-	<h1>@thisEvent.Name</h1>
-	
-	<div class="row">
-		<div class="col-6 justify-content-center">
-			<div id="eventCarousel" class="carousel slide">
-				<div class="carousel-indicators">
-					@foreach (var image in thisEvent.Images)
-					{
-						<button
-							type="button"
-							data-bs-target="#eventCarousel"
-							data-bs-slide-to="@thisEvent.Images.IndexOf(image)"
-							class="@(image == thisEvent.Images.First() ? "active" : "")"
-							aria-current="true"
-							aria-label="Slide @(thisEvent.Images.IndexOf(image) + 1)"
-						>
-						</button>
-					}
-				</div>
-
-				<div class="carousel-inner">
-					@foreach (var image in thisEvent.Images)
-					{
-						<div class="carousel-item @(image == thisEvent.Images.First() ? "active" : "")">
-							<img src="@image" class="d-block w-100 rounded-3" alt="...">
-						</div>
-					}
-				</div>
-
-				<button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					<span class="visually-hidden">Previous</span>
-				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="visually-hidden">Next</span>
-				</button>
-			</div>
-
-			<div class="container mt-4 m">
-				<h2>Participants (@thisEvent.Enrolls.Count / @thisEvent.MaxEnrolls)</h2>
-				<ul>
-					@foreach (var enroll in thisEvent.Enrolls)
-					{
-						<li>@enroll</li>
-					}
-				</ul>
-			</div>
+			else
+			{
+				<button class="btn btn-success join-event-btn" type="button">Join Event</button>
+			}
 		</div>
-
-		<div class="col-4">
-			<div class="container">
-				<h2>Details</h2>
-				<p class="text-wrap ms-5">@thisEvent.Description</p>
-			</div>
-
-			<div class="container">
-				<h2>Location</h2>
-				<p class="text-wrap ms-5">@thisEvent.Location</p>
-			</div>
-
-			<div class="container">
-				<h2>Date</h2>
-				<p class="text-wrap ms-5">@thisEvent.StartTime.ToString("yyyy-MM-dd HH:mm") - @thisEvent.EndTime.ToString("yyyy-MM-dd HH:mm")</p>
-			</div>
-		</div>
-	</div>
-
-
-
-
-	<div>
-		<h2>Comments</h2>
-		@foreach (var comment in thisEvent.Comments)
-		{
-			@Html.Partial("_Comment", comment)
-		}
 	</div>
 </div>
 
-<img class="event-background" src="@thisEvent.BackgroundImage"/>
+<img class="event-background" src="@Model.BackgroundImage" alt="Background" />
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		initToggles();
+		initEditMode();
+	});
+
+	function initToggles() {
+		const toggleBtn = document.getElementById('toggleBtn');
+		const details = document.getElementById('detailsSection');
+		const comments = document.getElementById('commentsSection');
+
+		if (toggleBtn && details && comments) {
+			toggleBtn.addEventListener('click', () => {
+				const isShowingComments = comments.classList.toggle('hidden-section');
+				details.style.display = isShowingComments ? 'block' : 'none';
+				toggleBtn.textContent = isShowingComments ? 'Show Comments' : 'Show Details';
+			});
+		}
+	}
+
+	function initEditMode() {
+		const editBtn = document.getElementById('editBtn');
+		if (!editBtn) return;
+
+		let isEditMode = false;
+		const viewIds = ['viewName', 'viewDescription', 'viewLocation', 'viewDate'];
+		const views = viewIds.map(id => document.getElementById(id));
+		const edits = document.querySelectorAll('.edit-mode-only');
+
+		editBtn.addEventListener('click', () => {
+			isEditMode = !isEditMode;
+			toggleEditUI(isEditMode, views, edits, editBtn);
+			if (!isEditMode) saveChanges(views);
+		});
+	}
+
+	function toggleEditUI(isEdit, views, edits, btn) {
+		views.forEach(el => {
+			if (el) el.style.setProperty('display', isEdit ? 'none' : 'block', isEdit ? '' : 'important');
+		});
+		edits.forEach(el => {
+			if (el) el.style.setProperty('display', isEdit ? 'block' : 'none', isEdit ? 'important' : '');
+		});
+
+		btn.textContent = isEdit ? 'Save Changes' : 'Edit Event';
+		if (isEdit) {
+			btn.classList.add('btn-primary');
+			btn.classList.remove('btn-outline-secondary');
+		} else {
+			btn.classList.add('btn-outline-secondary');
+			btn.classList.remove('btn-primary');
+		}
+	}
+
+	function saveChanges(views) {
+		const updateText = (id, inputId) => {
+			const el = document.getElementById(id);
+			const input = document.getElementById(inputId);
+			if (el && input) el.textContent = input.value;
+		};
+
+		updateText('viewName', 'editNameInput');
+		updateText('viewDescription', 'editDescriptionInput');
+		updateText('viewLocation', 'editLocationInput');
+
+		const fmt = (s) => {
+			const d = new Date(s);
+			const p = (n) => n.toString().padStart(2, '0');
+			return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+		};
+
+		const viewDateP = document.getElementById('viewDate')?.querySelector('p');
+		const startInput = document.getElementById('editStartTimeInput');
+		const endInput = document.getElementById('editEndTimeInput');
+
+		if (viewDateP && startInput && endInput) {
+			viewDateP.textContent = `${fmt(startInput.value)} - ${fmt(endInput.value)}`;
+		}
+	}
+</script>
