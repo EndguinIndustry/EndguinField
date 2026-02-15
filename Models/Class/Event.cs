@@ -1,10 +1,19 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
-public class Event
+namespace EndguinField.Models
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
-    public string? ImageUrl { get; set; }
+    public class Event
+    {
+        public string EventId { get; set; } = string.Empty;
+        public string OwnerId { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public List<string> Images { get; set; } = new List<string>();
+        public List<Enroll> Enrolls { get; set; } = new List<Enroll>();
+        public string Location { get; set; } = string.Empty;
+        public string Time { get; set; } = string.Empty;
+        public int MaxEnrolls { get; set; }
+        public string Category { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public List<User> BlackLists { get; set; } = new List<User>();
+        public List<string> Messages { get; set; } = new List<string>();
+    }
 }

@@ -8,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<EndguinField.Services.IUserService, EndguinField.Services.UserService>();
 builder.Services.AddSingleton<MongoDbService>();
-builder.Services.AddSingleton<EndguinField.Services.MongoDB.EventService>();
 builder.Services.AddSingleton<S3Service>();
 
 var app = builder.Build();

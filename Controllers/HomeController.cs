@@ -23,7 +23,7 @@ public class HomeController : Controller
 
     public IActionResult Card()
     {
-        return View();
+        return View(new EventModel { Name = "Let's Make Some Factory", Date = "22 Jan 2022 10:00AM", Location = "Valley IV", ImgSrc = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfvRlHXGZgw0uObx895FilzamGL7LNWoxr8Q&s"});
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
