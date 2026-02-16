@@ -1,0 +1,65 @@
+@model EventDetailViewModel
+
+@{
+	var defaultImage = "https://static.zerochan.net/Endministrator.%28Female%29.1024.4086419.webp";
+
+	var hostName = Model.Owner?.Name ?? "Unknown Host";
+	var hostImage = Model.Owner?.Image ?? defaultImage;
+	var participations = Model.Participations ?? new List<ParticipationViewModel>();
+	var maxEnrolls = Model.MaxEnrolls;
+}
+
+<div class="participants-section">
+	<div class="host-column">
+		<h4>Host</h4>
+		<img class="host-avatar" src="@hostImage" alt="@hostName" />
+		<div>@hostName</div>
+	</div>
+	<div class="participants-column">
+		<div class="participants-container">
+			<div class="participants-header">
+				<h2>Participants (@Model.ParticipationCount / @maxEnrolls)</h2>
+			</div>
+			<div class="participants-list">
+				@if (participations.Any())
+				{
+					@foreach (var p in participations)
+					{
+						var pName = p.UserName ?? "Unknown User";
+						var pImage = p.UserImage ?? defaultImage;
+
+						<div class="participant-item">
+							<img class="avatar-sm" src="@pImage" alt="@pName" />
+							<span class="participant-name">@pName</span>
+
+							@if (Model.IsOwner)
+							{
+								<div class="participant-controls">
+									@if (p.Status == "pending")
+									{
+										<button class="btn btn-icon-only" title="Accept">
+											<img src="~/assets/icons/accept.svg" alt="Accept" class="icon participant-icon" />
+										</button>
+										<button class="btn btn-icon-only" title="Decline">
+											<img src="~/assets/icons/decline.svg" alt="Decline" class="icon participant-icon" />
+										</button>
+									}
+									else
+									{
+										<button class="btn btn-icon-only" title="Remove">
+											<img src="~/assets/icons/delete.svg" alt="Remove" class="icon participant-icon" />
+										</button>
+									}
+								</div>
+							}
+						</div>
+					}
+				}
+				else
+				{
+					<div class="no-participants">No participants yet</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>

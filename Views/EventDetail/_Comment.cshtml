@@ -1,0 +1,17 @@
+@model CommentViewModel
+
+@{
+	var defaultImage = "https://static.zerochan.net/Endministrator.%28Female%29.1024.4086419.webp";
+	var userName = Model.Author?.Name ?? "Unknown User";
+	var userImage = Model.Author?.Image ?? defaultImage;
+	var content = Model.Content ?? "";
+	var commentId = Model.Id ?? "";
+}
+
+<div id="@commentId" class="comment-item d-flex align-items-start mb-3">
+	<img class="avatar" src="@userImage" alt="@userName" />
+	<div class="comment-content">
+		<h5 class="mb-0">@userName</h5>
+		<p class="mb-0">@content</p>
+	</div>
+</div>

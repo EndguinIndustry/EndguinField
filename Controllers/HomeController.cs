@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using EndguinField.Models;
+using EndguinField.Models.ViewModels;
 
 namespace EndguinField.Controllers;
 
