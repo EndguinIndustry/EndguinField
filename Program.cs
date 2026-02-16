@@ -1,25 +1,37 @@
 using DotNetEnv;
+using Microsoft.AspNetCore.HttpOverrides;
 
-Env.Load();
+if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), ".env")))
+{
+    Env.Load();
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<EndguinField.Services.IUserService, EndguinField.Services.UserService>();
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSingleton<S3Service>();
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                             ForwardedHeaders.XForwardedProto |
+                             ForwardedHeaders.XForwardedHost;
+
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
+app.UseForwardedHeaders();
 app.UseHttpsRedirection();
 app.UseRouting();
 
