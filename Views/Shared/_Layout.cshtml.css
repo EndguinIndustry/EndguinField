@@ -1,6 +1,62 @@
-﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
 
+header {
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0px 1px 10px rgb(0, 0, 0);
+  border-radius: 0px 0px 15px 15px;
+  -webkit-border-radius: 0px 0px 15px 15px;
+  -moz-border-radius: 0px 0px 15px 15px;
+  -ms-border-radius: 0px 0px 15px 15px;
+  -o-border-radius: 0px 0px 15px 15px;
+}
+
+.navbar-custom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Brand on left, Search on right */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+
+.fa-magnifying-glass {
+  font-size: 0.9rem;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  padding: 4px 10px;
+  flex-grow: 1;
+  font-size: 0.95rem;
+}
+
+.fa-filter {
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+footer {
+  position: absolute;
+  bottom: 0px;
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid #eee;
+  color: #666;
+  margin-top: 50px;
+}
 a.navbar-brand {
   white-space: normal;
   text-align: center;
@@ -11,16 +67,28 @@ a {
   color: #0077cc;
 }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.search {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 8px 16px;
+  width: 100%;
+  max-width: 900px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.search-input {
+  border: none;
+  outline: none;
+  flex-grow: 1;
+  font-size: 16px;
+  color: #333;
+}
+
+.search-input::placeholder {
+  color: #b3b3b3;
 }
 
 .border-top {
@@ -31,9 +99,20 @@ a {
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
 }
-
+.profile-section img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  /*Makesitcircular*/
+  object-fit: cover;
+  border: 1px solid #eee;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
 button.accept-policy {
   font-size: 1rem;
   line-height: inherit;
