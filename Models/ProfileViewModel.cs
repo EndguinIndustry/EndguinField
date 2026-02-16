@@ -37,4 +37,11 @@ namespace EndguinField.Models
             };
         }
     }
+
+    public class UpdateProfileDTO
+    {
+        public string Name { get; set; } = string.Empty;
+        public string? Contact { get; set; }
+        public string? Bio { get; set; }
+    }
 }

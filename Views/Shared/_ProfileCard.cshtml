@@ -1,71 +1,159 @@
 @model EndguinField.Models.ProfileViewModel
 
-<div class="profile-card @(Model.IsBanned ? "profile-banned" : "")">
+<div class="profile-card @(Model.IsBanned ? "profile-banned" : "")" data-user-id="@Model.Id">
     @if (Model.IsBanned)
     {
         <div class="ban-notice">
-            <span>Account Banned Until: @Model.BanUntil?.ToString("dd-MM-yyyy", System.Globalization.CultureInfo.GetCultureInfo("en-US"))</span>
+            <span>Account Banned Until: @Model.BanUntil?.ToString(format: "dd-MM-yyyy", provider: new System.Globalization.CultureInfo("en-US"))</span>
         </div>
     }
-    
-    <div class="profile-card-header">
-        <div class="profile-avatar">
-            @if (!string.IsNullOrEmpty(Model.ImageUrl))
-            {
-                <img src="@Model.ImageUrl" alt="@Model.Name" class="avatar-image">
-            }
-            else
-            {
-                <div class="avatar-placeholder">
-                    <span>@Model.Name.Substring(0, 1).ToUpper()</span>
+
+    <div class="profile-view-mode">
+        <div class="profile-card-header">
+            <div class="profile-avatar">
+                <div class="avatar-container">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" alt="@Model.Name" class="avatar-image" id="avatarDisplay">
+                    }
+                    else
+                    {
+                        <div class="avatar-placeholder" id="avatarDisplay">
+                            <span>@Model.Name.Substring(0, 1).ToUpper()</span>
+                        </div>
+                    }
                 </div>
-            }
-            <span class="joined-date">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-                Joined: @Model.JoinedDate
-            </span>
-        </div>
-        <div class="profile-info">
-            <h2 class="profile-name">@Model.Name</h2>
-            <div class="profile-details">
-                @if (!string.IsNullOrEmpty(Model.Email))
-                {
-                    <span class="detail-item">
+                <span class="joined-date">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    Joined: @Model.JoinedDate
+                </span>
+            </div>
+            <div class="profile-info">
+                <h2 class="profile-name" id="nameDisplay">@Model.Name</h2>
+                <div class="profile-details">
+                    <span class="detail-item" id="emailDisplay">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                             <polyline points="22,6 12,13 2,6"></polyline>
                         </svg>
                         @Model.Email
                     </span>
-                }
-                @if (!string.IsNullOrEmpty(Model.Contact))
-                {
-                    <span class="detail-item">
+                    <span class="detail-item" id="contactDisplay">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                         </svg>
                         @Model.Contact
                     </span>
-                }
+                </div>
             </div>
+            <button class="edit-button" onclick="toggleEditMode(true)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+            </button>
         </div>
-        <button class="edit-button" onclick="editProfile(@Model.Id)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-        </button>
+        
+        @if (!string.IsNullOrEmpty(Model.Bio))
+        {
+            <div class="profile-bio">
+                <p id="bioDisplay">@Model.Bio</p>
+            </div>
+        }
     </div>
     
-    @if (!string.IsNullOrEmpty(Model.Bio))
-    {
-        <div class="profile-bio">
-            <p>@Model.Bio</p>
-        </div>
-    }
+    <div class="profile-edit-mode" style="display: none;">
+        <form id="profileEditForm" class="profile-edit-form">
+            <div class="profile-card-header">
+                <div class="profile-avatar">
+                    <div class="avatar-edit-container">
+                        <div class="avatar-container avatar-upload" onclick="document.getElementById('imageUpload').click()">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl" alt="@Model.Name" class="avatar-image" id="avatarPreview">
+                            }
+                            else
+                            {
+                                <div class="avatar-placeholder" id="avatarPreview">
+                                    <span id="avatarInitial">@Model.Name.Substring(0, 1).ToUpper()</span>
+                                </div>
+                            }
+                            <div class="camera-overlay">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="2">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                                <span>Change Photo</span>
+                            </div>
+                        </div>
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                    </div>
+                    <span class="joined-date">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        Joined: @Model.JoinedDate
+                    </span>
+                </div>
+                
+                <div class="profile-info-edit">
+                    <div class="form-group">
+                        <label for="nameInput">Name :</label>
+                        <input type="text" id="nameInput" class="form-input" value="@Model.Name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email :</label>
+                        <div class="form-input-readonly">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span>@Model.Email</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="2" class="lock-icon">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <small class="form-hint">Email cannot be changed</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contactInput">Contact :</label>
+                        <input type="text" id="contactInput" class="form-input" value="@Model.Contact">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bioInput">Bio :</label>
+                        <textarea id="bioInput" class="form-input" rows="3" maxlength="500">@Model.Bio</textarea>
+                        <small class="form-hint char-counter"><span id="charCount">@(Model.Bio?.Length ?? 0)</span>/500 characters</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-edit-actions">
+                <button type="button" class="btn-cancel" onclick="toggleEditMode(false)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+                <button type="submit" class="btn-save">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
