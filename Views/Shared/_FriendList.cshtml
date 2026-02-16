@@ -1,7 +1,10 @@
 @model ProfileViewModel
-<div style="position:relative; max-width:700px; min-height:200px; background-color:#FCECD6; margin:auto; border-radius:10px; border-style:solid; border-color:#000000; padding:15px;">
+
+<div class="friend-list-section">
+    <div class="friend-list">
     @foreach (var friend in Model.Friends)
     {
         <partial name="_FriendEach" model="friend" />
     }
+</div>
 </div>
