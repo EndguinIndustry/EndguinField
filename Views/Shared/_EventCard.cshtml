@@ -2,22 +2,21 @@
 
 <style>
     div.EventCard {
+        border: 1px solid black;
+        border-radius: 40px;
         display: grid;
         row-gap: 0.01vh;
-        max-width: 20vw;
-        max-height: 32vh;
-        background-color: rgb(255, 0, 191);
+        max-width: 30vw;
+        max-height: fit-content;
     }
 
     div.EventCard h1 {
         padding: 0.5vw;
         max-width: 20vw;
         font-size: 1.5vw;
-        background-color: rgb(0, 35, 151);
     }
 
     div.EventCard img {
-        background-color: rgb(255, 145, 0);
         width: 100%;
         height: 100%;
         object-fit: contain;
@@ -26,9 +25,9 @@
     }
 
     div.EventCard p {
+        margin-left: 0.5vw;
         padding: 0.25vw;
         font-size: 0.75vw;
-        background-color: rgb(255, 0, 0)55, 145, 0);
     }
 
     a.EventLink {
@@ -36,14 +35,33 @@
         max-width: fit-content;
         color: inherit;
         display: block;
-        background-color: rgb(0, 255, 255);
+    }
+
+    div.CardInfo {
+        column-gap: 2vw;
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+    }
+
+    div.CardDetail {
+        display: flex;
+        flex-direction: column;
     }
 </style>
 
-<a class="EventLink"href="">
+<a class="EventLink" href="">
     <div class="EventCard">
         <img src="@Model.ImgSrc" alt="EventBanner">
-        <h1>@Model.Name</h1>
-        <p>Date: @Model.Date <br> Location: @Model.Location</p>
+        <div class="CardInfo">
+            <div class="CardDetail">
+                <h1>@Model.Name</h1>
+                <p>Date: @Model.Date <br> Location: @Model.Location</p>
+            </div>
+            <div class="Participant">
+                <h1>1/8</h1>
+            </div>
+        </div>
+
     </div>
 </a>
