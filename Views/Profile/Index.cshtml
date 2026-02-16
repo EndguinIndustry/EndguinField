@@ -1,0 +1,21 @@
+@model FriendsModel
+
+@{
+var onefriend = new FriendsModel {
+    UserName = "Chen Qianyu",
+    ProfilePic = "https://preview.redd.it/the-origin-of-chen-sticker-v0-aulsmkoceg0g1.png?width=300&format=png&auto=webp&s=9578b04c0a2fa42f1472ed9bb29b07651ee5effd",
+};
+
+var twofriend = new FriendsModel {
+    UserName = "Endguin",
+    ProfilePic = "https://preview.redd.it/i-edited-this-endmin-thumbs-up-image-for-all-your-reaction-v0-qxhmzw28jfhg1.png?width=1445&format=png&auto=webp&s=f4ddb0afd2b37fcafd75f98f4d0ab7da116b37fe",
+};
+}
+
+<div class="text-center">
+    <h1 class="display-4">Chen is silly.</h1>
+</div>
+<div style="position:relative; max-width:700px; min-height:200px; background-color:#FCECD6; margin:auto; border-radius:10px; border-style:solid; border-color:#000000; padding:15px;">
+    <partial name="_FriendEach" model="onefriend" />
+    <partial name="_FriendEach" model="twofriend" />
+</div>

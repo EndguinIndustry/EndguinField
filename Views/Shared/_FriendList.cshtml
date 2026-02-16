@@ -1,0 +1,10 @@
+@model ProfileViewModel
+
+<div class="friend-list-section">
+    <div class="friend-list">
+        @foreach (var friend in Model.Friends)
+        {
+            <partial name="_FriendEach" model="friend" />
+        }
+    </div>
+</div>

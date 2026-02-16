@@ -1,0 +1,18 @@
+@model EndguinField.Models.ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+<link rel="stylesheet" href="~/css/profile-card.css" />
+<link rel="stylesheet" href="~/css/friendcomponent.css" />
+
+<div class="container">
+    <partial name="_ProfileCard" model="Model" />
+    <div style="display: flex; flex-direction: row; column-gap: 2vw; margin-top: 2vw;">
+        <partial name="_History" model="Model" />
+        <partial name="_FriendComponent" model="Model" />
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/profile-card.js"></script>
+}
