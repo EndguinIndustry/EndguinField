@@ -30,8 +30,8 @@ public class ProfileController : Controller
         {
             return NotFound();
         }
-
-        var viewModel = ProfileViewModel.FromUser(user);
+        
+        var viewModel = ProfileViewModel.FromUser(user,_userService);
         return View(viewModel);
     }
 

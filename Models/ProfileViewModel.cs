@@ -1,5 +1,21 @@
+using System.Globalization;
+using EndguinField.Services;
 namespace EndguinField.Models
 {
+    public class HistoryEventViewModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string ImgSrc { get; set; } = string.Empty;
+        public string Date { get; set; } = string.Empty;
+        public string Location { get; set; } = string.Empty;
+    }
+    public class FriendViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
+    }
 
     public class ProfileViewModel
     {
@@ -11,15 +27,18 @@ namespace EndguinField.Models
         public string? ImageUrl { get; set; }
         public string? Contact { get; set; }
         public string JoinedDate { get; set; } = string.Empty;
-        public int FriendsCount { get; set; }
+        public List<int> FriendIds { get; set; } = new();
+        public List<FriendViewModel> Friends { get; set; } = new();
         public int EnrollsCount { get; set; }
         public bool IsBanned { get; set; }
         public DateTime? BanUntil { get; set; }
-        public int PendingFriendRequests { get; set; }
+        public List<int> PendingFriendRequestIds { get; set; } = new();
+        public List<FriendViewModel> PendingRequests { get; set; } = new();
 
-        public static ProfileViewModel FromUser(User user)
+        public static ProfileViewModel FromUser(User user, IUserService userService)
         {
-            return new ProfileViewModel
+
+            var model = new ProfileViewModel
             {
                 Id = user.Id,
                 Name = user.Name,
@@ -28,13 +47,36 @@ namespace EndguinField.Models
                 Bio = user.Bio,
                 ImageUrl = user.Image,
                 Contact = user.Contact,
-                JoinedDate = user.JoinWhen.ToString("dd-MM-yyyy", new System.Globalization.CultureInfo("en-US")),
-                FriendsCount = user.Friends?.Count ?? 0,
+                JoinedDate = user.JoinWhen.ToString("dd-MM-yyyy", new CultureInfo("en-US")),
+
+                FriendIds = user.Friends ?? new List<int>(),
+                PendingFriendRequestIds = user.FriendRequests ?? new List<int>(),
+
                 EnrollsCount = user.Enrolls?.Count ?? 0,
                 IsBanned = user.BanUntil.HasValue && user.BanUntil.Value > DateTime.Now,
-                BanUntil = user.BanUntil,
-                PendingFriendRequests = user.FriendRequests?.Count(fr => fr.Status == "Pending") ?? 0
+                BanUntil = user.BanUntil
             };
+            model.Friends = model.FriendIds
+                .Select(id => userService.GetUserById(id))
+                .Where(f => f != null)
+                .Select(f => new FriendViewModel
+                {
+                    Id = f!.Id,
+                    Name = f.Name,
+                    ImageUrl = f.Image
+                }).ToList();
+
+            model.PendingRequests = model.PendingFriendRequestIds
+                .Select(id => userService.GetUserById(id))
+                .Where(f => f != null)
+                .Select(f => new FriendViewModel
+                {
+                    Id = f!.Id,
+                    Name = f.Name,
+                    ImageUrl = f.Image
+                }).ToList();
+
+            return model;
         }
     }
 
