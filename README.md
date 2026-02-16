@@ -40,7 +40,7 @@ docker network create proxy-net
 
 Then run this app:
 ```
-docker-compose.yml up -d --build
+docker-compose up -d --build
 ```
 
 The app listens on container port `8080` and is meant to be accessed via NPM.
