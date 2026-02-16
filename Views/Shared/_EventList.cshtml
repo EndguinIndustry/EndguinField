@@ -1,26 +1,30 @@
 @model EndguinField.Models.ProfileViewModel
 
 <style>
-    div.history-section {
+    div.event-list-section {
+        width: 100%;
         padding: 1vw;
-        margin: 1vw;
         border-style: solid;
         border-color: lightgray;
         border-radius: 20px;
         overflow: hidden;
     }
 
-    div.history-list {
-        overflow-x: auto;
+    div.event-list {
+        height: 50vw;
+        overflow-y: auto;
         display: flex;
         flex-direction: column;
-        column-gap: 1vw;
+        row-gap: 1vw;
         padding-bottom: 5px;
+    }
+
+    h2.event-list-title {
+        font-size: 1.5vw;
     }
 </style>
 
 <div class="event-list-section">
-    <h2>Past Events</h2>
     <div class="event-list">
         <partial name="_EventCard" model="Model" />
         <partial name="_EventCard" model="Model" />
