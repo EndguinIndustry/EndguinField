@@ -44,7 +44,7 @@ namespace EndguinField.Services
                     Image = "https://preview.redd.it/the-origin-of-chen-sticker-v0-aulsmkoceg0g1.png?width=300&format=png&auto=webp&s=9578b04c0a2fa42f1472ed9bb29b07651ee5effd",
                     Contact = "+1234567890",
                     JoinWhen = new DateTime(2026, 2, 14),
-                    Friends = new List<int> {2,3,4},
+                    Friends = new List<int> {2,3,4,5},
                     Enrolls = new List<Enroll>(),
                     FriendRequests = new List<int>{},
                     BanUntil = null
@@ -59,7 +59,7 @@ namespace EndguinField.Services
                     Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNI8DM4P98gl2Q9AAhD6XlQKS0oaxKsVcJ0w&s",
                     Contact = "+0987654321",
                     JoinWhen = new DateTime(2026, 1, 15),
-                    Friends = new List<int>(),
+                    Friends = new List<int> {1},
                     Enrolls = new List<Enroll>(),
                     FriendRequests = new List<int>(),
                     BanUntil = null
@@ -74,7 +74,7 @@ namespace EndguinField.Services
                     Image = "https://pbs.twimg.com/media/E9wglivVEAgUV8r.jpg",
                     Contact = "+1122334455",
                     JoinWhen = new DateTime(2026, 1, 15),
-                    Friends = new List<int>(),
+                    Friends = new List<int> {1},
                     Enrolls = new List<Enroll>(),
                     FriendRequests = new List<int>(),
                     BanUntil = null
@@ -89,7 +89,7 @@ namespace EndguinField.Services
                     Image = "https://media.tenor.com/nfYv2UZADtgAAAAe/genshin-yoimiya.png",
                     Contact = "+5566778899",
                     JoinWhen = new DateTime(2026, 1, 15),
-                    Friends = new List<int>(),
+                    Friends = new List<int> {1},
                     Enrolls = new List<Enroll>(),
                     FriendRequests = new List<int>(),
                     BanUntil = null
@@ -104,7 +104,7 @@ namespace EndguinField.Services
                     Image = "https://i.redd.it/59gd146dye3b1.jpg",
                     Contact = "+9988776655",
                     JoinWhen = new DateTime(2025, 11, 15),
-                    Friends = new List<int>(),
+                    Friends = new List<int> {1},
                     Enrolls = new List<Enroll>(),
                     FriendRequests = new List<int>(),
                     BanUntil = new DateTime(2026, 3, 1)
