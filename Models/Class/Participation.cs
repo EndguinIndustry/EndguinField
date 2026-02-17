@@ -1,4 +1,4 @@
-namespace EndguinField.Models.Entities;
+namespace EndguinField.Models;
 
 public class Participation
 {
