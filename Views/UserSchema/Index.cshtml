@@ -1,0 +1,90 @@
+@model List<UserSchema>
+
+@{
+    ViewData["Title"] = "MongoDB POC - Users";
+}
+
+<h2>MongoDB POC - Users</h2>
+
+@if (TempData["Error"] is string errorMessage && !string.IsNullOrWhiteSpace(errorMessage))
+{
+    <p style="color: inherit; font-weight: 600;">@errorMessage</p>
+}
+
+<h3>Create</h3>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div>
+        <label>Name</label><br />
+        <input name="Name" />
+    </div>
+    <div>
+        <label>Age</label><br />
+        <input name="Age" type="number" />
+    </div>
+    <div>
+        <label>Gender</label><br />
+        <input name="Gender" />
+    </div>
+    <div>
+        <label>Description</label><br />
+        <input name="Description" />
+    </div>
+    <button type="submit">Create</button>
+</form>
+
+<hr />
+
+<h3>All users (@Model.Count)</h3>
+@if (Model.Count == 0)
+{
+    <p>No users found.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Description</th>
+                <th>ProfilePicture</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Id</td>
+                <td>@u.Name</td>
+                <td>@u.Age</td>
+                <td>@u.Gender</td>
+                <td>@u.Description</td>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(u.ProfilePicture))
+                    {
+                        <div style="margin-top: 6px;">
+                            <img src="@u.ProfilePicture" alt="Profile picture" style="max-width: 80px; max-height: 80px; object-fit: cover;" />
+                        </div>
+                    }
+                    <form asp-action="UploadPicture" asp-route-id="@u.Id" method="post" enctype="multipart/form-data" style="margin-top: 6px;">
+                        @Html.AntiForgeryToken()
+                        <input type="file" name="pic" />
+                        <button type="submit">Upload</button>
+                    </form>
+                </td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@u.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

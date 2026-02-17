@@ -9,8 +9,11 @@ if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), ".env")))
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.AddSingleton<EndguinField.Services.IUserService, EndguinField.Services.UserService>();
 builder.Services.AddSingleton<MongoDbService>();
+builder.Services.AddSingleton<IUserSchemaService, UserSchemaService>();
 builder.Services.AddSingleton<S3Service>();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
