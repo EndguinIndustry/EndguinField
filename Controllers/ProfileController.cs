@@ -63,7 +63,7 @@ public class ProfileController : Controller
 
     [HttpPost]
     [Route("Profile/Update/{id}")]
-    public async Task<IActionResult> Update(int id, [FromForm] UpdateProfileDTO dto, IFormFile? imageFile)
+    public async Task<IActionResult> Update(string id, [FromForm] UpdateProfileDTO dto, IFormFile? imageFile)
     {
         try
         {

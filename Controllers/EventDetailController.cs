@@ -1,65 +1,43 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using EndguinField.Models;
+
 using EndguinField.Models.ViewModels;
+using EndguinField.Services;
 
 namespace EndguinField.Controllers;
 
 public class EventDetailController : Controller
 {
-	public IActionResult Index()
+	private readonly IEventService _eventService;
+	private readonly IUserService _userService;
+	private readonly IParticipationService _participationService;
+
+	public EventDetailController(IEventService eventService, IUserService userService, IParticipationService participationService)
 	{
-		var hostUser = new User
-		{
-			Id = 1,
-			Name = "Endministrator",
-			Image = "https://static.zerochan.net/Endministrator.%28Female%29.1024.4086419.webp"
-		};
+		_eventService = eventService;
+		_userService = userService;
+		_participationService = participationService;
+	}
 
-		var participants = new List<User>
+	public IActionResult Index(string id)
+	{
+		var thisEvent = _eventService.GetEventById(id);
+		if (thisEvent == null)
 		{
-			new User { Id = 2, Name = "User1", Image = hostUser.Image },
-			new User { Id = 3, Name = "User2", Image = hostUser.Image },
-			new User { Id = 4, Name = "User3", Image = hostUser.Image }
-		};
+			return NotFound();
+		}
 
-		var eventParticipations = new List<Participation>
+		var owner = _userService.GetUserById(thisEvent.OwnerId);
+		if (owner == null)
 		{
-			new Participation { UserId = 2, EventId = 1, User = participants[0], JoinedTime = DateTime.Now.AddDays(-1), Status = "accepted" },
-			new Participation { UserId = 3, EventId = 1, User = participants[1], JoinedTime = DateTime.Now.AddDays(-1), Status = "accepted" },
-			new Participation { UserId = 4, EventId = 1, User = participants[2], JoinedTime = DateTime.Now.AddHours(-2), Status = "pending" }
-		};
+			return NotFound();
+		}
 
-		var thisEvent = new Event
-		{
-			EventId = "event123",
-			OwnerId = hostUser.Id,
-			Owner = hostUser,
-			Name = "Let's make the factory great again!!!",
-			Description = "AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
-			Images = new List<string> {
-				"https://static.zerochan.net/Endministrator.%28Female%29.full.4654013.jpg",
-				"https://static.zerochan.net/Endministrator.%28Female%29.full.4654013.jpg"
-			},
-			BackgroundImage = "https://i.redd.it/n30vilg6ap6g1.jpeg",
-			StartTime = DateTime.Now,
-			EndTime = DateTime.Now.AddHours(2),
-			Participants = eventParticipations,
-			MaxParticipants = 100,
-			Category = "Factory",
-			Location = "Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4Valley 4",
-			Comments = Enumerable.Range(1, 12).Select(i => new Comment
-			{
-				Id = i.ToString(),
-				Content = $"This is sample comment number {i}. Let's make the factory great again!",
-				TimeStamp = DateTime.Now.AddMinutes(-i),
-				SenderId = i,
-				Sender = new User { Id = i, Name = $"User{i}", Image = hostUser.Image },
-				RepliedMessageId = i > 1 && i % 3 == 0 ? (i - 1).ToString() : null
-			}).ToList()
-		};
+		var participations = _participationService.GetParticipationsByEvent(thisEvent, _userService);
 
-		// Manual mapping to ViewModel
+		List<Comment> allComments = new List<Comment>();
+
 		var viewModel = new EventDetailViewModel
 		{
 			EventId = thisEvent.EventId,
@@ -70,39 +48,46 @@ public class EventDetailController : Controller
 			Location = thisEvent.Location,
 			StartTime = thisEvent.StartTime,
 			EndTime = thisEvent.EndTime,
-			MaxEnrolls = thisEvent.MaxParticipants,
+			MaxParticipants = thisEvent.MaxParticipants,
 			Category = thisEvent.Category,
 			Owner = new UserSummaryViewModel
 			{
-				Id = thisEvent.Owner.Id,
-				Name = thisEvent.Owner.Name,
-				Image = thisEvent.Owner.Image
+				Id = owner.Id,
+				Name = owner.Name,
+				Image = owner.Image ?? string.Empty
 			},
-			Participations = thisEvent.Participants.Select(p => new ParticipationViewModel
+			Participations = participations.Select(p => new ParticipationViewModel
 			{
 				UserId = p.UserId,
 				UserName = p.User.Name,
-				UserImage = p.User.Image,
+				UserImage = p.User.Image ?? string.Empty,
 				Status = p.Status,
 				JoinedTime = p.JoinedTime
 			}).ToList(),
-			Comments = thisEvent.Comments.Select(c => new CommentViewModel
-			{
-				Id = c.Id,
-				Content = c.Content,
-				TimeStamp = c.TimeStamp,
-				Author = new UserSummaryViewModel
+			Comments = thisEvent.Comments
+				.Select(cid =>
 				{
-					Id = c.Sender.Id,
-					Name = c.Sender.Name,
-					Image = c.Sender.Image
-				},
-				RepliedMessageId = c.RepliedMessageId
-			}).ToList(),
+					var commentObj = allComments.FirstOrDefault(c => c.Id == cid);
+					if (commentObj == null) return null;
+					return new CommentViewModel
+					{
+						Id = commentObj.Id,
+						Content = commentObj.Content,
+						TimeStamp = commentObj.TimeStamp,
+						Author = new UserSummaryViewModel
+						{
+							Id = commentObj.Sender.Id,
+							Name = commentObj.Sender.Name,
+							Image = commentObj.Sender.Image ?? string.Empty
+						},
+						RepliedMessageId = commentObj.RepliedMessageId
+					};
+				})
+				.Where(x => x != null)
+				.ToList()!,
 			IsOwner = true,
 			IsJoined = false
 		};
-
 		return View(viewModel);
 	}
 

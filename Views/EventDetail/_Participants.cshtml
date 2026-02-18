@@ -6,7 +6,7 @@
 	var hostName = Model.Owner?.Name ?? "Unknown Host";
 	var hostImage = Model.Owner?.Image ?? defaultImage;
 	var participations = Model.Participations ?? new List<ParticipationViewModel>();
-	var maxEnrolls = Model.MaxEnrolls;
+	var maxEnrolls = Model.MaxParticipants;
 }
 
 <div class="participants-section">
