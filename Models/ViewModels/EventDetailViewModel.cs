@@ -2,7 +2,7 @@ namespace EndguinField.Models.ViewModels;
 
 public class EventDetailViewModel
 {
-	public int EventId { get; set; }
+	public string EventId { get; set; } = string.Empty;
 	public string Name { get; set; } = string.Empty;
 	public string Description { get; set; } = string.Empty;
 	public List<string> Images { get; set; } = new();
@@ -25,14 +25,14 @@ public class EventDetailViewModel
 
 public class UserSummaryViewModel
 {
-	public int Id { get; set; }
+	public string Id { get; set; } = string.Empty;
 	public string Name { get; set; } = string.Empty;
 	public string Image { get; set; } = string.Empty;
 }
 
 public class ParticipationViewModel
 {
-	public int UserId { get; set; }
+	public string UserId { get; set; } = string.Empty;
 	public string UserName { get; set; } = string.Empty;
 	public string UserImage { get; set; } = string.Empty;
 	public string Status { get; set; } = string.Empty;
