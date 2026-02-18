@@ -1,0 +1,9 @@
+.details-text {
+	white-space: pre-wrap;
+	word-break: break-all;
+	overflow-wrap: anywhere;
+}
+
+.edit-mode-only {
+	display: none !important;
+}

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using EndguinField.Models;
+using EndguinField.Models.ViewModels;
 
 namespace EndguinField.Controllers;
 
@@ -12,6 +12,11 @@ public class HomeController : Controller
     }
 
     public IActionResult Privacy()
+    {
+        return View();
+    }
+
+    public IActionResult Login()
     {
         return View();
     }

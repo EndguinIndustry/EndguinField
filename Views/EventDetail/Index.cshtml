@@ -1,0 +1,114 @@
+@model EventDetailViewModel
+
+<div class="event-detail-container">
+	<partial name="_Header" model="Model" />
+
+	<div class="event-layout-grid">
+		<div class="event-main-content">
+			<partial name="_ImageSlide" model="Model" />
+			<partial name="_Participants" model="Model" />
+		</div>
+
+		<div class="event-side-content">
+			<div class="event-actions-wrapper">
+				<partial name="_DetailsSection" model="Model" />
+				<partial name="_CommentsSection" model="Model" />
+			</div>
+
+			@if (Model.IsOwner)
+			{
+				<button class="btn btn-danger delete-event-btn" type="button">
+					<img src="~/assets/icons/delete.svg" alt="Delete" class="icon-white icon" asp-append-version="true" />
+					Delete Event
+				</button>
+			}
+			else
+			{
+				<button class="btn btn-success join-event-btn" type="button">Join Event</button>
+			}
+		</div>
+	</div>
+</div>
+
+<img class="event-background" src="@Model.BackgroundImage" alt="Background" />
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		initToggles();
+		initEditMode();
+	});
+
+	function initToggles() {
+		const toggleBtn = document.getElementById('toggleBtn');
+		const details = document.getElementById('detailsSection');
+		const comments = document.getElementById('commentsSection');
+
+		if (toggleBtn && details && comments) {
+			toggleBtn.addEventListener('click', () => {
+				const isShowingComments = comments.classList.toggle('hidden-section');
+				details.style.display = isShowingComments ? 'block' : 'none';
+				toggleBtn.textContent = isShowingComments ? 'Show Comments' : 'Show Details';
+			});
+		}
+	}
+
+	function initEditMode() {
+		const editBtn = document.getElementById('editBtn');
+		if (!editBtn) return;
+
+		let isEditMode = false;
+		const viewIds = ['viewName', 'viewDescription', 'viewLocation', 'viewDate'];
+		const views = viewIds.map(id => document.getElementById(id));
+		const edits = document.querySelectorAll('.edit-mode-only');
+
+		editBtn.addEventListener('click', () => {
+			isEditMode = !isEditMode;
+			toggleEditUI(isEditMode, views, edits, editBtn);
+			if (!isEditMode) saveChanges(views);
+		});
+	}
+
+	function toggleEditUI(isEdit, views, edits, btn) {
+		views.forEach(el => {
+			if (el) el.style.setProperty('display', isEdit ? 'none' : 'block', isEdit ? '' : 'important');
+		});
+		edits.forEach(el => {
+			if (el) el.style.setProperty('display', isEdit ? 'block' : 'none', isEdit ? 'important' : '');
+		});
+
+		btn.textContent = isEdit ? 'Save Changes' : 'Edit Event';
+		if (isEdit) {
+			btn.classList.add('btn-primary');
+			btn.classList.remove('btn-outline-secondary');
+		} else {
+			btn.classList.add('btn-outline-secondary');
+			btn.classList.remove('btn-primary');
+		}
+	}
+
+	function saveChanges(views) {
+		const updateText = (id, inputId) => {
+			const el = document.getElementById(id);
+			const input = document.getElementById(inputId);
+			if (el && input) el.textContent = input.value;
+		};
+
+		updateText('viewName', 'editNameInput');
+		updateText('viewDescription', 'editDescriptionInput');
+		updateText('viewLocation', 'editLocationInput');
+
+		const fmt = (s) => {
+			const d = new Date(s);
+			const p = (n) => n.toString().padStart(2, '0');
+			return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+		};
+
+		const viewDateP = document.getElementById('viewDate')?.querySelector('p');
+		const startInput = document.getElementById('editStartTimeInput');
+		const endInput = document.getElementById('editEndTimeInput');
+
+		if (viewDateP && startInput && endInput) {
+			viewDateP.textContent = `${fmt(startInput.value)} - ${fmt(endInput.value)}`;
+		}
+	}
+</script>
