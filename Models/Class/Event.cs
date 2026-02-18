@@ -7,7 +7,8 @@ public class Event
 	public string Name { get; set; } = string.Empty;
 	public string Description { get; set; } = string.Empty;
 	public List<string> Images { get; set; } = new List<string>();
-	public List<Enroll> Participants { get; set; } = new List<Enroll>();
+	public string BackgroundImage { get; set; } = string.Empty;
+	public List<Participation> Participants { get; set; } = new List<Participation>();
 	public string Location { get; set; } = string.Empty;
 	public DateTime StartTime { get; set; }
 	public DateTime EndTime { get; set; }
