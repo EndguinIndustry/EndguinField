@@ -10,10 +10,10 @@ namespace EndguinField.Models
 		public string? Image { get; set; }
 		public string? Contact { get; set; }
 		public DateTime JoinWhen { get; set; }
-		public List<int> Friends { get; set; } = new List<int>();
-		public List<User> BlockLists { get; set; } = new List<User>();
-		public List<Participation> Enrolls { get; set; } = new List<Participation>();
+		public List<string> Friends { get; set; } = new List<string>();
+		public List<string> BlockLists { get; set; } = new List<string>();
+		public List<string> Enrolls { get; set; } = new List<string>();
 		public DateTime? BanUntil { get; set; }
-		public List<int> FriendRequests { get; set; } = new List<int>();
+		public List<string> FriendRequests { get; set; } = new List<string>();
 	}
 }
