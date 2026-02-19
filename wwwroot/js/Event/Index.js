@@ -18,7 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initImageEditor();
 
     if (config.isCreateMode) {
-        document.getElementById('editBtn')?.click();
+        toggleEditUI(true);
+        document.querySelector('.create-event-submit-btn')?.addEventListener('click', () => {
+            createEvent(config);
+        });
     }
 });
 
@@ -127,9 +130,6 @@ function initEditMode(config) {
     if (!editBtn) return;
 
     let isEditMode = false;
-    const viewIds = ['viewName', 'viewDescription', 'viewLocation', 'viewDate', 'eventImageCarousel'];
-    const views = viewIds.map(id => document.getElementById(id));
-    const edits = document.querySelectorAll('.edit-mode-only');
     const inputIds = ['editNameInput', 'editDescriptionInput', 'editLocationInput', 'editStartTimeInput', 'editEndTimeInput'];
     let snapshot = {};
 
@@ -139,7 +139,7 @@ function initEditMode(config) {
             if (element) element.value = snapshot[id] ?? element.value;
         });
         isEditMode = false;
-        toggleEditUI(false, views, edits, editBtn);
+        toggleEditUI(false);
     });
 
     editBtn.addEventListener('click', async () => {
@@ -150,9 +150,9 @@ function initEditMode(config) {
             });
         }
         isEditMode = !isEditMode;
-        toggleEditUI(isEditMode, views, edits, editBtn);
+        toggleEditUI(isEditMode);
         if (!isEditMode) {
-            config.isCreateMode ? await createEvent(config) : saveChanges();
+            await saveChanges(config);
         }
     });
 }
@@ -165,8 +165,8 @@ async function createEvent(config) {
         StartTime: document.getElementById('editStartTimeInput')?.value,
         EndTime: document.getElementById('editEndTimeInput')?.value,
         BackgroundImage: config.backgroundImage,
-        Status: document.querySelector('input[name="eventStatus"]:checked')?.value ?? 'Open',
-        MaxParticipants: 10,
+        Status: 'Open',
+        MaxParticipants: parseInt(document.getElementById('editMaxParticipantsInput')?.value) || 10,
         Category: 'General'
     };
 
@@ -187,7 +187,12 @@ async function createEvent(config) {
     }
 }
 
-function toggleEditUI(isEdit, views, edits, btn) {
+function toggleEditUI(isEdit) {
+    const viewIds = ['viewName', 'viewDescription', 'viewLocation', 'viewDate', 'eventImageCarousel'];
+    const views = viewIds.map(id => document.getElementById(id));
+    const edits = document.querySelectorAll('.edit-mode-only');
+    const btn = document.getElementById('editBtn');
+
     views.forEach(element => element?.style.setProperty('display', isEdit ? 'none' : 'block', isEdit ? '' : 'important'));
     edits.forEach(element => element?.style.setProperty('display', isEdit ? 'block' : 'none', isEdit ? 'important' : ''));
     document.querySelectorAll('.view-mode-only').forEach(element =>
@@ -199,7 +204,37 @@ function toggleEditUI(isEdit, views, edits, btn) {
     btn.title = isEdit ? 'Save Changes' : 'Edit Event';
 }
 
-function saveChanges() {
+async function saveChanges(config) {
+    const start = document.getElementById('editStartTimeInput');
+    const end = document.getElementById('editEndTimeInput');
+    const formatDateTime = s => { const d = new Date(s), p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+
+    const payload = {
+        Name: document.getElementById('editNameInput')?.value,
+        Description: document.getElementById('editDescriptionInput')?.value,
+        Location: document.getElementById('editLocationInput')?.value,
+        StartTime: start?.value,
+        EndTime: end?.value,
+        MaxParticipants: parseInt(document.getElementById('editMaxParticipantsInput')?.value) || 10,
+        Status: document.querySelector('input[name="eventStatus"]:checked')?.value ?? 'Open'
+    };
+
+    try {
+        const res = await fetch(`/Event/Update/${config.eventId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (!res.ok) {
+            await Modal.alert(result.message || 'Failed to save changes.', 'Error');
+            return;
+        }
+    } catch {
+        await Modal.alert('An error occurred while saving.', 'Error');
+        return;
+    }
+
     [['viewName', 'editNameInput'], ['viewDescription', 'editDescriptionInput'], ['viewLocation', 'editLocationInput']]
         .forEach(([viewId, inputId]) => {
             const element = document.getElementById(viewId);
@@ -208,10 +243,7 @@ function saveChanges() {
         });
 
     const viewDateP = document.getElementById('viewDate')?.querySelector('p');
-    const start = document.getElementById('editStartTimeInput');
-    const end = document.getElementById('editEndTimeInput');
     if (viewDateP && start && end) {
-        const fmt = s => { const d = new Date(s), p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; };
-        viewDateP.textContent = `${fmt(start.value)} - ${fmt(end.value)}`;
+        viewDateP.textContent = `${formatDateTime(start.value)} - ${formatDateTime(end.value)}`;
     }
 }

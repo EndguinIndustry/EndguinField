@@ -20,7 +20,11 @@
 				<partial name="_CommentsSection" model="Model" />
 			</div>
 
-			@if (Model.IsOwner)
+			@if (Model.IsCreateMode)
+			{
+				<button class="btn btn-primary create-event-submit-btn" type="button">Create Event</button>
+			}
+			else if (Model.IsOwner)
 			{
 				<button class="btn btn-danger delete-event-btn" type="button">
 					<img src="~/assets/icons/delete.svg" alt="Delete" class="icon-white icon" asp-append-version="true" />

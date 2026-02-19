@@ -9,6 +9,8 @@
 
 	var formattedStart = Model?.StartTime.ToString("MMMM d, yyyy h:mm tt") ?? "N/A";
 	var formattedEnd = Model?.EndTime.ToString("MMMM d, yyyy h:mm tt") ?? "N/A";
+
+	var currentParticipantCount = Model?.ParticipationCount ?? 0;
 }
 
 <div id="detailsSection">
@@ -40,14 +42,31 @@
 	@if (Model.IsOwner)
 	{
 		<div class="mb-3 edit-mode-only">
-			<h2>Status</h2>
+			<h2>Max Participants</h2>
 			<div class="ms-3">
-				<partial name="_SlideCapsule" model='new SlideCapsuleViewModel {
-					CurrentValue = Model.Status,
-					GroupName = "eventStatus",
-					Options = new() { ("Open", "success"), ("Closed", "secondary"), ("Cancelled", "danger") }
-				}' />
+				<input type="number" id="editMaxParticipantsInput" class="form-control"
+					   value="@Model.MaxParticipants"
+					   min="@currentParticipantCount"
+					   max="1000" />
+				@if (currentParticipantCount > 0)
+				{
+					<small class="text-muted">Min: @currentParticipantCount (current participants)</small>
+				}
 			</div>
 		</div>
+
+		@if (!Model.IsCreateMode)
+		{
+			<div class="mb-3 edit-mode-only">
+				<h2>Status</h2>
+				<div class="ms-3">
+					<partial name="Components/_SlideCapsule" model='new SlideCapsuleViewModel {
+						CurrentValue = Model.Status,
+						GroupName = "eventStatus",
+						Options = new() { ("Open", "success"), ("Closed", "secondary"), ("Cancelled", "danger") }
+					}' />
+				</div>
+			</div>
+		}
 	}
 </div>

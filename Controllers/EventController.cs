@@ -75,6 +75,36 @@ public class EventController : Controller
 		}
 	}
 
+	[HttpPut]
+	[Route("Event/Update/{id}")]
+	public IActionResult Update(string id, [FromBody] Event updatedEvent)
+	{
+		try
+		{
+			var existing = _eventService.GetEventById(id);
+			if (existing == null)
+				return NotFound(new { success = false, message = "Event not found." });
+
+			existing.Name = updatedEvent.Name;
+			existing.Description = updatedEvent.Description;
+			existing.Location = updatedEvent.Location;
+			existing.StartTime = updatedEvent.StartTime;
+			existing.EndTime = updatedEvent.EndTime;
+			existing.MaxParticipants = updatedEvent.MaxParticipants;
+			existing.Status = updatedEvent.Status;
+
+			var (success, error) = _eventService.UpdateEvent(id, existing);
+			if (!success)
+				return BadRequest(new { success = false, message = error });
+
+			return Ok(new { success = true });
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, new { success = false, message = ex.Message });
+		}
+	}
+
 	[Route("Event/{id}")]
 	public IActionResult Index(string id)
 	{

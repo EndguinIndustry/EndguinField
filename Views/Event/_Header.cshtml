@@ -12,21 +12,14 @@
         <input type="text" id="editNameInput" class="form-control form-control-lg edit-mode-only" value="@eventName" />
     </div>
     <div class="event-header-actions">
-        @if (Model.IsOwner)
+        @if (Model.IsOwner && !Model.IsCreateMode)
         {
-            if (Model.IsCreateMode)
-            {
-                <partial name="_IconButton" model='new IconButtonViewModel { Id = "editBtn", IconPath = "/assets/icons/save.svg", AltText = "Create Event", Title = "Create Event", AdditionalClasses = "icon-dark" }' />
-            }
-            else
-            {
-                <partial name="_IconButton" model='new IconButtonViewModel { Id = "editBtn", IconPath = "/assets/icons/edit.svg", AltText = "Edit Event", Title = "Edit Event", AdditionalClasses = "icon-dark" }' />
-                <partial name="_IconButton" model='new IconButtonViewModel { Id = "cancelEditBtn", IconPath = "/assets/icons/decline.svg", AltText = "Cancel Edit", Title = "Cancel Edit", AdditionalClasses = "icon-dark edit-mode-only" }' />
-            }
+            <partial name="Components/_IconButton" model='new IconButtonViewModel { Id = "editBtn", IconPath = "/assets/icons/edit.svg", AltText = "Edit Event", Title = "Edit Event", AdditionalClasses = "icon-dark" }' />
+            <partial name="Components/_IconButton" model='new IconButtonViewModel { Id = "cancelEditBtn", IconPath = "/assets/icons/decline.svg", AltText = "Cancel Edit", Title = "Cancel Edit", AdditionalClasses = "icon-dark edit-mode-only" }' />
         }
         @if (!Model.IsCreateMode)
         {
-             <partial name="_IconButton" model='new IconButtonViewModel { Id = "toggleBtn", IconPath = "/assets/icons/comment.svg", AltText = "Show Comments", Title = "Show Comments", AdditionalClasses = "icon-dark" }' />
+             <partial name="Components/_IconButton" model='new IconButtonViewModel { Id = "toggleBtn", IconPath = "/assets/icons/comment.svg", AltText = "Show Comments", Title = "Show Comments", AdditionalClasses = "icon-dark" }' />
         }
     </div>
 </div>

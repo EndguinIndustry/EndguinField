@@ -9,7 +9,7 @@ public interface IEventService
 	Event? GetEventById(string eventId);
 	List<Event> GetAllEvents();
 	(bool success, string? error) CreateEvent(Event eventObj);
-	void UpdateEvent(string id, Event eventObj);
+	(bool success, string? error) UpdateEvent(string id, Event eventObj);
 	void DeleteEvent(string id);
 	EventViewModel? GetEventViewModel(string id, string currentUserId);
 }
@@ -54,9 +54,16 @@ public class EventService : IEventService
 		return (true, null);
 	}
 
-	public void UpdateEvent(string id, Event eventObj)
+	public (bool success, string? error) UpdateEvent(string id, Event eventObj)
 	{
+		var acceptedCount = _participationService.GetParticipationsByEventId(id)
+			.Count(p => p.Status == "Accepted");
+
+		if (eventObj.MaxParticipants < acceptedCount)
+			return (false, $"Cannot set max participants below current accepted count ({acceptedCount}).");
+
 		_eventStore.UpdateAsync(id, eventObj).GetAwaiter().GetResult();
+		return (true, null);
 	}
 
 	public void DeleteEvent(string id)
