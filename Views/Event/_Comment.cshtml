@@ -2,8 +2,8 @@
 
 @{
 	var defaultImage = "https://static.zerochan.net/Endministrator.%28Female%29.1024.4086419.webp";
-	var userName = Model.Author?.Name ?? "Unknown User";
-	var userImage = Model.Author?.Image ?? defaultImage;
+	var userName = Model.Sender?.Name ?? "Unknown User";
+	var userImage = Model.Sender?.Image ?? defaultImage;
 	var content = Model.Content ?? "";
 	var commentId = Model.Id ?? "";
 }
@@ -13,5 +13,9 @@
 	<div class="comment-content">
 		<h5 class="mb-0">@userName</h5>
 		<p class="mb-0">@content</p>
+		<button class="btn btn-link p-0 text-decoration-none d-flex align-items-center mt-1">
+			<img src="~/assets/icons/reply.svg" alt="Reply" class="icon-secondary icon me-1" style="width: 14px; height: 14px;" asp-append-version="true" />
+			<small class="text-muted">Reply</small>
+		</button>
 	</div>
 </div>

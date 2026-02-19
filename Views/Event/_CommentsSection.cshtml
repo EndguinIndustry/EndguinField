@@ -1,0 +1,26 @@
+@using EndguinField.Models.ViewModels
+@model EventViewModel
+@{
+	var comments = Model?.Comments ?? new List<CommentViewModel>();
+}
+
+<div id="commentsSection" class="hidden-section ">
+	<h2>Comments</h2>
+	<div class="comments-scrollable">
+		@if (comments.Any())
+		{
+			@foreach (var comment in comments)
+			{
+				<partial name="_Comment" model="comment" />
+			}
+		}
+		else
+		{
+			<p class="text-muted ms-3">No comments yet.</p>
+		}
+	</div>
+	<div class="comment-input-area mt-3 d-flex align-items-center">
+		<input type="text" class="form-control me-2" placeholder="Write a comment..." />
+		<partial name="_IconButton" model='new IconButtonViewModel { Id = "sendCommentBtn", IconPath = "/assets/icons/comment-send.svg", AltText = "Send", Title = "Send Comment", AdditionalClasses = "icon-dark" }' />
+	</div>
+</div>

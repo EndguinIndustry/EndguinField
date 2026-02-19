@@ -1,0 +1,60 @@
+@model EventViewModel
+
+<div id="event-detail-view" class="event-detail-container"
+	 data-event-id="@Model.Id"
+	 data-is-create-mode="@Json.Serialize(Model.IsCreateMode)"
+	 data-background-image="@Model.BackgroundImage">
+	<partial name="_Header" model="Model" />
+
+	<div class="event-layout-grid">
+		<div class="event-main-content">
+			<partial name="_ImageSlide" model="Model" />
+			<div id="participants-section-wrapper" class="view-mode-only">
+				<partial name="_Participants" model="Model" />
+			</div>
+		</div>
+
+		<div class="event-side-content">
+			<div class="event-actions-wrapper">
+				<partial name="_DetailsSection" model="Model" />
+				<partial name="_CommentsSection" model="Model" />
+			</div>
+
+			@if (Model.IsOwner)
+			{
+				<button class="btn btn-danger delete-event-btn" type="button">
+					<img src="~/assets/icons/delete.svg" alt="Delete" class="icon-white icon" asp-append-version="true" />
+					Delete Event
+				</button>
+			}
+			else if (Model.UserStatus == "Pending")
+			{
+				<button class="btn btn-secondary" type="button" disabled>Requested</button>
+			}
+			else if (Model.UserStatus == "Accepted")
+			{
+				<button class="btn btn-primary" type="button" disabled>Joined</button>
+			}
+			else if (Model.UserStatus == "Rejected")
+			{
+				<button class="btn btn-danger" type="button" disabled>Request Rejected</button>
+			}
+			else
+			{
+				<button class="btn btn-success join-event-btn" type="button">Join Event</button>
+			}
+		</div>
+	</div>
+</div>
+
+<div class="background-container">
+	<img id="backgroundImage" class="event-background" src="@Model.BackgroundImage" alt="Background" />
+	<div class="edit-mode-only background-edit-overlay">
+		<button id="editBackgroundBtn" class="btn btn-light rounded-circle p-2" type="button" title="Change Background Image">
+			<img src="~/assets/icons/image-edit.svg" alt="Edit Background" class="icon" style="width: 24px; height: 24px;" asp-append-version="true" />
+		</button>
+		<input type="file" id="backgroundImageInput" accept="image/*" style="display: none;" />
+	</div>
+</div>
+
+<script type="module" src="~/js/Event/Index.js" asp-append-version="true"></script>

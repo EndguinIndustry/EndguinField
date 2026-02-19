@@ -1,8 +1,8 @@
 namespace EndguinField.Models.ViewModels;
 
-public class EventDetailViewModel
+public class EventViewModel
 {
-	public string EventId { get; set; } = string.Empty;
+	public string Id { get; set; } = string.Empty;
 	public string Name { get; set; } = string.Empty;
 	public string Description { get; set; } = string.Empty;
 	public List<string> Images { get; set; } = new();
@@ -12,15 +12,18 @@ public class EventDetailViewModel
 	public DateTime EndTime { get; set; }
 	public int MaxParticipants { get; set; }
 	public string Category { get; set; } = string.Empty;
+	public string Status { get; set; } = "Open";
 
 	public UserSummaryViewModel Owner { get; set; } = null!;
-	public List<ParticipationViewModel> Participations { get; set; } = new();
+	public List<ParticipationViewModel> Participants { get; set; } = new();
 	public List<CommentViewModel> Comments { get; set; } = new();
 
 	public bool IsOwner { get; set; }
 	public bool IsJoined { get; set; }
+	public bool IsCreateMode { get; set; }
+	public string? UserStatus { get; set; }
 
-	public int ParticipationCount => Participations?.Count ?? 0;
+	public int ParticipationCount => Participants?.Count ?? 0;
 }
 
 public class UserSummaryViewModel
@@ -44,6 +47,6 @@ public class CommentViewModel
 	public string Id { get; set; } = string.Empty;
 	public string Content { get; set; } = string.Empty;
 	public DateTime TimeStamp { get; set; }
-	public UserSummaryViewModel Author { get; set; } = null!;
+	public UserSummaryViewModel Sender { get; set; } = null!;
 	public string? RepliedMessageId { get; set; }
 }

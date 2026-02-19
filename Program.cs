@@ -11,11 +11,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
-builder.Services.AddSingleton<EndguinField.Services.IUserService, EndguinField.Services.UserService>();
-builder.Services.AddSingleton<EndguinField.Services.IParticipationService, EndguinField.Services.ParticipationService>();
-builder.Services.AddSingleton<EndguinField.Services.IEventService, EndguinField.Services.EventService>();
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSingleton<S3Service>();
+
+builder.Services.AddSingleton<EndguinField.Services.MongoDB.IParticipationMongoService, EndguinField.Services.MongoDB.ParticipationMongoService>();
+builder.Services.AddSingleton<EndguinField.Services.MongoDB.ICommentMongoService, EndguinField.Services.MongoDB.CommentMongoService>();
+builder.Services.AddSingleton<EndguinField.Services.MongoDB.IEventMongoService, EndguinField.Services.MongoDB.EventMongoService>();
+
+builder.Services.AddSingleton<EndguinField.Services.IUserService, EndguinField.Services.UserService>();
+builder.Services.AddSingleton<EndguinField.Services.ICommentService, EndguinField.Services.CommentService>();
+builder.Services.AddSingleton<EndguinField.Services.IParticipationService, EndguinField.Services.ParticipationService>();
+builder.Services.AddSingleton<EndguinField.Services.IEventService, EndguinField.Services.EventService>();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {

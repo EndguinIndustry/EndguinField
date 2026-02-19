@@ -1,4 +1,4 @@
-@model EventDetailViewModel
+@model EventViewModel
 
 @{
 	var description = Model?.Description ?? "No description provided.";
@@ -30,8 +30,24 @@
 			<p class="ms-3">@formattedStart - @formattedEnd</p>
 		</div>
 		<div class="edit-mode-only ms-3">
-			<input type="datetime-local" id="editStartTimeInput" class="form-control mb-2" value="@startEdit" />
+			<label class="form-label fw-semibold">Start Date</label>
+			<input type="datetime-local" id="editStartTimeInput" class="form-control mb-3" value="@startEdit" />
+			<label class="form-label fw-semibold">End Date</label>
 			<input type="datetime-local" id="editEndTimeInput" class="form-control" value="@endEdit" />
 		</div>
 	</div>
+
+	@if (Model.IsOwner)
+	{
+		<div class="mb-3 edit-mode-only">
+			<h2>Status</h2>
+			<div class="ms-3">
+				<partial name="_SlideCapsule" model='new SlideCapsuleViewModel {
+					CurrentValue = Model.Status,
+					GroupName = "eventStatus",
+					Options = new() { ("Open", "success"), ("Closed", "secondary"), ("Cancelled", "danger") }
+				}' />
+			</div>
+		</div>
+	}
 </div>

@@ -1,45 +1,69 @@
 using EndguinField.Models;
+using EndguinField.Services.MongoDB;
 namespace EndguinField.Services;
-
 
 public interface IParticipationService
 {
-	List<Participation> GetParticipationsByEvent(Event ev, IUserService userService);
+	List<Participation> GetParticipationsByEventId(string eventId);
+	bool CancelParticipation(string eventId, string userId);
+	bool AcceptParticipation(string eventId, string userId);
+	bool RejectParticipation(string eventId, string userId);
+	Participation? GetParticipation(string eventId, string userId);
+	Participation Join(string eventId, string userId);
 }
 
 public class ParticipationService : IParticipationService
 {
-	public List<Participation> GetParticipationsByEvent(Event ev, IUserService userService)
-	{
-		var participations = new List<Participation>();
-		if (ev.Participants == null)
-			return participations;
+	private readonly IParticipationMongoService _participationStore;
+	private readonly IUserService _userService;
 
-		foreach (var userId in ev.Participants)
+	public ParticipationService(IParticipationMongoService participationStore, IUserService userService)
+	{
+		_participationStore = participationStore;
+		_userService = userService;
+	}
+
+	public List<Participation> GetParticipationsByEventId(string eventId)
+	{
+		return _participationStore.GetByEventIdAsync(eventId).GetAwaiter().GetResult();
+	}
+
+	public bool CancelParticipation(string eventId, string userId)
+	{
+		return _participationStore.DeleteAsync(eventId, userId).GetAwaiter().GetResult();
+	}
+
+	public bool AcceptParticipation(string eventId, string userId)
+	{
+		return _participationStore.UpdateStatusAsync(eventId, userId, "Accepted").GetAwaiter().GetResult();
+	}
+
+	public bool RejectParticipation(string eventId, string userId)
+	{
+		return _participationStore.UpdateStatusAsync(eventId, userId, "Rejected").GetAwaiter().GetResult();
+	}
+
+	public Participation? GetParticipation(string eventId, string userId)
+	{
+		return _participationStore.GetAsync(eventId, userId).GetAwaiter().GetResult();
+	}
+
+	public Participation Join(string eventId, string userId)
+	{
+		var user = _userService.GetUserById(userId);
+		if (user == null)
 		{
-			var user = userService.GetUserById(userId);
-			if (user != null)
-			{
-				// Try to find Participation in user's Enrolls for this event
-				var participation = user.Enrolls.FirstOrDefault(p => p.EventId == ev.EventId);
-				if (participation != null)
-				{
-					participations.Add(participation);
-				}
-				else
-				{
-					// Fallback: create a basic Participation if not found
-					participations.Add(new Participation
-					{
-						UserId = user.Id,
-						EventId = ev.EventId,
-						User = user,
-						JoinedTime = DateTime.MinValue,
-						Status = "unknown"
-					});
-				}
-			}
+			throw new ArgumentException("User not found", nameof(userId));
 		}
-		return participations;
+
+		var participation = new Participation
+		{
+			EventId = eventId,
+			UserId = userId,
+			Status = "Pending",
+			JoinedTime = DateTime.UtcNow,
+			User = user.Name
+		};
+		return _participationStore.CreateAsync(participation).GetAwaiter().GetResult();
 	}
 }
