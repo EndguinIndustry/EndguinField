@@ -50,3 +50,18 @@ public class CommentViewModel
 	public UserSummaryViewModel Sender { get; set; } = null!;
 	public string? RepliedMessageId { get; set; }
 }
+
+public class EventUpdateModel
+{
+	public string Name { get; set; } = string.Empty;
+	public string Description { get; set; } = string.Empty;
+	public string Location { get; set; } = string.Empty;
+	public DateTime StartTime { get; set; }
+	public DateTime EndTime { get; set; }
+	public int MaxParticipants { get; set; }
+	public string Status { get; set; } = "Open";
+	public IFormFile? BackgroundImageFile { get; set; }
+	public string? BackgroundImage { get; set; }
+	public List<IFormFile>? NewImages { get; set; }
+	public List<string>? ExistingImages { get; set; }
+}

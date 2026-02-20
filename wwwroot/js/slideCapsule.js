@@ -1,14 +1,29 @@
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.slide-capsule').forEach(capsule => {
-        const indicator = capsule.querySelector('.slide-capsule-indicator');
-        const options = capsule.querySelectorAll('.slide-capsule-option');
+document.addEventListener("DOMContentLoaded", () => {
+	document.querySelectorAll(".slide-capsule").forEach((capsule) => {
+		const indicator = capsule.querySelector(".slide-capsule-indicator");
+		const options = capsule.querySelectorAll(".slide-capsule-option");
 
-        options.forEach((label, index) => {
-            label.addEventListener('click', () => {
-                const variant = label.dataset.variant;
-                indicator.style.transform = `translateX(calc(${index} * 100%))`;
-                indicator.dataset.variant = variant;
-            });
-        });
-    });
+		function updateIndicator() {
+			const checkedRadio = capsule.querySelector(".slide-capsule-input:checked");
+			if (!checkedRadio) return;
+
+			const checkedLabel = capsule.querySelector(`label[for="${checkedRadio.id}"]`);
+			if (checkedLabel) {
+				const variant = checkedLabel.dataset.variant;
+				indicator.style.width = `${checkedLabel.offsetWidth}px`;
+				indicator.style.transform = `translateX(${checkedLabel.offsetLeft}px)`;
+				indicator.dataset.variant = variant;
+			}
+		}
+
+		updateIndicator();
+
+		options.forEach((label) => {
+			label.addEventListener("click", () => {
+				setTimeout(updateIndicator, 0);
+			});
+		});
+
+		window.addEventListener("resize", updateIndicator);
+	});
 });

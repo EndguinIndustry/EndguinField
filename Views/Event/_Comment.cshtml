@@ -8,14 +8,21 @@
 	var commentId = Model.Id ?? "";
 }
 
-<div id="@commentId" class="comment-item d-flex align-items-start mb-3">
+<div id="@commentId" class="comment-item">
 	<img class="avatar" src="@userImage" alt="@userName" />
 	<div class="comment-content">
-		<h5 class="mb-0">@userName</h5>
-		<p class="mb-0">@content</p>
-		<button class="btn btn-link p-0 text-decoration-none d-flex align-items-center mt-1">
-			<img src="~/assets/icons/reply.svg" alt="Reply" class="icon-secondary icon me-1" style="width: 14px; height: 14px;" asp-append-version="true" />
-			<small class="text-muted">Reply</small>
+		<h5 class="comment-author">@userName</h5>
+        @if (!string.IsNullOrEmpty(Model.RepliedMessageId))
+        {
+            <div tabindex="0" class="replied-reference replied-reference-btn" data-target-id="@Model.RepliedMessageId">
+                 <img src="~/assets/icons/reply.svg" alt="Reply" class="icon-secondary" asp-append-version="true" />
+                 <span class="replied-reference-text"></span>
+            </div>
+        }
+		<p class="comment-text">@content</p>
+		<button type="button" class="reply-btn">
+			<img src="~/assets/icons/reply.svg" alt="Reply" class="icon-secondary" asp-append-version="true" />
+			<span>Reply</span>
 		</button>
 	</div>
 </div>

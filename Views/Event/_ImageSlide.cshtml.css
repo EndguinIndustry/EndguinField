@@ -1,19 +1,34 @@
+.image-carousel-view {
+	position: relative;
+}
+
 .imageSlide-inner {
 	display: flex;
 	overflow-x: auto;
 	scroll-snap-type: x mandatory;
 }
 
+.imageSlide-inner::-webkit-scrollbar {
+	display: none;
+}
+
 .imageSlide-item {
 	flex: 0 0 auto;
-	width: 100%;
 	scroll-snap-align: start;
+	min-height: 100%;
+	aspect-ratio: 16/9;
+	width: 100%;
+}
+
+.imageSlide-item img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .Btn {
 	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
+	top: 0;
 	z-index: 1;
 	height: 100%;
 	width: 50px;
@@ -56,7 +71,9 @@
 	position: relative;
 	border-radius: 0.5rem;
 	overflow: hidden;
-	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	box-shadow:
+		0 4px 6px -1px rgba(0, 0, 0, 0.1),
+		0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 ::deep .remove-image-btn {

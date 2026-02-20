@@ -14,6 +14,34 @@
 }
 
 <div id="detailsSection">
+	@if (Model.IsOwner && !Model.IsCreateMode)
+	{
+		<div class="mb-3 edit-mode-only">
+			<h2>Status</h2>
+			<div class="ms-3">
+				<partial name="Components/_SlideCapsule" model='new SlideCapsuleViewModel {
+					CurrentValue = Model.Status,
+					GroupName = "eventStatus",
+					Options = new() { ("Open", "success"), ("Closed", "danger"), ("Cancelled", "secondary") }
+				}' />
+			</div>
+		</div>
+
+		<div class="mb-3 edit-mode-only">
+			<h2>Max Participants</h2>
+			<div class="ms-3">
+				<input type="number" id="editMaxParticipantsInput" class="form-control"
+					   value="@Model.MaxParticipants"
+					   min="@currentParticipantCount"
+					   max="1000" />
+				@if (currentParticipantCount > 0)
+				{
+					<small class="text-muted">Min: @currentParticipantCount (current participants)</small>
+				}
+			</div>
+		</div>
+	}
+
 	<div class="mb-3">
 		<h2>Details</h2>
 		<p id="viewDescription" class="ms-3 details-text">@description</p>
@@ -39,34 +67,5 @@
 		</div>
 	</div>
 
-	@if (Model.IsOwner)
-	{
-		<div class="mb-3 edit-mode-only">
-			<h2>Max Participants</h2>
-			<div class="ms-3">
-				<input type="number" id="editMaxParticipantsInput" class="form-control"
-					   value="@Model.MaxParticipants"
-					   min="@currentParticipantCount"
-					   max="1000" />
-				@if (currentParticipantCount > 0)
-				{
-					<small class="text-muted">Min: @currentParticipantCount (current participants)</small>
-				}
-			</div>
-		</div>
 
-		@if (!Model.IsCreateMode)
-		{
-			<div class="mb-3 edit-mode-only">
-				<h2>Status</h2>
-				<div class="ms-3">
-					<partial name="Components/_SlideCapsule" model='new SlideCapsuleViewModel {
-						CurrentValue = Model.Status,
-						GroupName = "eventStatus",
-						Options = new() { ("Open", "success"), ("Closed", "secondary"), ("Cancelled", "danger") }
-					}' />
-				</div>
-			</div>
-		}
-	}
 </div>

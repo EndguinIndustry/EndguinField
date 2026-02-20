@@ -11,6 +11,7 @@ public interface IEventService
 	(bool success, string? error) CreateEvent(Event eventObj);
 	(bool success, string? error) UpdateEvent(string id, Event eventObj);
 	void DeleteEvent(string id);
+	(bool success, string? error) AddComment(string eventId, string senderId, string content, string? repliedMessageId = null);
 	EventViewModel? GetEventViewModel(string id, string currentUserId);
 }
 
@@ -71,6 +72,33 @@ public class EventService : IEventService
 		_eventStore.DeleteAsync(id).GetAwaiter().GetResult();
 	}
 
+	public (bool success, string? error) AddComment(string eventId, string senderId, string content, string? repliedMessageId = null)
+	{
+		var existingEvent = GetEventById(eventId);
+		if (existingEvent == null) return (false, "Event not found.");
+
+		var comment = new Comment
+		{
+			Id = Guid.NewGuid().ToString(),
+			SenderId = senderId,
+			Content = content,
+			TimeStamp = DateTime.Now,
+			RepliedMessageId = repliedMessageId
+		};
+
+		try
+		{
+			_commentService.CreateComment(comment);
+			existingEvent.Comments.Add(comment.Id);
+			_eventStore.UpdateAsync(eventId, existingEvent).GetAwaiter().GetResult();
+			return (true, null);
+		}
+		catch (Exception ex)
+		{
+			return (false, ex.Message);
+		}
+	}
+
 	public EventViewModel? GetEventViewModel(string id, string currentUserId)
 	{
 		var thisEvent = GetEventById(id);
@@ -99,6 +127,7 @@ public class EventService : IEventService
 			var c = _commentService.GetCommentById(cid);
 			if (c == null) return null;
 			var sender = _userService.GetUserById(c.SenderId);
+
 			return new CommentViewModel
 			{
 				Id = c.Id,

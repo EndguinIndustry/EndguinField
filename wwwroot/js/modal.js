@@ -21,13 +21,25 @@ const Modal = (() => {
         overlay()?.addEventListener('click', (e) => { if (e.target === overlay()) close(false); });
     });
 
-    const open = ({ titleText = '', messageText = '', showCancel = false }) => {
+    const open = ({ titleText = '', messageText = '', showCancel = false, customContent = null }) => {
         const el = overlay();
         if (!el) return Promise.resolve(false);
 
         title().textContent = titleText;
-        message().textContent = messageText;
+        
+        if (customContent) {
+            message().innerHTML = '';
+            if (typeof customContent === 'string') {
+                message().innerHTML = customContent;
+            } else {
+                message().appendChild(customContent);
+            }
+        } else {
+            message().textContent = messageText;
+        }
+
         cancelBtn().style.display = showCancel ? '' : 'none';
+        confirmBtn().style.display = (titleText === 'Notice' || titleText === 'Confirm' || !customContent) ? '' : 'none';
 
         confirmBtn().onclick = () => close(true);
         cancelBtn().onclick = () => close(false);
@@ -43,6 +55,10 @@ const Modal = (() => {
 
         confirm: (messageText, titleText = 'Confirm') =>
             open({ titleText, messageText, showCancel: true }),
+
+        show: (options) => open(options),
+        
+        close: (value) => close(value)
     };
 })();
 

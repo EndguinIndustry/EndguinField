@@ -19,7 +19,3 @@
 	gap: 0.5rem;
 	flex-shrink: 0;
 }
-
-.edit-mode-only {
-	display: none !important;
-}

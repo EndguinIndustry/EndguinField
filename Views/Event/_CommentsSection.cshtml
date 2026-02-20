@@ -19,8 +19,22 @@
 			<p class="text-muted ms-3">No comments yet.</p>
 		}
 	</div>
-	<div class="comment-input-area mt-3 d-flex align-items-center">
-		<input type="text" class="form-control me-2" placeholder="Write a comment..." />
-		<partial name="Components/_IconButton" model='new IconButtonViewModel { Id = "sendCommentBtn", IconPath = "/assets/icons/comment-send.svg", AltText = "Send", Title = "Send Comment", AdditionalClasses = "icon-dark" }' />
+	<div class="comment-input-area">
+		<div class="reply-target-container">
+			<div id="replyTargetWrapper" class="reply-wrapper">
+				<div class="reply-content-box">
+					<span class="reply-target-label">Replying to <span id="replyTargetName"></span>:</span>
+					<span id="replyTargetContent" class="reply-target-text"></span>
+				</div>
+				<button type="button" id="cancelReplyBtn" class="cancel-reply">
+					<span aria-hidden="true" style="font-size: 1.25rem; line-height: 1; color: #6c757d;">&times;</span>
+				</button>
+			</div>
+		</div>
+		<div class="comment-input-row">
+			<input type="text" id="newCommentInput" class="comment-input" placeholder="Write a comment..." />
+			<partial name="Components/_IconButton"
+					 model='new IconButtonViewModel { Id = "sendCommentBtn", IconPath = "/assets/icons/comment-send.svg", AltText = "Send", Title = "Send Comment", AdditionalClasses = "icon-dark" }' />
+		</div>
 	</div>
 </div>
