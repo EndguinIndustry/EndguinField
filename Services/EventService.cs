@@ -120,7 +120,10 @@ public class EventService : IEventService
 				Status = p.Status,
 				JoinedTime = p.JoinedTime
 			};
-		}).Where(x => x != null).ToList()!;
+		})
+		.Where(x => x != null)
+		.Cast<ParticipationViewModel>()
+		.ToList();
 
 		var comments = thisEvent.Comments.Select(cid =>
 		{
@@ -141,7 +144,10 @@ public class EventService : IEventService
 				},
 				RepliedMessageId = c.RepliedMessageId
 			};
-		}).Where(c => c != null).ToList()!;
+		})
+		.Where(c => c != null)
+		.Cast<CommentViewModel>()
+		.ToList();
 
 		return new EventViewModel
 		{
