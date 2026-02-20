@@ -69,7 +69,21 @@ public class EventService : IEventService
 
 	public void DeleteEvent(string id)
 	{
-		_eventStore.DeleteAsync(id).GetAwaiter().GetResult();
+		var eventObj = GetEventById(id);
+		if (eventObj != null)
+		{
+			// Delete all participations
+			_participationService.DeleteParticipationsByEventId(id);
+
+			// Delete all comments
+			foreach (var commentId in eventObj.Comments)
+			{
+				_commentService.DeleteComment(commentId);
+			}
+
+			// Delete the event
+			_eventStore.DeleteAsync(id).GetAwaiter().GetResult();
+		}
 	}
 
 	public (bool success, string? error) AddComment(string eventId, string senderId, string content, string? repliedMessageId = null)

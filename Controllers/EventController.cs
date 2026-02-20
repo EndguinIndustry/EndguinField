@@ -13,6 +13,14 @@ public class EventController : Controller
 	private readonly IParticipationService _participationService;
 	private readonly S3Service _s3Service;
 
+	User currentUser = new User // Mocked current user
+	{
+		Id = "1",
+		Name = "Chen Qianyu",
+		Image = "https://preview.redd.it/the-origin-of-chen-sticker-v0-aulsmkoceg0g1.png?width=300&format=png&auto=webp&s=9578b04c0a2fa42f1472ed9bb29b07651ee5effd"
+	};
+
+
 	public EventController(IEventService eventService, IUserService userService, IParticipationService participationService, S3Service s3Service)
 	{
 		_eventService = eventService;
@@ -60,7 +68,7 @@ public class EventController : Controller
 			var newEvent = new Event
 			{
 				Id = Guid.NewGuid().ToString(),
-				OwnerId = "1",
+				OwnerId = currentUser.Id,
 				Name = updatedEvent.Name,
 				Description = updatedEvent.Description,
 				Location = updatedEvent.Location,
@@ -146,11 +154,32 @@ public class EventController : Controller
 		}
 	}
 
+	[HttpDelete]
+	[Route("Event/Delete/{id}")]
+	public IActionResult Delete(string id)
+	{
+		try
+		{
+			var existing = _eventService.GetEventById(id);
+			if (existing == null)
+				return NotFound(new { success = false, message = "Event not found." });
+
+			if (existing.OwnerId != currentUser.Id)
+				return Forbid();
+
+			_eventService.DeleteEvent(id);
+			return Ok(new { success = true, message = "Event deleted successfully." });
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, new { success = false, message = ex.Message });
+		}
+	}
+
 	[Route("Event/{id}")]
 	public IActionResult Index(string id)
 	{
-		string currentUserId = "1";
-		var viewModel = _eventService.GetEventViewModel(id, currentUserId);
+		var viewModel = _eventService.GetEventViewModel(id, currentUser.Id);
 		if (viewModel == null)
 		{
 			return NotFound();
@@ -163,9 +192,7 @@ public class EventController : Controller
 	[Route("Event/Join/{id}")]
 	public IActionResult Join(string id)
 	{
-		string currentUserId = "1";
-
-		var existingParticipation = _participationService.GetParticipation(id, currentUserId);
+		var existingParticipation = _participationService.GetParticipation(id, currentUser.Id);
 		if (existingParticipation != null)
 		{
 			return BadRequest(new { success = false, message = "You have already requested to join or have already joined this event." });
@@ -173,7 +200,7 @@ public class EventController : Controller
 
 		try
 		{
-			var participation = _participationService.Join(id, currentUserId);
+			var participation = _participationService.Join(id, currentUser.Id);
 			return Ok(new { success = true, message = "Successfully requested to join the event.", participation });
 		}
 		catch (Exception ex)
@@ -189,11 +216,9 @@ public class EventController : Controller
 		if (string.IsNullOrWhiteSpace(request.Content))
 			return BadRequest(new { success = false, message = "Comment cannot be empty." });
 
-		string currentUserId = "1";
-
 		try
 		{
-			var (success, error) = _eventService.AddComment(id, currentUserId, request.Content, request.RepliedMessageId);
+			var (success, error) = _eventService.AddComment(id, currentUser.Id, request.Content, request.RepliedMessageId);
 			if (!success)
 				return BadRequest(new { success = false, message = error });
 

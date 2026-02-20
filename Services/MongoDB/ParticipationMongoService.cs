@@ -10,6 +10,7 @@ public interface IParticipationMongoService
 	Task<Participation> CreateAsync(Participation participation, CancellationToken cancellationToken = default);
 	Task<bool> UpdateStatusAsync(string eventId, string userId, string status, CancellationToken cancellationToken = default);
 	Task<bool> DeleteAsync(string eventId, string userId, CancellationToken cancellationToken = default);
+	Task<bool> DeleteByEventIdAsync(string eventId, CancellationToken cancellationToken = default);
 }
 
 public class ParticipationMongoService : IParticipationMongoService
@@ -51,6 +52,12 @@ public class ParticipationMongoService : IParticipationMongoService
 	public async Task<bool> DeleteAsync(string eventId, string userId, CancellationToken cancellationToken = default)
 	{
 		var result = await _collection.DeleteOneAsync(p => p.EventId == eventId && p.UserId == userId, cancellationToken);
+		return result.DeletedCount > 0;
+	}
+
+	public async Task<bool> DeleteByEventIdAsync(string eventId, CancellationToken cancellationToken = default)
+	{
+		var result = await _collection.DeleteManyAsync(p => p.EventId == eventId, cancellationToken);
 		return result.DeletedCount > 0;
 	}
 }

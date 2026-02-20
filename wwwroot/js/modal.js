@@ -25,7 +25,7 @@ const Modal = (() => {
         const el = overlay();
         if (!el) return Promise.resolve(false);
 
-        title().textContent = titleText;
+        title().innerText = titleText;
         
         if (customContent) {
             message().innerHTML = '';
@@ -35,7 +35,7 @@ const Modal = (() => {
                 message().appendChild(customContent);
             }
         } else {
-            message().textContent = messageText;
+            message().innerText = messageText;
         }
 
         cancelBtn().style.display = showCancel ? '' : 'none';

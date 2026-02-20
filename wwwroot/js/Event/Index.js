@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	initStatusEditor(config);
 	initImagesEditor(config);
 	initCommentSection(config);
+	initDeleteButton(config);
 
 	if (config.isCreateMode) {
 		toggleEditUI(true);
@@ -97,6 +98,36 @@ function initEditMode(config) {
 
 		if (!isEditModeActive) {
 			await submitEvent(config, false);
+		}
+	});
+}
+
+function initDeleteButton(config) {
+	const deleteButton = document.querySelector(".delete-event-btn");
+	if (!deleteButton) return;
+
+	deleteButton.addEventListener("click", async () => {
+		const confirmed = await Modal.confirm(
+			"Are you sure you want to delete this event?\nThis action cannot be undone.",
+			"Delete Event",
+		);
+
+		if (confirmed) {
+			try {
+				const response = await fetch(`/Event/Delete/${config.eventId}`, {
+					method: "DELETE",
+				});
+				const result = await response.json();
+
+				if (response.ok && result.success) {
+					await Modal.alert("Event deleted successfully.", "Deleted");
+					window.location.href = "/";
+				} else {
+					await Modal.alert(result.message || "Failed to delete event.", "Error");
+				}
+			} catch {
+				await Modal.alert("An error occurred while trying to delete the event.", "Error");
+			}
 		}
 	});
 }

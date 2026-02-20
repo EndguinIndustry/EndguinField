@@ -10,6 +10,7 @@ public interface IParticipationService
 	bool RejectParticipation(string eventId, string userId);
 	Participation? GetParticipation(string eventId, string userId);
 	Participation Join(string eventId, string userId);
+	bool DeleteParticipationsByEventId(string eventId);
 }
 
 public class ParticipationService : IParticipationService
@@ -65,5 +66,10 @@ public class ParticipationService : IParticipationService
 			User = user.Name
 		};
 		return _participationStore.CreateAsync(participation).GetAwaiter().GetResult();
+	}
+
+	public bool DeleteParticipationsByEventId(string eventId)
+	{
+		return _participationStore.DeleteByEventIdAsync(eventId).GetAwaiter().GetResult();
 	}
 }
