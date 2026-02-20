@@ -114,7 +114,7 @@ function initDeleteButton(config) {
 
 		if (confirmed) {
 			try {
-				const response = await fetch(`/Event/Delete/${config.eventId}`, {
+				const response = await fetch(`/API/Event/Delete/${config.eventId}`, {
 					method: "DELETE",
 				});
 				const result = await response.json();
@@ -138,7 +138,7 @@ function initJoinButton(config) {
 
 	joinButton.addEventListener("click", async () => {
 		try {
-			const response = await fetch(`/Event/Join/${config.eventId}`, {
+			const response = await fetch(`/API/Event/Join/${config.eventId}`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 			});
@@ -296,7 +296,7 @@ function initCommentSection(config) {
 		if (!content) return;
 
 		try {
-			const response = await fetch(`/Event/Comment/${config.eventId}`, {
+			const response = await fetch(`/API/Event/Comment/${config.eventId}`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ Content: content, RepliedMessageId: activeReplyId }),
@@ -395,7 +395,7 @@ async function submitEvent(config, isCreationMode) {
 	config.newImages.forEach((file) => formData.append("NewImages", file));
 
 	const progressIndicator = showUploadProgressModal(isCreationMode ? "Creating Event..." : "Saving Changes...");
-	const requestUrl = isCreationMode ? "/Event/Create" : `/Event/Update/${config.eventId}`;
+	const requestUrl = isCreationMode ? "/API/Event/Create" : `/API/Event/Update/${config.eventId}`;
 	const requestMethod = isCreationMode ? "POST" : "PUT";
 
 	try {

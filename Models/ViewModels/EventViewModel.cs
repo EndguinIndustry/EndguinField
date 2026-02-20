@@ -64,4 +64,35 @@ public class EventUpdateModel
 	public string? BackgroundImage { get; set; }
 	public List<IFormFile>? NewImages { get; set; }
 	public List<string>? ExistingImages { get; set; }
+
+	public Event ToEventModel(string ownerId)
+	{
+		return new Event
+		{
+			Id = Guid.NewGuid().ToString(),
+			OwnerId = ownerId,
+			Name = Name,
+			Description = Description,
+			Location = Location,
+			StartTime = StartTime,
+			EndTime = EndTime,
+			MaxParticipants = MaxParticipants,
+			Status = Status,
+			Participants = new List<string>(),
+			Comments = new List<string>(),
+			Images = new List<string>(),
+			BackgroundImage = BackgroundImage ?? "https://i.redd.it/n30vilg6ap6g1.jpeg"
+		};
+	}
+
+	public void UpdateEvent(Event oldEventData)
+	{
+		oldEventData.Name = Name;
+		oldEventData.Description = Description;
+		oldEventData.Location = Location;
+		oldEventData.StartTime = StartTime;
+		oldEventData.EndTime = EndTime;
+		oldEventData.MaxParticipants = MaxParticipants;
+		oldEventData.Status = Status;
+	}
 }

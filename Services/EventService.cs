@@ -6,13 +6,13 @@ namespace EndguinField.Services;
 
 public interface IEventService
 {
-	Event? GetEventById(string eventId);
-	List<Event> GetAllEvents();
-	(bool success, string? error) CreateEvent(Event eventObj);
-	(bool success, string? error) UpdateEvent(string id, Event eventObj);
-	void DeleteEvent(string id);
-	(bool success, string? error) AddComment(string eventId, string senderId, string content, string? repliedMessageId = null);
-	EventViewModel? GetEventViewModel(string id, string currentUserId);
+	Task<Event?> GetEventByIdAsync(string eventId);
+	Task<List<Event>> GetAllEventsAsync();
+	Task<(bool success, string? error)> CreateEventAsync(Event eventData);
+	Task<(bool success, string? error)> UpdateEventAsync(string eventId, Event eventData);
+	Task DeleteEventAsync(string eventId);
+	Task<(bool success, string? error)> AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null);
+	Task<EventViewModel?> GetEventViewModelAsync(string eventId, string currentUserId);
 }
 
 public class EventService : IEventService
@@ -34,62 +34,70 @@ public class EventService : IEventService
 		_commentService = commentService;
 	}
 
-	public List<Event> GetAllEvents()
+	public async Task<List<Event>> GetAllEventsAsync()
 	{
-		return _eventStore.GetAllAsync().GetAwaiter().GetResult();
+		return await _eventStore.GetAllAsync();
 	}
 
-	public Event? GetEventById(string id)
+	public async Task<Event?> GetEventByIdAsync(string eventId)
 	{
-		return _eventStore.GetByIdAsync(id).GetAwaiter().GetResult();
+		return await _eventStore.GetByIdAsync(eventId);
 	}
 
-	public (bool success, string? error) CreateEvent(Event eventObj)
+	public async Task<(bool success, string? error)> CreateEventAsync(Event eventData)
 	{
-		if (eventObj.Images == null || eventObj.Images.Count < 1)
-			return (false, "At least 1 image is required.");
-		if (eventObj.Images.Count > 10)
-			return (false, "Maximum 10 images allowed.");
-
-		_eventStore.CreateAsync(eventObj).GetAwaiter().GetResult();
-		return (true, null);
-	}
-
-	public (bool success, string? error) UpdateEvent(string id, Event eventObj)
-	{
-		var acceptedCount = _participationService.GetParticipationsByEventId(id)
-			.Count(p => p.Status == "Accepted");
-
-		if (eventObj.MaxParticipants < acceptedCount)
-			return (false, $"Cannot set max participants below current accepted count ({acceptedCount}).");
-
-		_eventStore.UpdateAsync(id, eventObj).GetAwaiter().GetResult();
-		return (true, null);
-	}
-
-	public void DeleteEvent(string id)
-	{
-		var eventObj = GetEventById(id);
-		if (eventObj != null)
+		if (eventData.Images == null || eventData.Images.Count < 1)
 		{
-			// Delete all participations
-			_participationService.DeleteParticipationsByEventId(id);
-
-			// Delete all comments
-			foreach (var commentId in eventObj.Comments)
-			{
-				_commentService.DeleteComment(commentId);
-			}
-
-			// Delete the event
-			_eventStore.DeleteAsync(id).GetAwaiter().GetResult();
+			return (false, "At least 1 image is required.");
 		}
+
+		if (eventData.Images.Count > 10)
+		{
+			return (false, "Maximum 10 images allowed.");
+		}
+
+		await _eventStore.CreateAsync(eventData);
+		
+		return (true, null);
 	}
 
-	public (bool success, string? error) AddComment(string eventId, string senderId, string content, string? repliedMessageId = null)
+	public async Task<(bool success, string? error)> UpdateEventAsync(string eventId, Event eventData)
 	{
-		var existingEvent = GetEventById(eventId);
-		if (existingEvent == null) return (false, "Event not found.");
+		var participations = await _participationService.GetParticipationsByEventIdAsync(eventId);
+		int acceptedCount = participations.Count(participation => participation.Status == "Accepted");
+
+		if (eventData.MaxParticipants < acceptedCount)
+		{
+			return (false, $"Cannot set max participants below current accepted count ({acceptedCount}).");
+		}
+
+		await _eventStore.UpdateAsync(eventId, eventData);
+		
+		return (true, null);
+	}
+
+	public async Task DeleteEventAsync(string eventId)
+	{
+		var eventData = await GetEventByIdAsync(eventId);
+		
+		if (eventData == null)
+		{
+			return;
+		}
+
+		await _participationService.DeleteParticipationsByEventIdAsync(eventId);
+		await _commentService.DeleteCommentsAsync(eventData.Comments);
+		await _eventStore.DeleteAsync(eventId);
+	}
+
+	public async Task<(bool success, string? error)> AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null)
+	{
+		var eventData = await GetEventByIdAsync(eventId);
+		
+		if (eventData == null)
+		{
+			return (false, "Event not found.");
+		}
 
 		var comment = new Comment
 		{
@@ -102,91 +110,89 @@ public class EventService : IEventService
 
 		try
 		{
-			_commentService.CreateComment(comment);
-			existingEvent.Comments.Add(comment.Id);
-			_eventStore.UpdateAsync(eventId, existingEvent).GetAwaiter().GetResult();
+			await _commentService.CreateCommentAsync(comment);
+			eventData.Comments.Add(comment.Id);
+			await _eventStore.UpdateAsync(eventId, eventData);
+			
 			return (true, null);
 		}
-		catch (Exception ex)
+		catch (Exception exception)
 		{
-			return (false, ex.Message);
+			return (false, exception.Message);
 		}
 	}
 
-	public EventViewModel? GetEventViewModel(string id, string currentUserId)
+	public async Task<EventViewModel?> GetEventViewModelAsync(string eventId, string currentUserId)
 	{
-		var thisEvent = GetEventById(id);
-		if (thisEvent == null) return null;
-
-		var owner = _userService.GetUserById(thisEvent.OwnerId);
-		if (owner == null) return null;
-
-		var participations = _participationService.GetParticipationsByEventId(thisEvent.Id);
-		var participants = participations.Select(p =>
+		var eventData = await GetEventByIdAsync(eventId);
+		
+		if (eventData == null)
 		{
-			var user = _userService.GetUserById(p.UserId);
-			if (user == null) return null;
-			return new ParticipationViewModel
-			{
-				UserId = p.UserId,
-				UserName = user.Name,
-				UserImage = user.Image ?? string.Empty,
-				Status = p.Status,
-				JoinedTime = p.JoinedTime
-			};
-		})
-		.Where(x => x != null)
-		.Cast<ParticipationViewModel>()
-		.ToList();
+			return null;
+		}
 
-		var comments = thisEvent.Comments.Select(cid =>
+		var owner = _userService.GetUserById(eventData.OwnerId);
+		
+		if (owner == null)
 		{
-			var c = _commentService.GetCommentById(cid);
-			if (c == null) return null;
-			var sender = _userService.GetUserById(c.SenderId);
+			return null;
+		}
 
-			return new CommentViewModel
-			{
-				Id = c.Id,
-				Content = c.Content,
-				TimeStamp = c.TimeStamp,
-				Sender = new UserSummaryViewModel
-				{
-					Id = sender?.Id ?? string.Empty,
-					Name = sender?.Name ?? "Unknown",
-					Image = sender?.Image ?? string.Empty
-				},
-				RepliedMessageId = c.RepliedMessageId
-			};
-		})
-		.Where(c => c != null)
-		.Cast<CommentViewModel>()
-		.ToList();
+		var participations = await _participationService.GetParticipationsByEventIdAsync(eventData.Id);
+		var userParticipation = participations.FirstOrDefault(participation => participation.UserId == currentUserId);
 
 		return new EventViewModel
 		{
-			Id = thisEvent.Id,
-			Name = thisEvent.Name,
-			Description = thisEvent.Description,
-			Images = thisEvent.Images,
-			BackgroundImage = thisEvent.BackgroundImage,
-			Location = thisEvent.Location,
-			StartTime = thisEvent.StartTime,
-			EndTime = thisEvent.EndTime,
-			MaxParticipants = thisEvent.MaxParticipants,
-			Category = thisEvent.Category,
-			Status = thisEvent.Status,
-			Owner = new UserSummaryViewModel
-			{
-				Id = owner.Id,
-				Name = owner.Name,
-				Image = owner.Image ?? string.Empty
-			},
-			Participants = participants,
-			Comments = comments,
-			IsOwner = thisEvent.OwnerId == currentUserId,
-			IsJoined = participations.Any(p => p.UserId == currentUserId && p.Status == "Accepted"),
-			UserStatus = participations.FirstOrDefault(p => p.UserId == currentUserId)?.Status
+			Id = eventData.Id,
+			Name = eventData.Name,
+			Description = eventData.Description,
+			Images = eventData.Images,
+			BackgroundImage = eventData.BackgroundImage,
+			Location = eventData.Location,
+			StartTime = eventData.StartTime,
+			EndTime = eventData.EndTime,
+			MaxParticipants = eventData.MaxParticipants,
+			Category = eventData.Category,
+			Status = eventData.Status,
+			Owner = owner.ToSummaryViewModel(),
+			Participants = MapParticipants(participations),
+			Comments = await MapCommentsAsync(eventData.Comments),
+			IsOwner = eventData.OwnerId == currentUserId,
+			IsJoined = userParticipation?.Status == "Accepted",
+			UserStatus = userParticipation?.Status
 		};
+	}
+
+	private List<ParticipationViewModel> MapParticipants(List<Participation> participations)
+	{
+		return participations
+			.Select(participation =>
+			{
+				var user = _userService.GetUserById(participation.UserId);
+				return user != null ? participation.ToViewModel(user.ToSummaryViewModel()) : null;
+			})
+			.OfType<ParticipationViewModel>()
+			.ToList();
+	}
+
+	private async Task<List<CommentViewModel>> MapCommentsAsync(List<string> commentIds)
+	{
+		var tasks = commentIds.Select(async commentId =>
+		{
+			var comment = await _commentService.GetCommentByIdAsync(commentId);
+			if (comment == null)
+			{
+				return null;
+			}
+
+			var sender = _userService.GetUserById(comment.SenderId);
+			return comment.ToViewModel(sender?.ToSummaryViewModel()!);
+		});
+
+		var results = await Task.WhenAll(tasks);
+		
+		return results
+			.OfType<CommentViewModel>()
+			.ToList();
 	}
 }

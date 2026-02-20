@@ -4,11 +4,12 @@ namespace EndguinField.Services;
 
 public interface ICommentService
 {
-	List<Comment> GetAllComments();
-	Comment? GetCommentById(string commentId);
-	void CreateComment(Comment comment);
-	void UpdateComment(string commentId, Comment comment);
-	void DeleteComment(string commentId);
+	Task<List<Comment>> GetAllCommentsAsync();
+	Task<Comment?> GetCommentByIdAsync(string commentId);
+	Task CreateCommentAsync(Comment comment);
+	Task UpdateCommentAsync(string commentId, Comment comment);
+	Task DeleteCommentAsync(string commentId);
+	Task DeleteCommentsAsync(IEnumerable<string> commentIds);
 }
 
 public class CommentService : ICommentService
@@ -20,28 +21,34 @@ public class CommentService : ICommentService
 		_commentStore = commentStore;
 	}
 
-	public List<Comment> GetAllComments()
+	public async Task<List<Comment>> GetAllCommentsAsync()
 	{
-		return _commentStore.GetAllAsync().GetAwaiter().GetResult();
+		return await _commentStore.GetAllAsync();
 	}
 
-	public Comment? GetCommentById(string id)
+	public async Task<Comment?> GetCommentByIdAsync(string id)
 	{
-		return _commentStore.GetByIdAsync(id).GetAwaiter().GetResult();
+		return await _commentStore.GetByIdAsync(id);
 	}
 
-	public void CreateComment(Comment comment)
+	public async Task CreateCommentAsync(Comment comment)
 	{
-		_commentStore.CreateAsync(comment).GetAwaiter().GetResult();
+		await _commentStore.CreateAsync(comment);
 	}
 
-	public void UpdateComment(string id, Comment comment)
+	public async Task UpdateCommentAsync(string id, Comment comment)
 	{
-		_commentStore.UpdateAsync(id, comment).GetAwaiter().GetResult();
+		await _commentStore.UpdateAsync(id, comment);
 	}
 
-	public void DeleteComment(string id)
+	public async Task DeleteCommentAsync(string id)
 	{
-		_commentStore.DeleteAsync(id).GetAwaiter().GetResult();
+		await _commentStore.DeleteAsync(id);
+	}
+
+	public async Task DeleteCommentsAsync(IEnumerable<string> commentIds)
+	{
+		var tasks = commentIds.Select(id => _commentStore.DeleteAsync(id));
+		await Task.WhenAll(tasks);
 	}
 }

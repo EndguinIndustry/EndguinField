@@ -4,13 +4,13 @@ namespace EndguinField.Services;
 
 public interface IParticipationService
 {
-	List<Participation> GetParticipationsByEventId(string eventId);
-	bool CancelParticipation(string eventId, string userId);
-	bool AcceptParticipation(string eventId, string userId);
-	bool RejectParticipation(string eventId, string userId);
-	Participation? GetParticipation(string eventId, string userId);
-	Participation Join(string eventId, string userId);
-	bool DeleteParticipationsByEventId(string eventId);
+	Task<List<Participation>> GetParticipationsByEventIdAsync(string eventId);
+	Task<bool> CancelParticipationAsync(string eventId, string userId);
+	Task<bool> AcceptParticipationAsync(string eventId, string userId);
+	Task<bool> RejectParticipationAsync(string eventId, string userId);
+	Task<Participation?> GetParticipationAsync(string eventId, string userId);
+	Task<Participation> JoinAsync(string eventId, string userId);
+	Task<bool> DeleteParticipationsByEventIdAsync(string eventId);
 }
 
 public class ParticipationService : IParticipationService
@@ -24,32 +24,32 @@ public class ParticipationService : IParticipationService
 		_userService = userService;
 	}
 
-	public List<Participation> GetParticipationsByEventId(string eventId)
+	public async Task<List<Participation>> GetParticipationsByEventIdAsync(string eventId)
 	{
-		return _participationStore.GetByEventIdAsync(eventId).GetAwaiter().GetResult();
+		return await _participationStore.GetByEventIdAsync(eventId);
 	}
 
-	public bool CancelParticipation(string eventId, string userId)
+	public async Task<bool> CancelParticipationAsync(string eventId, string userId)
 	{
-		return _participationStore.DeleteAsync(eventId, userId).GetAwaiter().GetResult();
+		return await _participationStore.DeleteAsync(eventId, userId);
 	}
 
-	public bool AcceptParticipation(string eventId, string userId)
+	public async Task<bool> AcceptParticipationAsync(string eventId, string userId)
 	{
-		return _participationStore.UpdateStatusAsync(eventId, userId, "Accepted").GetAwaiter().GetResult();
+		return await _participationStore.UpdateStatusAsync(eventId, userId, "Accepted");
 	}
 
-	public bool RejectParticipation(string eventId, string userId)
+	public async Task<bool> RejectParticipationAsync(string eventId, string userId)
 	{
-		return _participationStore.UpdateStatusAsync(eventId, userId, "Rejected").GetAwaiter().GetResult();
+		return await _participationStore.UpdateStatusAsync(eventId, userId, "Rejected");
 	}
 
-	public Participation? GetParticipation(string eventId, string userId)
+	public async Task<Participation?> GetParticipationAsync(string eventId, string userId)
 	{
-		return _participationStore.GetAsync(eventId, userId).GetAwaiter().GetResult();
+		return await _participationStore.GetAsync(eventId, userId);
 	}
 
-	public Participation Join(string eventId, string userId)
+	public async Task<Participation> JoinAsync(string eventId, string userId)
 	{
 		var user = _userService.GetUserById(userId);
 		if (user == null)
@@ -65,11 +65,11 @@ public class ParticipationService : IParticipationService
 			JoinedTime = DateTime.UtcNow,
 			User = user.Name
 		};
-		return _participationStore.CreateAsync(participation).GetAwaiter().GetResult();
+		return await _participationStore.CreateAsync(participation);
 	}
 
-	public bool DeleteParticipationsByEventId(string eventId)
+	public async Task<bool> DeleteParticipationsByEventIdAsync(string eventId)
 	{
-		return _participationStore.DeleteByEventIdAsync(eventId).GetAwaiter().GetResult();
+		return await _participationStore.DeleteByEventIdAsync(eventId);
 	}
 }

@@ -3,15 +3,18 @@
 }
 
 .comments-scrollable {
-	max-height: 50vh;
+	flex: 1;
 	overflow-y: auto;
 	padding-right: 5px;
+	min-height: 0;
 }
 
 .comments-section {
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 20px;
+	flex: 1;
+	min-height: 0;
 }
 
 .comments-section h2 {

@@ -54,9 +54,22 @@ public class EventController : Controller
 		return View("Index", viewModel);
 	}
 
+	[Route("Event/{id}")]
+	public async Task<IActionResult> Index(string id)
+	{
+		var viewModel = await _eventService.GetEventViewModelAsync(id, currentUser.Id);
+		if (viewModel == null)
+		{
+			return NotFound();
+		}
+
+		return View(viewModel);
+	}
+
+
 	[HttpPost]
-	[Route("Event/Create")]
-	public async Task<IActionResult> Create([FromForm] EventUpdateModel updatedEvent)
+	[Route("API/Event/Create")]
+	public async Task<IActionResult> Create([FromForm] EventUpdateModel eventData)
 	{
 		if (!ModelState.IsValid)
 		{
@@ -65,38 +78,23 @@ public class EventController : Controller
 
 		try
 		{
-			var newEvent = new Event
-			{
-				Id = Guid.NewGuid().ToString(),
-				OwnerId = currentUser.Id,
-				Name = updatedEvent.Name,
-				Description = updatedEvent.Description,
-				Location = updatedEvent.Location,
-				StartTime = updatedEvent.StartTime,
-				EndTime = updatedEvent.EndTime,
-				MaxParticipants = updatedEvent.MaxParticipants,
-				Status = "Open",
-				Participants = new List<string>(),
-				Comments = new List<string>(),
-				Images = new List<string>(),
-				BackgroundImage = updatedEvent.BackgroundImage ?? "https://i.redd.it/n30vilg6ap6g1.jpeg"
-			};
+			var newEvent = eventData.ToEventModel(currentUser.Id);
 
-			if (updatedEvent.BackgroundImageFile != null)
+			if (eventData.BackgroundImageFile != null)
 			{
-				newEvent.BackgroundImage = await _s3Service.UploadFileAsync(updatedEvent.BackgroundImageFile);
+				newEvent.BackgroundImage = await _s3Service.UploadFileAsync(eventData.BackgroundImageFile);
 			}
 
-			if (updatedEvent.NewImages != null)
+			if (eventData.NewImages != null)
 			{
-				foreach (var file in updatedEvent.NewImages)
+				foreach (var file in eventData.NewImages)
 				{
 					var url = await _s3Service.UploadFileAsync(file);
 					newEvent.Images.Add(url);
 				}
 			}
 
-			var (success, error) = _eventService.CreateEvent(newEvent);
+			var (success, error) = await _eventService.CreateEventAsync(newEvent);
 			if (!success)
 				return BadRequest(new { success = false, message = error });
 
@@ -109,40 +107,37 @@ public class EventController : Controller
 	}
 
 	[HttpPut]
-	[Route("Event/Update/{id}")]
-	public async Task<IActionResult> Update(string id, [FromForm] EventUpdateModel model)
+	[Route("API/Event/Update/{id}")]
+	public async Task<IActionResult> Update(string id, [FromForm] EventUpdateModel updatedEvent)
 	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(new { success = false, message = "Invalid data" });
+		}
+
 		try
 		{
-			var existing = _eventService.GetEventById(id);
-			if (existing == null)
+			var existingEvent = await _eventService.GetEventByIdAsync(id);
+			if (existingEvent == null)
 				return NotFound(new { success = false, message = "Event not found." });
 
-			existing.Name = model.Name;
-			existing.Description = model.Description;
-			existing.Location = model.Location;
-			existing.StartTime = model.StartTime;
-			existing.EndTime = model.EndTime;
-			existing.MaxParticipants = model.MaxParticipants;
-			existing.Status = model.Status;
+			updatedEvent.UpdateEvent(existingEvent);
 
-			if (model.BackgroundImageFile != null)
+			if (updatedEvent.BackgroundImageFile != null)
 			{
-				existing.BackgroundImage = await _s3Service.UploadFileAsync(model.BackgroundImageFile);
+				existingEvent.BackgroundImage = await _s3Service.UploadFileAsync(updatedEvent.BackgroundImageFile);
 			}
 
-			var finalImages = model.ExistingImages ?? new List<string>();
-			if (model.NewImages != null)
+			existingEvent.Images = updatedEvent.ExistingImages ?? new List<string>();
+			if (updatedEvent.NewImages != null)
 			{
-				foreach (var file in model.NewImages)
+				foreach (var file in updatedEvent.NewImages)
 				{
-					var url = await _s3Service.UploadFileAsync(file);
-					finalImages.Add(url);
+					existingEvent.Images.Add(await _s3Service.UploadFileAsync(file));
 				}
 			}
-			existing.Images = finalImages;
 
-			var (success, error) = _eventService.UpdateEvent(id, existing);
+			var (success, error) = await _eventService.UpdateEventAsync(id, existingEvent);
 			if (!success)
 				return BadRequest(new { success = false, message = error });
 
@@ -155,19 +150,19 @@ public class EventController : Controller
 	}
 
 	[HttpDelete]
-	[Route("Event/Delete/{id}")]
-	public IActionResult Delete(string id)
+	[Route("API/Event/Delete/{id}")]
+	public async Task<IActionResult> Delete(string id)
 	{
 		try
 		{
-			var existing = _eventService.GetEventById(id);
+			var existing = await _eventService.GetEventByIdAsync(id);
 			if (existing == null)
 				return NotFound(new { success = false, message = "Event not found." });
 
 			if (existing.OwnerId != currentUser.Id)
 				return Forbid();
 
-			_eventService.DeleteEvent(id);
+			await _eventService.DeleteEventAsync(id);
 			return Ok(new { success = true, message = "Event deleted successfully." });
 		}
 		catch (Exception ex)
@@ -176,23 +171,11 @@ public class EventController : Controller
 		}
 	}
 
-	[Route("Event/{id}")]
-	public IActionResult Index(string id)
-	{
-		var viewModel = _eventService.GetEventViewModel(id, currentUser.Id);
-		if (viewModel == null)
-		{
-			return NotFound();
-		}
-
-		return View(viewModel);
-	}
-
 	[HttpPost]
-	[Route("Event/Join/{id}")]
-	public IActionResult Join(string id)
+	[Route("API/Event/Join/{id}")]
+	public async Task<IActionResult> Join(string id)
 	{
-		var existingParticipation = _participationService.GetParticipation(id, currentUser.Id);
+		var existingParticipation = await _participationService.GetParticipationAsync(id, currentUser.Id);
 		if (existingParticipation != null)
 		{
 			return BadRequest(new { success = false, message = "You have already requested to join or have already joined this event." });
@@ -200,7 +183,7 @@ public class EventController : Controller
 
 		try
 		{
-			var participation = _participationService.Join(id, currentUser.Id);
+			var participation = await _participationService.JoinAsync(id, currentUser.Id);
 			return Ok(new { success = true, message = "Successfully requested to join the event.", participation });
 		}
 		catch (Exception ex)
@@ -210,15 +193,15 @@ public class EventController : Controller
 	}
 
 	[HttpPost]
-	[Route("Event/Comment/{id}")]
-	public IActionResult AddComment(string id, [FromBody] Comment request)
+	[Route("API/Event/Comment/{id}")]
+	public async Task<IActionResult> AddComment(string id, [FromBody] Comment request)
 	{
 		if (string.IsNullOrWhiteSpace(request.Content))
 			return BadRequest(new { success = false, message = "Comment cannot be empty." });
 
 		try
 		{
-			var (success, error) = _eventService.AddComment(id, currentUser.Id, request.Content, request.RepliedMessageId);
+			var (success, error) = await _eventService.AddCommentAsync(id, currentUser.Id, request.Content, request.RepliedMessageId);
 			if (!success)
 				return BadRequest(new { success = false, message = error });
 
