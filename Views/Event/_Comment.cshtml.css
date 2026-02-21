@@ -1,0 +1,121 @@
+.avatar {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	object-fit: cover;
+	flex-shrink: 0;
+	background-color: #dee2e6;
+	display: block;
+}
+
+.comment-item {
+	padding: 12px;
+	background-color: #ffffff;
+	border: 1px solid #e9ecef;
+	border-radius: 8px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+	margin-bottom: 12px;
+	display: flex;
+	transition: all 0.2s;
+}
+
+.comment-content {
+	min-width: 0;
+	padding-left: 12px;
+	flex-grow: 1;
+}
+
+.comment-author {
+	font-size: 0.95rem;
+	font-weight: 600;
+	margin-bottom: 4px;
+	color: #212529;
+	margin-top: 0px;
+}
+
+.comment-text {
+	font-size: 0.9rem;
+	margin-top: 4px;
+	margin-bottom: 8px;
+	color: #495057;
+	word-wrap: break-word;
+}
+
+.replied-reference-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	background-color: #f8f9fa;
+	border: 1px solid rgba(108, 117, 125, 0.25);
+	border-radius: 50px;
+	padding: 4px 10px;
+	margin-top: 4px;
+	margin-bottom: 8px;
+	cursor: pointer;
+	transition: all 0.2s;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+::deep .replied-reference-btn img {
+	width: 12px;
+	height: 12px;
+	transform: scaleX(-1);
+}
+
+.reply-icon-flipped {
+	width: 12px;
+	height: 12px;
+	min-width: 12px;
+	min-height: 12px;
+	margin-right: 6px;
+}
+
+.replied-reference-text {
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: #6c757d;
+	user-select: none;
+}
+
+.reply-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	background-color: #f8f9fa;
+	border: 1px solid rgba(108, 117, 125, 0.3);
+	border-radius: 50px;
+	color: #303030;
+	font-size: 0.8rem;
+	font-weight: 500;
+	padding: 3px 10px;
+	cursor: pointer;
+	transition: all 0.2s;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	user-select: none;
+}
+
+::deep .reply-btn img {
+	width: 20px;
+	height: 20px;
+	min-width: 20px;
+	min-height: 20px;
+	transform: scaleX(-1);
+}
+
+.reply-btn:hover,
+.replied-reference-btn:hover {
+	filter: brightness(0.9);
+}
+
+.reply-btn:active,
+.replied-reference-btn:active {
+	transform: scale(0.97);
+}
+
+.reply-btn img {
+	width: 12px;
+	height: 12px;
+	min-width: 12px;
+	min-height: 12px;
+	transform: scaleX(-1);
+}
