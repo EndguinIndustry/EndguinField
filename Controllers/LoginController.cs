@@ -1,10 +1,17 @@
-using System.Net;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using EndguinField.Services;
+using System.Security.Claims;
+using EndguinField.Models;
 public class LoginController : Controller
 {
+    private readonly IUserService _userService;
+    public LoginController(IUserService userService)
+    {
+        _userService = userService;
+    }
     public IActionResult Index()
     {
         return View();
@@ -22,15 +29,27 @@ public class LoginController : Controller
     public async Task<IActionResult> GoogleResponse()
     {
         var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        var claims = result.Principal.Identities.FirstOrDefault()?.Claims.Select(claim => new
+        if (!result.Succeeded)
+            return RedirectToAction("Index");
+        var externalId = result.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userService.GetUserByIdAsync(externalId);
+        if (user == null)
         {
-            claim.Issuer,
-            claim.OriginalIssuer,
-            claim.Type,
-            claim.Value
-        });
+            var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
 
-        return RedirectToAction("Index", "Home");
+            var (success, message) = await _userService.CreateUserAsync(new User
+            {
+                Id = externalId,
+                Email = email,
+                Name = result.Principal.FindFirst(ClaimTypes.Name)?.Value,
+                Role = "User"
+            });
+
+        }
+
+        return RedirectToAction("View", "Profile", new { id = externalId });
+
+
     }
 
 
