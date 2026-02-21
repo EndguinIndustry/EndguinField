@@ -42,7 +42,8 @@ public class LoginController : Controller
                 Id = externalId,
                 Email = email,
                 Name = result.Principal.FindFirst(ClaimTypes.Name)?.Value,
-                Role = "User"
+                Role = "User",
+                JoinWhen = DateTime.UtcNow
             });
 
         }
