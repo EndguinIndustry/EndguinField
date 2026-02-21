@@ -8,6 +8,7 @@ namespace EndguinField.Services
     {
         Task<User?> GetUserByIdAsync(string id);
         Task<List<User>> GetAllUsersAsync();
+		Task<(bool success, string? error)> CreateUserAsync(User userData);
     }
 
 	public class UserService : IUserService
@@ -34,6 +35,19 @@ namespace EndguinField.Services
 		{
 			return await _userStore.GetAllAsync();
 		}
+
+		public async Task<(bool success, string? error)> CreateUserAsync(User userData)
+	{
+		if (userData.Email == null || userData.Name == null || userData.Role == null)
+		{
+			return (false, "Email, Name, and role are required");
+		}
+
+
+		await _userStore.CreateAsync(userData);
+		
+		return (true, null);
+	}
 
 		private void InitializeMockData()
 		{
