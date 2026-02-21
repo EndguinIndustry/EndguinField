@@ -2,7 +2,39 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="welcome-title">EndgiunField Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    div.participated-event-section {
+        display: flex;
+        flex-direction: row;
+        gap: 2vw;
+    }
+</style>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="text-center">
+        <h1 class="welcome-title">EndgiunField Welcome</h1>
+        <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>
+
+    <div class="participated-event-section">
+        <div style="text-align: left;">
+            <h2>Participated Events</h2>
+            <partial name="_EventList" model="Model" />
+        </div>
+
+        <div style="text-align: center;">
+            <h2>Currently Open Events</h2>
+            <partial name="_EventList" model="Model" />
+        </div>
+
+    </div>
+}
+else
+{
+    <script>
+        window.location.href = '/Login/Index';
+    </script>
+}
+
 </div>

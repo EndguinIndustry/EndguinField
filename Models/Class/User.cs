@@ -1,5 +1,6 @@
 using EndguinField.Models.ViewModels;
 
+
 namespace EndguinField.Models
 {
 	public class User

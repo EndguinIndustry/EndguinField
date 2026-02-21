@@ -51,7 +51,7 @@ public class ParticipationService : IParticipationService
 
 	public async Task<Participation> JoinAsync(string eventId, string userId)
 	{
-		var user = _userService.GetUserById(userId);
+		var user = await _userService.GetUserByIdAsync(userId);
 		if (user == null)
 		{
 			throw new ArgumentException("User not found", nameof(userId));
