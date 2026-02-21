@@ -1,0 +1,153 @@
+.event-background {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	opacity: 0;
+	transition: opacity 0.8s ease;
+}
+
+.event-background.loaded {
+	opacity: 1;
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.event-detail-container {
+	background-color: #fff;
+	padding: 2rem;
+	border-radius: 2rem;
+	width: 100%;
+	margin-right: auto;
+	margin-left: auto;
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+	animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@media (min-width: 576px) {
+	.event-detail-container {
+		max-width: 540px;
+	}
+}
+
+@media (min-width: 768px) {
+	.event-detail-container {
+		max-width: 720px;
+	}
+}
+
+@media (min-width: 992px) {
+	.event-detail-container {
+		max-width: 960px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.event-detail-container {
+		max-width: 1140px;
+	}
+}
+
+@media (min-width: 1400px) {
+	.event-detail-container {
+		max-width: 1320px;
+	}
+}
+
+.event-title-wrapper h1 {
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	font-size: 2.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.event-layout-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2rem;
+}
+
+.event-main-content,
+.event-side-content {
+	flex: 1 1 100%;
+}
+
+@media (min-width: 992px) {
+	.event-main-content,
+	.event-side-content {
+		flex: 1;
+	}
+}
+
+.event-side-content {
+	display: flex;
+	flex-direction: column;
+	min-height: 500px;
+}
+
+.event-actions-wrapper {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+
+.join-event-btn {
+	width: 100%;
+	margin-top: 1rem;
+}
+
+.background-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+.edit-background-btn {
+	border-radius: 20px;
+	background-color: white;
+	border: 1px solid rgba(108, 117, 125, 0.25);
+	padding: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	font-size: 1rem;
+	width: 100%;
+}
+
+.event-status {
+	color: white;
+	padding: 0.5rem 1rem;
+	border-radius: 20px;
+	font-weight: 600;
+	text-align: center;
+}
+
+.event-status.open {
+	background-color: var(--success-color);
+}
+
+.event-status.closed {
+	background-color: var(--danger-color);
+}
+
+.event-status.cancelled {
+	background-color: var(--secondary-color);
+}
