@@ -1,0 +1,16 @@
+**/.git
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/TestResults
+**/*.user
+**/*.suo
+**/*.cache
+**/*.log
+
+# Local secrets
+.env
+
+# Docker artifacts
+docker-compose*.yml
