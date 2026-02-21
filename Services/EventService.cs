@@ -131,7 +131,7 @@ public class EventService : IEventService
 			return null;
 		}
 
-		var owner = _userService.GetUserById(eventData.OwnerId);
+		var owner = await _userService.GetUserByIdAsync(eventData.OwnerId);
 		
 		if (owner == null)
 		{
@@ -155,7 +155,7 @@ public class EventService : IEventService
 			Category = eventData.Category,
 			Status = eventData.Status,
 			Owner = owner.ToSummaryViewModel(),
-			Participants = MapParticipants(participations),
+			Participants = await MapParticipants(participations),
 			Comments = await MapCommentsAsync(eventData.Comments),
 			IsOwner = eventData.OwnerId == currentUserId,
 			IsJoined = userParticipation?.Status == "Accepted",
@@ -163,17 +163,21 @@ public class EventService : IEventService
 		};
 	}
 
-	private List<ParticipationViewModel> MapParticipants(List<Participation> participations)
-	{
-		return participations
-			.Select(participation =>
-			{
-				var user = _userService.GetUserById(participation.UserId);
-				return user != null ? participation.ToViewModel(user.ToSummaryViewModel()) : null;
-			})
-			.OfType<ParticipationViewModel>()
-			.ToList();
-	}
+	private async Task<List<ParticipationViewModel>> MapParticipants(List<Participation> participations)
+{
+    var list = new List<ParticipationViewModel>();
+
+    foreach (var participation in participations)
+    {
+        var user = await _userService.GetUserByIdAsync(participation.UserId);
+        if (user != null)
+        {
+            list.Add(participation.ToViewModel(user.ToSummaryViewModel()));
+        }
+    }
+
+    return list;
+}
 
 	private async Task<List<CommentViewModel>> MapCommentsAsync(List<string> commentIds)
 	{
@@ -185,7 +189,7 @@ public class EventService : IEventService
 				return null;
 			}
 
-			var sender = _userService.GetUserById(comment.SenderId);
+			var sender = await _userService.GetUserByIdAsync(comment.SenderId);
 			return comment.ToViewModel(sender?.ToSummaryViewModel()!);
 		});
 

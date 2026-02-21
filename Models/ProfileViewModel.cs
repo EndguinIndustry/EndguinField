@@ -35,7 +35,7 @@ namespace EndguinField.Models
 		public List<string> PendingFriendRequestIds { get; set; } = new();
 		public List<FriendViewModel> PendingRequests { get; set; } = new();
 
-		public static ProfileViewModel FromUser(User user, IUserService userService)
+		public static async Task<ProfileViewModel> FromUserAsync(User user, IUserService userService)
 		{
 
 			var model = new ProfileViewModel
@@ -56,25 +56,33 @@ namespace EndguinField.Models
 				IsBanned = user.BanUntil.HasValue && user.BanUntil.Value > DateTime.Now,
 				BanUntil = user.BanUntil
 			};
-			model.Friends = model.FriendIds
-				.Select(id => userService.GetUserById(id))
-				.Where(f => f != null)
-				.Select(f => new FriendViewModel
-				{
-					Id = f!.Id,
-					Name = f.Name,
-					ImageUrl = f.Image
-				}).ToList();
+			var friendTasks = model.FriendIds
+				.Select(id => userService.GetUserByIdAsync(id));
+			var friends = await Task.WhenAll(friendTasks);
 
-			model.PendingRequests = model.PendingFriendRequestIds
-				.Select(id => userService.GetUserById(id))
+			model.Friends = friends
 				.Where(f => f != null)
 				.Select(f => new FriendViewModel
 				{
 					Id = f!.Id,
 					Name = f.Name,
 					ImageUrl = f.Image
-				}).ToList();
+				})
+				.ToList();
+
+			var pendingTasks = model.PendingFriendRequestIds
+				.Select(id => userService.GetUserByIdAsync(id));
+			var pending = await Task.WhenAll(pendingTasks);
+
+			model.PendingRequests = pending
+				.Where(f => f != null)
+				.Select(f => new FriendViewModel
+				{
+					Id = f!.Id,
+					Name = f.Name,
+					ImageUrl = f.Image
+				})
+				.ToList();
 
 			return model;
 		}
