@@ -30,6 +30,8 @@ public class LoginController : Controller
             claim.Value
         });
 
-        return Json(claims);
+        return RedirectToAction("Index", "Home");
     }
+
+
 }
