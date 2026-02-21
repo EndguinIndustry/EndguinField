@@ -9,10 +9,12 @@ namespace EndguinField.Controllers;
 public class ProfileController : Controller
 {
 	private readonly IUserService _userService;
+	private readonly S3Service _s3Service;
 
-	public ProfileController(IUserService userService)
+	public ProfileController(IUserService userService,S3Service s3Service)
 	{
 		_userService = userService;
+		_s3Service = s3Service;
 	}
 
 	public IActionResult Index()
@@ -23,30 +25,30 @@ public class ProfileController : Controller
 
 	[Route("Profile/{id}")]
 	[Route("Profile/View/{id}")]
-	public async Task<IActionResult> View(string id)
+	public async Task<IActionResult> ViewProfile(string id)
 	{
-	    var user = await _userService.GetUserByIdAsync(id);
-	    if (user == null)
-	    {
-	        return NotFound();
-	    }
+		var user = await _userService.GetUserByIdAsync(id);
+		if (user == null)
+		{
+			return NotFound();
+		}
 
-	    var viewModel = await ProfileViewModel.FromUserAsync(user, _userService);
-	    return View(viewModel);
+		var viewModel = await ProfileViewModel.FromUserAsync(user, _userService);
+		return View(viewModel);
 	}
 
 	[HttpGet]
 	[Route("Profile/Edit/{id}")]
 	public async Task<IActionResult> Edit(string id)
 	{
-    var user = await _userService.GetUserByIdAsync(id);
-    if (user == null)
-    {
-        return NotFound();
-    }
+		var user = await _userService.GetUserByIdAsync(id);
+		if (user == null)
+		{
+			return NotFound();
+		}
 
-    return View(user);
-}
+		return View(user);
+	}
 
 	[HttpPost]
 	[Route("Profile/Edit/{id}")]
@@ -124,5 +126,47 @@ public class ProfileController : Controller
 	public IActionResult Error()
 	{
 		return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+	}
+
+
+	[HttpGet]
+	[Route("Profile/Create")]
+	public async Task<IActionResult> Create()
+	{	
+		return View();
+	}
+
+
+	[HttpPost]
+	[Route("API/User/Create")]
+	public async Task<IActionResult> Create([FromForm] UserUpdateModel userData)
+	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(new { success = false, message = "Invalid data" });
+		}
+
+		try
+		{
+			var newUser = userData.ToUserModel();
+
+			// Upload profile image to S3
+			if (userData.ProfileImageFile != null)
+			{
+				newUser.Image = await _s3Service.UploadFileAsync(userData.ProfileImageFile);
+			}
+
+			await _userService.CreateUserAsync(newUser);
+
+			return Ok(new
+			{
+				success = true,
+				redirectUrl = Url.Action("ViewProfile", "Profile", new { id = newUser.Id })
+			});
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, new { success = false, message = ex.Message });
+		}
 	}
 }
