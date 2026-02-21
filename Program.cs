@@ -32,6 +32,7 @@ builder.Services.AddSingleton<S3Service>();
 builder.Services.AddSingleton<EndguinField.Services.MongoDB.IParticipationMongoService, EndguinField.Services.MongoDB.ParticipationMongoService>();
 builder.Services.AddSingleton<EndguinField.Services.MongoDB.ICommentMongoService, EndguinField.Services.MongoDB.CommentMongoService>();
 builder.Services.AddSingleton<EndguinField.Services.MongoDB.IEventMongoService, EndguinField.Services.MongoDB.EventMongoService>();
+builder.Services.AddSingleton<EndguinField.Services.MongoDB.IUserMongoService, EndguinField.Services.MongoDB.UserMongoService>();
 
 builder.Services.AddSingleton<EndguinField.Services.IUserService, EndguinField.Services.UserService>();
 builder.Services.AddSingleton<EndguinField.Services.ICommentService, EndguinField.Services.CommentService>();

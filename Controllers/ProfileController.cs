@@ -23,29 +23,30 @@ public class ProfileController : Controller
 
 	[Route("Profile/{id}")]
 	[Route("Profile/View/{id}")]
-	public IActionResult ViewProfile(string id)
+	public async Task<IActionResult> View(string id)
 	{
-		var user = _userService.GetUserById(id);
-		if (user == null)
-		{
-			return NotFound();
-		}
-		var viewModel = ProfileViewModel.FromUser(user, _userService);
-		return View(viewModel);
+	    var user = await _userService.GetUserByIdAsync(id);
+	    if (user == null)
+	    {
+	        return NotFound();
+	    }
+
+	    var viewModel = await ProfileViewModel.FromUserAsync(user, _userService);
+	    return View(viewModel);
 	}
 
 	[HttpGet]
 	[Route("Profile/Edit/{id}")]
-	public IActionResult Edit(string id)
+	public async Task<IActionResult> Edit(string id)
 	{
-		var user = _userService.GetUserById(id);
-		if (user == null)
-		{
-			return NotFound();
-		}
+    var user = await _userService.GetUserByIdAsync(id);
+    if (user == null)
+    {
+        return NotFound();
+    }
 
-		return View(user);
-	}
+    return View(user);
+}
 
 	[HttpPost]
 	[Route("Profile/Edit/{id}")]
@@ -65,7 +66,7 @@ public class ProfileController : Controller
 	{
 		try
 		{
-			var user = _userService.GetUserById(id);
+			var user = await _userService.GetUserByIdAsync(id);
 			if (user == null)
 			{
 				return NotFound(new { success = false, message = "User not found" });
