@@ -1,10 +1,10 @@
 # EndguinField (Web App)
 
-เนเธเธฃเน€เธเธเธ•เนเธเธตเนเธเธฑเธ’เธเธฒเธ”เนเธงเธข **ASP.NET Core MVC** เนเธ”เธขเธกเธตเธฃเธฐเธเธเธเธฒเธเธเนเธญเธกเธนเธฅเน€เธเนเธ **MongoDB Atlas** เนเธฅเธฐเนเธเน **Amazon S3** เธชเธณเธซเธฃเธฑเธเธเธฑเธ”เธเธฒเธฃเนเธเธฅเนเธฃเธนเธเธ เธฒเธ/เธชเธทเนเธญเธ•เนเธฒเธเน
+โปรเจกต์นี้พัฒนาด้วย **ASP.NET Core MVC** โดยมีระบบฐานข้อมูลเป็น **MongoDB Atlas** และใช้ **Amazon S3** สำหรับจัดการไฟล์รูปภาพ/สื่อต่างๆ
 
 ---
 
-## ๐  Tech Stack
+## 🛠 Tech Stack
 - **Frontend:** HTML, CSS, JavaScript (Razor Views)
 - **Backend:** ASP.NET Core MVC (C#)
 - **Database:** MongoDB Atlas
@@ -13,48 +13,48 @@
 
 ---
 
-## ๐“ เนเธเธฃเธเธชเธฃเนเธฒเธเนเธเธฃเน€เธเธเธ•เน (Project Structure)
-เธชเธณเธซเธฃเธฑเธเธเธเธ—เธตเนเน€เธเนเธฒเธกเธฒเธ”เธนเนเธเนเธ”เธเธฃเธฑเนเธเนเธฃเธ เนเธเธฃเธเธชเธฃเนเธฒเธเธเธญเธเนเธเธฃเน€เธเธเธ•เนเธเธฐเนเธเนเธเธ•เธฒเธกเธชเธ–เธฒเธเธฑเธ•เธขเธเธฃเธฃเธก MVC (Model-View-Controller) เธ”เธฑเธเธเธตเน:
+## 📂 โครงสร้างโปรเจกต์ (Project Structure)
+สำหรับคนที่เข้ามาดูโค้ดครั้งแรก โครงสร้างของโปรเจกต์จะแบ่งตามสถาปัตยกรรม MVC (Model-View-Controller) ดังนี้:
 
-- **Controllers/**: เธชเนเธงเธเธเธงเธเธเธธเธกเธเธฒเธฃเธ—เธณเธเธฒเธเนเธฅเธฐเธฃเธฑเธ Request เธเธฒเธเธเธนเนเนเธเน (Routing & HTTP Handling)
-  - HomeController.cs: เธเธฑเธ”เธเธฒเธฃเธซเธเนเธฒเนเธฃเธ, เธเธฒเธฃ Login, Privacy
-  - ProfileController.cs: เธเธฑเธ”เธเธฒเธฃเธซเธเนเธฒเนเธเธฃเนเธเธฅเนเธเธนเนเนเธเน
-  - EventDetailController.cs: เธเธฑเธ”เธเธฒเธฃเธซเธเนเธฒเธฃเธฒเธขเธฅเธฐเน€เธญเธตเธขเธ”เธเธญเธเธเธดเธเธเธฃเธฃเธก (Event)
-- **Models/**: เนเธเธฃเธเธชเธฃเนเธฒเธเธเนเธญเธกเธนเธฅ (Schema) เนเธฅเธฐ ViewModels เธ—เธตเนเนเธเนเธชเนเธเธเนเธญเธกเธนเธฅเนเธเธขเธฑเธเธซเธเนเธฒ View
-  - Class/: เธเธฅเธฒเธชเธซเธฅเธฑเธเธเธญเธเธฃเธฐเธเธเธ—เธตเนเนเธกเธเธเธฑเธ Database เน€เธเนเธ User, Event, Comment, FriendRequest, Participation, Tag
-  - ViewModels/: เธเธฅเธฒเธชเธ—เธตเนเธฃเธงเธกเธเนเธญเธกเธนเธฅเธซเธฅเธฒเธขเน เธชเนเธงเธเน€เธเธทเนเธญเธชเนเธเนเธเนเธชเธ”เธเธเธฅเธ—เธตเนเธซเธเนเธฒ View (เน€เธเนเธ EventDetailViewModel, ProfileViewModel)
-- **Services/**: เธชเนเธงเธเธเธฑเธ”เธเธฒเธฃ Business Logic เนเธฅเธฐเธเธฒเธฃเน€เธเธทเนเธญเธกเธ•เนเธญเธ เธฒเธขเธเธญเธ (เนเธขเธเธญเธญเธเธเธฒเธ Controller เน€เธเธทเนเธญเนเธซเนเนเธเนเธ”เธชเธฐเธญเธฒเธ”เนเธฅเธฐเธเธณเนเธเนเธเนเธเนเธณเนเธ”เน)
-  - UserService.cs: เธเธฑเธ”เธเธฒเธฃเธเนเธญเธกเธนเธฅเนเธฅเธฐ Logic เธ—เธตเนเน€เธเธตเนเธขเธงเธเธฑเธเธเธนเนเนเธเน
-  - MongoDB/: เธเธฑเธ”เธเธฒเธฃเธเธฒเธฃเน€เธเธทเนเธญเธกเธ•เนเธญเนเธฅเธฐ Query เธเนเธญเธกเธนเธฅเธเธฒเธ MongoDB (MongoService.cs, TagSchemaServices.cs)
-  - S3/: เธเธฑเธ”เธเธฒเธฃเธเธฒเธฃเธญเธฑเธเนเธซเธฅเธ”/เธ”เธฒเธงเธเนเนเธซเธฅเธ”เนเธเธฅเนเธเธฑเธ Amazon S3 (S3Service.cs)
-- **Views/**: เธซเธเนเธฒเธเธญเนเธชเธ”เธเธเธฅ (UI) เน€เธเธตเธขเธเธ”เนเธงเธข HTML เธเธชเธก C# (Razor .cshtml)
-  - เนเธเนเธเนเธเธฅเน€เธ”เธญเธฃเนเธ•เธฒเธก Controller เน€เธเนเธ Home/, Profile/, EventDetail/
-  - Shared/: เน€เธเนเธ Component เธ—เธตเนเนเธเนเธเนเธณเน เน€เธเนเธ Navbar (_Layout.cshtml), เธเธฒเธฃเนเธ”เธเธดเธเธเธฃเธฃเธก (_EventCard.cshtml), เธฃเธฒเธขเธเธทเนเธญเน€เธเธทเนเธญเธ (_FriendList.cshtml)
-- **wwwroot/**: เน€เธเนเธเนเธเธฅเน Static เน€เธเนเธ CSS, JavaScript, เธฃเธนเธเธ เธฒเธ (Assets) เนเธฅเธฐ Library เธ เธฒเธขเธเธญเธ (Bootstrap, FontAwesome)
-
----
-
-## ๐” Workflow เธเธฒเธฃเธ—เธณเธเธฒเธเธเธญเธเธฃเธฐเธเธ (Data Flow)
-เน€เธกเธทเนเธญเธเธนเนเนเธเนเน€เธเนเธฒเธกเธฒเนเธเนเธเธฒเธเธฃเธฐเธเธ เธเธฒเธฃเธ—เธณเธเธฒเธเธเธฐเน€เธเนเธเนเธเธ•เธฒเธกเธฅเธณเธ”เธฑเธเธเธตเน:
-1. **Client (Browser)** เธชเนเธ Request เธกเธฒเธ—เธตเน URL (เน€เธเนเธ /Profile/Index)
-2. **Controller** (ProfileController) เธฃเธฑเธ Request เนเธฅเธฐเธ•เธฃเธงเธเธชเธญเธเธชเธดเธ—เธเธดเน/เธเนเธญเธกเธนเธฅเน€เธเธทเนเธญเธเธ•เนเธ
-3. **Controller** เน€เธฃเธตเธขเธเนเธเนเธเธฒเธ **Service** (UserService, MongoService) เน€เธเธทเนเธญเธ”เธถเธเธเนเธญเธกเธนเธฅเธเธฒเธ **MongoDB** เธซเธฃเธทเธญเนเธเธฅเนเธเธฒเธ **S3**
-4. **Service** เธ—เธณเธเธฒเธฃเธเธฃเธฐเธกเธงเธฅเธเธฅ Business Logic เนเธฅเธฐเธชเนเธเธเนเธญเธกเธนเธฅเธเธฅเธฑเธเธกเธฒเนเธซเน **Controller**
-5. **Controller** เธเธณเธเนเธญเธกเธนเธฅเนเธเนเธชเนเนเธ **ViewModel** (ProfileViewModel) เนเธฅเธฐเธชเนเธเธ•เนเธญเนเธเธ—เธตเน **View**
-6. **View** (Views/Profile/Index.cshtml) เธเธณเธเนเธญเธกเธนเธฅเนเธ Render เน€เธเนเธ HTML เนเธฅเธฐเธชเนเธเธเธฅเธฑเธเนเธเนเธชเธ”เธเธเธฅเธ—เธตเน Browser
+- **`Controllers/`**: ส่วนควบคุมการทำงานและรับ Request จากผู้ใช้ (Routing & HTTP Handling)
+  - `HomeController.cs`: จัดการหน้าแรก, การ Login, Privacy
+  - `ProfileController.cs`: จัดการหน้าโปรไฟล์ผู้ใช้
+  - `EventDetailController.cs`: จัดการหน้ารายละเอียดของกิจกรรม (Event)
+- **`Models/`**: โครงสร้างข้อมูล (Schema) และ ViewModels ที่ใช้ส่งข้อมูลไปยังหน้า View
+  - `Class/`: คลาสหลักของระบบที่แมปกับ Database เช่น `User`, `Event`, `Comment`, `FriendRequest`, `Participation`, `Tag`
+  - `ViewModels/`: คลาสที่รวมข้อมูลหลายๆ ส่วนเพื่อส่งไปแสดงผลที่หน้า View (เช่น `EventDetailViewModel`, `ProfileViewModel`)
+- **`Services/`**: ส่วนจัดการ Business Logic และการเชื่อมต่อภายนอก (แยกออกจาก Controller เพื่อให้โค้ดสะอาดและนำไปใช้ซ้ำได้)
+  - `UserService.cs`: จัดการข้อมูลและ Logic ที่เกี่ยวกับผู้ใช้
+  - `MongoDB/`: จัดการการเชื่อมต่อและ Query ข้อมูลจาก MongoDB (`MongoService.cs`, `TagSchemaServices.cs`)
+  - `S3/`: จัดการการอัปโหลด/ดาวน์โหลดไฟล์กับ Amazon S3 (`S3Service.cs`)
+- **`Views/`**: หน้าจอแสดงผล (UI) เขียนด้วย HTML ผสม C# (Razor `.cshtml`)
+  - แบ่งโฟลเดอร์ตาม Controller เช่น `Home/`, `Profile/`, `EventDetail/`
+  - `Shared/`: เก็บ Component ที่ใช้ซ้ำๆ เช่น Navbar (`_Layout.cshtml`), การ์ดกิจกรรม (`_EventCard.cshtml`), รายชื่อเพื่อน (`_FriendList.cshtml`)
+- **`wwwroot/`**: เก็บไฟล์ Static เช่น CSS, JavaScript, รูปภาพ (Assets) และ Library ภายนอก (Bootstrap, FontAwesome)
 
 ---
 
-## ๐€ เธเธฒเธฃเธ•เธดเธ”เธ•เธฑเนเธเนเธฅเธฐเธฃเธฑเธเนเธเธฃเน€เธเธเธ•เน (เธชเธณเธซเธฃเธฑเธ Developer)
+## 🔄 Workflow การทำงานของระบบ (Data Flow)
+เมื่อผู้ใช้เข้ามาใช้งานระบบ การทำงานจะเป็นไปตามลำดับนี้:
+1. **Client (Browser)** ส่ง Request มาที่ URL (เช่น `/Profile/Index`)
+2. **Controller** (`ProfileController`) รับ Request และตรวจสอบสิทธิ์/ข้อมูลเบื้องต้น
+3. **Controller** เรียกใช้งาน **Service** (`UserService`, `MongoService`) เพื่อดึงข้อมูลจาก **MongoDB** หรือไฟล์จาก **S3**
+4. **Service** ทำการประมวลผล Business Logic และส่งข้อมูลกลับมาให้ **Controller**
+5. **Controller** นำข้อมูลไปใส่ใน **ViewModel** (`ProfileViewModel`) และส่งต่อไปที่ **View**
+6. **View** (`Views/Profile/Index.cshtml`) นำข้อมูลไป Render เป็น HTML และส่งกลับไปแสดงผลที่ Browser
 
-### 1. เธชเธดเนเธเธ—เธตเนเธ•เนเธญเธเธกเธต (Prerequisites)
-- เธ•เธดเธ”เธ•เธฑเนเธ [.NET SDK](https://dotnet.microsoft.com/en-us/download)
-- เธเนเธญเธกเธนเธฅเธเธฒเธฃเน€เธเธทเนเธญเธกเธ•เนเธญ MongoDB (Connection String)
-- เธเนเธญเธกเธนเธฅเธเธฒเธฃเน€เธเธทเนเธญเธกเธ•เนเธญ Amazon S3 (Access Key, Secret Key, Bucket Name)
+---
 
-### 2. เธเธฒเธฃเธ•เธฑเนเธเธเนเธฒ Environment
-เนเธเธฃเน€เธเธเธ•เนเธเธตเนเธ•เนเธญเธเธเธฒเธฃเนเธเธฅเนเธ•เธฑเนเธเธเนเธฒ (Environment Variables) เธ•เธดเธ”เธ•เนเธญเธ—เธตเธก (xSistted) เน€เธเธทเนเธญเธเธญเนเธเธฅเน .env เธซเธฃเธทเธญเธ•เธฑเนเธเธเนเธฒเนเธ ppsettings.Development.json เธ”เธฑเธเธเธตเน:
-`json
+## 🚀 การติดตั้งและรันโปรเจกต์ (สำหรับ Developer)
+
+### 1. สิ่งที่ต้องมี (Prerequisites)
+- ติดตั้ง [.NET SDK](https://dotnet.microsoft.com/en-us/download)
+- ข้อมูลการเชื่อมต่อ MongoDB (Connection String)
+- ข้อมูลการเชื่อมต่อ Amazon S3 (Access Key, Secret Key, Bucket Name)
+
+### 2. การตั้งค่า Environment
+โปรเจกต์นี้ต้องการไฟล์ตั้งค่า (Environment Variables) ติดต่อทีม (xSistted) เพื่อขอไฟล์ `.env` หรือตั้งค่าใน `appsettings.Development.json` ดังนี้:
+```json
 {
   "MongoDbSettings": {
     "ConnectionString": "mongodb+srv://<username>:<password>@cluster.mongodb.net/",
@@ -66,36 +66,36 @@
     "BucketName": "YOUR_BUCKET_NAME"
   }
 }
-`
+```
 
-### 3. เธเธฒเธฃเธฃเธฑเธเนเธเธฃเน€เธเธเธ•เน (Development)
-เน€เธเธดเธ” Terminal เนเธเนเธเธฅเน€เธ”เธญเธฃเนเนเธเธฃเน€เธเธเธ•เนเนเธฅเนเธงเธฃเธฑเธเธเธณเธชเธฑเนเธ:
-`ash
-# เธ•เธดเธ”เธ•เธฑเนเธ Dependencies
+### 3. การรันโปรเจกต์ (Development)
+เปิด Terminal ในโฟลเดอร์โปรเจกต์แล้วรันคำสั่ง:
+```bash
+# ติดตั้ง Dependencies
 dotnet restore
 
-# เธฃเธฑเธเนเธเธฃเน€เธเธเธ•เนเนเธเธ Hot Reload (เนเธเนเนเธเนเธ”เนเธฅเนเธงเน€เธงเนเธเธญเธฑเธเน€เธ”เธ•เธ—เธฑเธเธ—เธต)
+# รันโปรเจกต์แบบ Hot Reload (แก้โค้ดแล้วเว็บอัปเดตทันที)
 dotnet watch
-`
+```
 
 ---
 
-## ๐ณ เธเธฒเธฃ Deploy เธ”เนเธงเธข Docker (Production)
-เนเธเธฃเน€เธเธเธ•เนเธเธตเนเธฃเธญเธเธฃเธฑเธเธเธฒเธฃ Deploy เธเนเธฒเธ Docker เธฃเนเธงเธกเธเธฑเธ Nginx Proxy Manager (NPM) เนเธฅเธฐ Cloudflare
+## 🐳 การ Deploy ด้วย Docker (Production)
+โปรเจกต์นี้รองรับการ Deploy ผ่าน Docker ร่วมกับ Nginx Proxy Manager (NPM) และ Cloudflare
 
-1. เธชเธฃเนเธฒเธ Docker Network (เนเธซเนเธ•เธฃเธเธเธฑเธเธ—เธตเน NPM เนเธเน):
-   `ash
+1. สร้าง Docker Network (ให้ตรงกับที่ NPM ใช้):
+   ```bash
    docker network create proxy-net
-   `
-2. Build เนเธฅเธฐ Run Container:
-   `ash
+   ```
+2. Build และ Run Container:
+   ```bash
    docker-compose up -d --build
-   `
-   *(เนเธญเธเธเธฐเธฃเธฑเธเธ—เธตเนเธเธญเธฃเนเธ• 8080 เธ เธฒเธขเนเธ Container)*
-3. เธ•เธฑเนเธเธเนเธฒ **Nginx Proxy Manager**:
-   - Domain: yourdomain.com
-   - Forward Hostname: endguinfield
-   - Forward Port: 8080
-   - เน€เธเธดเธ”เนเธเนเธเธฒเธ SSL (Let's Encrypt)
-4. เธ•เธฑเนเธเธเนเธฒ **Cloudflare DNS**:
-   - เธเธตเน A Record เนเธเธ—เธตเน IP เธเธญเธ Server
+   ```
+   *(แอปจะรันที่พอร์ต `8080` ภายใน Container)*
+3. ตั้งค่า **Nginx Proxy Manager**:
+   - Domain: `yourdomain.com`
+   - Forward Hostname: `endguinfield`
+   - Forward Port: `8080`
+   - เปิดใช้งาน SSL (Let's Encrypt)
+4. ตั้งค่า **Cloudflare DNS**:
+   - ชี้ A Record ไปที่ IP ของ Server
