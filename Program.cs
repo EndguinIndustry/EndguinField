@@ -14,6 +14,7 @@ builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("Mo
 builder.Services.AddSingleton<EndguinField.Services.IUserService, EndguinField.Services.UserService>();
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSingleton<S3Service>();
+builder.Services.AddScoped<ITagSchemaServices, TagSchemaServices>();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
