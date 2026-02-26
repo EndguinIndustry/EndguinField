@@ -36,7 +36,7 @@ public class TagSchemaServices : ITagSchemaServices
 
     public async Task<TagModel> CreateAsync(TagModel data, CancellationToken ct = default)
     {
-        data.Id = null;
+        if (string.IsNullOrEmpty(data.Id)) data.Id = Guid.NewGuid().ToString();
         await _collection.InsertOneAsync(data, cancellationToken: ct);
         return data;
     }

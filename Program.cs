@@ -15,6 +15,7 @@ builder.Services.AddSingleton<EndguinField.Services.IUserService, EndguinField.S
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSingleton<S3Service>();
 builder.Services.AddScoped<ITagSchemaServices, TagSchemaServices>();
+builder.Services.AddScoped<ICommentSchemaServices, CommentSchemaServices>();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
