@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Principal
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -52,6 +53,13 @@
         </main>
     </div>
 
+    <footer>
+        &copy; 2026 - EndguinField - <a href="/privacy" style="color: #8A2BE2; text-decoration: none;">Privacy</a>
+    </footer>
+
+    <partial name="Components/_Modal" />
+    <script src="~/js/slideCapsule.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/modal.js" asp-append-version="true"></script>
 </body>
 
 </html>

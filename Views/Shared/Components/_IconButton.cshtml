@@ -1,0 +1,10 @@
+@model EndguinField.Models.ViewModels.IconButtonViewModel
+
+<button id="@Model.Id"
+        class="icon-button @Model.AdditionalClasses"
+        type="button"
+        title="@Model.Title"
+        onclick="@Model.OnClick"
+        @(Model.Disabled ? "disabled" : "")>
+    <img src="@Model.IconPath" alt="@Model.AltText" class="icon" asp-append-version="true" />
+</button>

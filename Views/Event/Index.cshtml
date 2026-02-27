@@ -1,0 +1,69 @@
+@model EventViewModel
+
+<div id="event-detail-view" class="event-detail-container" data-event-id="@Model.Id"
+	 data-is-create-mode="@Json.Serialize(Model.IsCreateMode)" data-background-image="@Model.BackgroundImage"
+	 data-status="@Model.Status">
+	<partial name="_Header" model="Model" />
+
+	<div class="event-layout-grid">
+
+		<div class="event-main-content">
+			<div class="edit-mode-only">
+				<button id="editBackgroundBtn" class="btn edit-background-btn" type="button"
+						title="Change Background Image">
+					<img src="~/assets/icons/image-edit.svg" alt="Edit Background" class="icon"
+						 style="width: 24px; height: 24px;" asp-append-version="true" />
+					Change Background Image
+				</button>
+				<input type="file" id="backgroundImageInput" accept="image/*" style="display: none;" />
+			</div>
+			<partial name="_ImageSlide" model="Model" />
+			<div id="participants-section-wrapper" class="view-mode-only">
+				<partial name="_Participants" model="Model" />
+			</div>
+		</div>
+
+		<div class="event-side-content">
+			<div id="eventStatus" class="view-mode-only event-status @Model.Status.ToLower()">@Model.Status</div>
+
+			<div class="event-actions-wrapper">
+				<partial name="_DetailsSection" model="Model" />
+				<partial name="_CommentsSection" model="Model" />
+			</div>
+
+			@if (Model.IsCreateMode)
+			{
+				<button class="btn btn-primary create-event-submit-btn" type="button">Create Event</button>
+			}
+			else if (Model.IsOwner)
+			{
+				<button class="edit-mode-only btn btn-danger delete-event-btn" type="button">
+					<img src="~/assets/icons/delete.svg" alt="Delete" class="icon-white icon" asp-append-version="true" />
+					Delete Event
+				</button>
+			}
+			else if (Model.UserStatus == "Pending")
+			{
+				<button class="btn btn-secondary" type="button" disabled>Requested</button>
+			}
+			else if (Model.UserStatus == "Accepted")
+			{
+				<button class="btn btn-primary" type="button" disabled>Joined</button>
+			}
+			else if (Model.UserStatus == "Rejected")
+			{
+				<button class="btn btn-danger" type="button" disabled>Request Rejected</button>
+			}
+			else
+			{
+				<button class="btn btn-success join-event-btn" type="button">Join Event</button>
+			}
+		</div>
+	</div>
+</div>
+
+<div class="background-container">
+	<img id="backgroundImage" class="event-background" src="@Model.BackgroundImage" alt="Background" />
+</div>
+
+<script type="module" src="~/js/Event/Index.js" asp-append-version="true"></script>

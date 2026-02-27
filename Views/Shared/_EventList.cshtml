@@ -1,0 +1,37 @@
+@model EndguinField.Models.ProfileViewModel
+
+<style>
+    div.event-list-section {
+        width: 100%;
+        padding: 1vw;
+        border-style: solid;
+        border-color: lightgray;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    div.event-list {
+        height: 50vw;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        row-gap: 1vw;
+        padding-bottom: 5px;
+    }
+
+    h2.event-list-title {
+        font-size: 1.5vw;
+    }
+</style>
+
+<div class="event-list-section">
+    <div class="event-list">
+        <partial name="_EventCard" model="Model" />
+        <partial name="_EventCard" model="Model" />
+        <partial name="_EventCard" model="Model" />
+        <partial name="_EventCard" model="Model" />
+        <partial name="_EventCard" model="Model" />
+        <partial name="_EventCard" model="Model" />
+        <partial name="_EventCard" model="Model" />
+    </div>
+</div>
