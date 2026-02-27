@@ -1,0 +1,27 @@
+@model EndguinField.Models.Comment
+
+@{
+    ViewData["Title"] = "Comment Details";
+}
+
+<div class="container mt-4">
+    <h2>Comment Details</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-2"><strong>Id:</strong> <small class="text-muted">@Model?.Id</small></div>
+            <div class="mb-2"><strong>Content:</strong>
+                <div>@Model?.Content</div>
+            </div>
+            <div class="mb-2"><strong>SenderId:</strong> @Model?.SenderId</div>
+            <div class="mb-2"><strong>RepliedMessageId:</strong> @Model?.RepliedMessageId</div>
+            <div class="mb-2"><strong>TimeStamp:</strong> @Model?.TimeStamp.ToLocalTime().ToString("g")</div>
+
+            <div class="d-flex gap-2 mt-3">
+                <a href="@Url.Action("Edit", new { id = Model?.Id })" class="btn btn-warning">Edit</a>
+                <a href="@Url.Action("Delete", new { id = Model?.Id })" class="btn btn-danger">Delete</a>
+                <a href="@Url.Action("Index")" class="btn btn-secondary">Back</a>
+            </div>
+        </div>
+    </div>
+</div>

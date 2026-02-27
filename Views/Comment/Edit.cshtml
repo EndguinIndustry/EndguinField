@@ -1,0 +1,45 @@
+@model EndguinField.Models.Comment
+
+@{
+    ViewData["Title"] = "Edit Comment";
+}
+
+<div class="container mt-4">
+    <h2>Edit Comment</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <form asp-action="Edit" asp-route-id="@Model?.Id" method="post">
+        <input asp-for="Id" type="hidden" />
+
+        <div class="mb-3">
+            <label class="form-label">Content</label>
+            <textarea asp-for="Content" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">SenderId</label>
+            <input asp-for="SenderId" class="form-control" />
+            <span asp-validation-for="SenderId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">RepliedMessageId (optional)</label>
+            <input asp-for="RepliedMessageId" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">TimeStamp</label>
+            <input asp-for="TimeStamp" class="form-control" />
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-warning">Save</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>

@@ -23,7 +23,26 @@
                 <i class="fa-solid fa-filter"></i>
             </div>
             <div class="profile-section">
-                <img src="~/asset/profile.svg" alt="Profile Illustration" width="50px" />
+                @if (ViewBag.CurrentUser != null)
+                {
+                    <a href="/Profile/@ViewBag.CurrentUser.Id" title="@ViewBag.CurrentUser.Name">
+                        @if (!string.IsNullOrEmpty(ViewBag.CurrentUser.Image))
+                        {
+                            <img src="@ViewBag.CurrentUser.Image" alt="@ViewBag.CurrentUser.Name" width="50px"
+                                 style="border-radius: 50%; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <img src="~/asset/profile.svg" alt="Profile Illustration" width="50px" />
+                        }
+                    </a>
+                }
+                else
+                {
+                    <a href="/Home/Login">
+                        <button class="login">LOGIN</button>
+                    </a>
+                }
             </div>
         </nav>
     </header>
