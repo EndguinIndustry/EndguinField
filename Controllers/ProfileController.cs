@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using EndguinField.Models;
 using EndguinField.Models.ViewModels;
@@ -19,7 +20,12 @@ public class ProfileController : Controller
 
 	public IActionResult Index()
 	{
-		string currentUserId = "1";
+		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		if (string.IsNullOrWhiteSpace(currentUserId))
+		{
+			return RedirectToAction("Index", "Login");
+		}
+
 		return RedirectToAction("ViewProfile", new { id = currentUserId });
 	}
 
