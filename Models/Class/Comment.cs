@@ -1,23 +1,19 @@
-using EndguinField.Models.ViewModels;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace EndguinField.Models;
 
 public class Comment
 {
+	[BsonId]
+	[BsonRepresentation(BsonType.String)]
 	public string Id { get; set; } = string.Empty;
-	public string SenderId { get; set; } = string.Empty;
-	public string? RepliedMessageId { get; set; }
-	public DateTime TimeStamp { get; set; }
+
 	public string Content { get; set; } = string.Empty;
 
-	public CommentViewModel ToViewModel(UserSummaryViewModel sender)
-	{
-		return new CommentViewModel
-		{
-			Id = Id,
-			Content = Content,
-			TimeStamp = TimeStamp,
-			RepliedMessageId = RepliedMessageId,
-			Sender = sender ?? new UserSummaryViewModel { Id = SenderId, Name = "Unknown" }
-		};
-	}
+	public DateTime TimeStamp { get; set; }
+
+	public string SenderId { get; set; } = string.Empty;
+
+	public string? RepliedMessageId { get; set; }
 }

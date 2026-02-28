@@ -29,6 +29,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddSingleton<S3Service>();
+builder.Services.AddScoped<ITagSchemaServices, TagSchemaServices>();
+builder.Services.AddScoped<ICommentSchemaServices, CommentSchemaServices>();
 
 builder.Services.AddSingleton<EndguinField.Services.MongoDB.IParticipationMongoService, EndguinField.Services.MongoDB.ParticipationMongoService>();
 builder.Services.AddSingleton<EndguinField.Services.MongoDB.ICommentMongoService, EndguinField.Services.MongoDB.CommentMongoService>();
