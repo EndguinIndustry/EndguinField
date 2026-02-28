@@ -49,6 +49,13 @@
                         </svg>
                         @Model.Contact
                     </span>
+                    <span class="detail-item" id="genderDisplay">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="7" r="4"></circle>
+                            <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
+                        </svg>
+                        @(string.IsNullOrWhiteSpace(Model.Gender) ? "Not specified" : Model.Gender)
+                    </span>
                 </div>
             </div>
             <button class="edit-button" onclick="toggleEditMode(true)">
@@ -129,6 +136,17 @@
                     <div class="form-group">
                         <label for="contactInput">Contact :</label>
                         <input type="text" id="contactInput" class="form-input" value="@Model.Contact">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="genderInput">Gender :</label>
+                        <select id="genderInput" class="form-input">
+                            <option value="" selected="@(string.IsNullOrWhiteSpace(Model.Gender))">Prefer not to say</option>
+                            <option value="Male" selected="@(Model.Gender == "Male")">Male</option>
+                            <option value="Female" selected="@(Model.Gender == "Female")">Female</option>
+                            <option value="Non-binary" selected="@(Model.Gender == "Non-binary")">Non-binary</option>
+                            <option value="Other" selected="@(Model.Gender == "Other")">Other</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">
