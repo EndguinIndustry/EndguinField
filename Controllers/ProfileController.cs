@@ -40,6 +40,11 @@ public class ProfileController : Controller
 		}
 
 		var viewModel = await ProfileViewModel.FromUserAsync(user, _userService);
+		
+		// Check if this is the current user's own profile
+		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		viewModel.IsOwnProfile = !string.IsNullOrWhiteSpace(currentUserId) && currentUserId == id;
+		
 		return View(viewModel);
 	}
 

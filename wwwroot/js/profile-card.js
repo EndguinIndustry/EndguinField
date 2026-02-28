@@ -243,3 +243,10 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Placeholder function for add friend functionality
+function addFriend(userId) {
+    console.log('Add friend functionality not yet implemented for user:', userId);
+    showNotification('Add friend feature coming soon!', 'success');
+    //fighting na Peam!
+}
