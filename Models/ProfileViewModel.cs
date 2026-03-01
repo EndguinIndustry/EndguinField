@@ -27,6 +27,7 @@ namespace EndguinField.Models
 		public string? Bio { get; set; }
 		public string? ImageUrl { get; set; }
 		public string? Contact { get; set; }
+		public string? Gender { get; set; }
 		public string JoinedDate { get; set; } = string.Empty;
 		public List<string> FriendIds { get; set; } = new();
 		public List<FriendViewModel> Friends { get; set; } = new();
@@ -35,6 +36,7 @@ namespace EndguinField.Models
 		public DateTime? BanUntil { get; set; }
 		public List<string> PendingFriendRequestIds { get; set; } = new();
 		public List<FriendViewModel> PendingRequests { get; set; } = new();
+		public bool IsOwnProfile { get; set; }
 
 		public static async Task<ProfileViewModel> FromUserAsync(User user, IUserService userService)
 		{
@@ -48,6 +50,7 @@ namespace EndguinField.Models
 				Bio = user.Bio,
 				ImageUrl = user.Image,
 				Contact = user.Contact,
+				Gender = user.Gender,
 				JoinedDate = user.JoinWhen.ToString("dd-MM-yyyy", new CultureInfo("en-US")),
 
 				FriendIds = user.Friends ?? new List<string>(),
@@ -102,6 +105,7 @@ namespace EndguinField.Models
         public string Role { get; set; } = "User";
         public string? Bio { get; set; }
         public string? Contact { get; set; }
+		public string? Gender { get; set; }
 
         public IFormFile? ProfileImageFile { get; set; }
 
@@ -115,6 +119,7 @@ namespace EndguinField.Models
                 Role = Role,
                 Bio = Bio,
                 Contact = Contact,
+				Gender = Gender,
                 JoinWhen = DateTime.UtcNow,
                 Friends = new(),
                 BlockLists = new(),
@@ -130,5 +135,6 @@ namespace EndguinField.Models
 		public string Name { get; set; } = string.Empty;
 		public string? Contact { get; set; }
 		public string? Bio { get; set; }
+		public string? Gender { get; set; }
 	}
 }

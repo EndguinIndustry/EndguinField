@@ -9,21 +9,17 @@ namespace EndguinField.Services
         Task<User?> GetUserByIdAsync(string id);
         Task<List<User>> GetAllUsersAsync();
 		Task<(bool success, string? error)> CreateUserAsync(User userData);
+			Task<(bool success, string? error)> UpdateUserAsync(string id, User userData);
+			Task<(bool success, string? error)> DeleteUserAsync(string id);
     }
 
 	public class UserService : IUserService
 	{
-		private static List<User> _users = new();
 		private readonly IUserMongoService _userStore;
 
 		public UserService(IUserMongoService userStore)
 		{
-			if (_users.Count == 0)
-			{
-				InitializeMockData();
-			}
 			_userStore = userStore;
-
 		}
 
 		public async  Task<User?> GetUserByIdAsync(string id)
@@ -38,10 +34,21 @@ namespace EndguinField.Services
 
 		public async Task<(bool success, string? error)> CreateUserAsync(User userData)
 	{
-		if (userData.Email == null || userData.Name == null || userData.Role == null)
+			if (string.IsNullOrWhiteSpace(userData.Id))
+			{
+				userData.Id = Guid.NewGuid().ToString();
+			}
+
+			if (string.IsNullOrWhiteSpace(userData.Email) || string.IsNullOrWhiteSpace(userData.Name) || string.IsNullOrWhiteSpace(userData.Role))
 		{
 			return (false, "Email, Name, and role are required");
 		}
+
+			var existingUser = await _userStore.GetByIdAsync(userData.Id);
+			if (existingUser != null)
+			{
+				return (false, "User id already exists");
+			}
 
 
 		await _userStore.CreateAsync(userData);
@@ -49,86 +56,34 @@ namespace EndguinField.Services
 		return (true, null);
 	}
 
-		private void InitializeMockData()
+			public async Task<(bool success, string? error)> UpdateUserAsync(string id, User userData)
 		{
-			// _users = new List<User>
-			//    {
-			// 	   new User
-			// 	   {
-			// 		   Id = "1",
-			// 		   Email = "chen.qianyu@endguin.com",
-			// 		   Name = "Chen Qianyu",
-			// 		   Role = "Admin",
-			// 		   Bio = "EndguinField is a platform for writing and dancing with Chen. And I am user number 1 of EndguinField.",
-			// 		   Image = "https://preview.redd.it/the-origin-of-chen-sticker-v0-aulsmkoceg0g1.png?width=300&format=png&auto=webp&s=9578b04c0a2fa42f1472ed9bb29b07651ee5effd",
-			// 		   Contact = "+1234567890",
-			// 		   JoinWhen = new DateTime(2026, 2, 14),
-			// 		   Friends = new List<string> {"2","3","4","5"},
-			// 		   Enrolls = new List<string>(),
-			// 		   FriendRequests = new List<string>{},
-			// 		   BanUntil = null
-			// 	   },
-			// 	   new User
-			// 	   {
-			// 		   Id = "2",
-			// 		   Email = "ayaka.kamisato@inazuma.com",
-			// 		   Name = "Ayaka Kamisato",
-			// 		   Role = "User",
-			// 		   Bio = "Close your eyes and face the wind... It feels wonderful, doesn't it?",
-			// 		   Image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNI8DM4P98gl2Q9AAhD6XlQKS0oaxKsVcJ0w&s",
-			// 		   Contact = "+0987654321",
-			// 		   JoinWhen = new DateTime(2026, 1, 15),
-			// 		   Friends = new List<string> {"1"},
-			// 		   Enrolls = new List<string>(),
-			// 		   FriendRequests = new List<string>(),
-			// 		   BanUntil = null
-			// 	   },
-			// 	   new User
-			// 	   {
-			// 		   Id = "3",
-			// 		   Email = "raiden.shogun@inazuma.com",
-			// 		   Name = "Raiden Shogun",
-			// 		   Role = "Moderator",
-			// 		   Bio = "Eternity is the only truth in this world.",
-			// 		   Image = "https://pbs.twimg.com/media/E9wglivVEAgUV8r.jpg",
-			// 		   Contact = "+1122334455",
-			// 		   JoinWhen = new DateTime(2026, 1, 15),
-			// 		   Friends = new List<string> {"1"},
-			// 		   Enrolls = new List<string>(),
-			// 		   FriendRequests = new List<string>(),
-			// 		   BanUntil = null
-			// 	   },
-			// 	   new User
-			// 	   {
-			// 		   Id = "4",
-			// 		   Email = "yoimiya@inazuma.com",
-			// 		   Name = "Yoimiya Naganohara",
-			// 		   Role = "User",
-			// 		   Bio = "Let's light up the sky with fireworks!",
-			// 		   Image = "https://media.tenor.com/nfYv2UZADtgAAAAe/genshin-yoimiya.png",
-			// 		   Contact = "+5566778899",
-			// 		   JoinWhen = new DateTime(2026, 1, 15),
-			// 		   Friends = new List<string> {"1"},
-			// 		   Enrolls = new List<string>(),
-			// 		   FriendRequests = new List<string>(),
-			// 		   BanUntil = null
-			// 	   },
-			// 	   new User
-			// 	   {
-			// 		   Id = "5",
-			// 		   Email = "kazuha@inazuma.com",
-			// 		   Name = "Kaedehara Kazuha",
-			// 		   Role = "User",
-			// 		   Bio = "Come driving rain or winds that churn, I shall return, by blade alone.",
-			// 		   Image = "https://i.redd.it/59gd146dye3b1.jpg",
-			// 		   Contact = "+9988776655",
-			// 		   JoinWhen = new DateTime(2025, 11, 15),
-			// 		   Friends = new List<string> {"1"},
-			// 		   Enrolls = new List<string>(),
-			// 		   FriendRequests = new List<string>(),
-			// 		   BanUntil = new DateTime(2026, 3, 1)
-			// 	   }
-			//    };
+				var existingUser = await _userStore.GetByIdAsync(id);
+				if (existingUser == null)
+				{
+					return (false, "User not found");
+				}
+
+				if (string.IsNullOrWhiteSpace(userData.Email) || string.IsNullOrWhiteSpace(userData.Name) || string.IsNullOrWhiteSpace(userData.Role))
+				{
+					return (false, "Email, Name, and role are required");
+				}
+
+				userData.Id = id;
+				await _userStore.UpdateAsync(id, userData);
+				return (true, null);
 		}
+
+			public async Task<(bool success, string? error)> DeleteUserAsync(string id)
+			{
+				var existingUser = await _userStore.GetByIdAsync(id);
+				if (existingUser == null)
+				{
+					return (false, "User not found");
+				}
+
+				await _userStore.DeleteAsync(id);
+				return (true, null);
+			}
 	}
 }

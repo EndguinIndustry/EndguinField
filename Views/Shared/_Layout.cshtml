@@ -1,4 +1,6 @@
 ﻿@using System.Security.Principal
+@using System.Security.Claims
+@inject EndguinField.Services.IUserService UserService
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +15,21 @@
 </head>
 
 <body>
+    @{
+        var profileImageUrl = Url.Content("~/asset/profile.svg");
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrWhiteSpace(currentUserId))
+            {
+                var currentUser = await UserService.GetUserByIdAsync(currentUserId);
+                if (!string.IsNullOrWhiteSpace(currentUser?.Image))
+                {
+                    profileImageUrl = currentUser.Image;
+                }
+            }
+        }
+    }
     <header>
         <nav class="navbar-custom">
             <a class="navbar-brand" href="/">EndguinField</a>
@@ -23,25 +40,25 @@
                 <i class="fa-solid fa-filter"></i>
             </div>
             <div class="profile-section">
-                @if (ViewBag.CurrentUser != null)
+                @if (User.Identity?.IsAuthenticated == true)
                 {
-                    <a href="/Profile/@ViewBag.CurrentUser.Id" title="@ViewBag.CurrentUser.Name">
-                        @if (!string.IsNullOrEmpty(ViewBag.CurrentUser.Image))
-                        {
-                            <img src="@ViewBag.CurrentUser.Image" alt="@ViewBag.CurrentUser.Name" width="50px"
-                                 style="border-radius: 50%; object-fit: cover;" />
-                        }
-                        else
-                        {
-                            <img src="~/asset/profile.svg" alt="Profile Illustration" width="50px" />
-                        }
-                    </a>
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    <details class="profile-menu">
+                        <summary class="profile-menu-trigger">
+                            <img src="@profileImageUrl" alt="Profile" width="50px" />
+                        </summary>
+                        <div class="profile-menu-content">
+                            <a href="/Profile" class="profile-menu-item">Profile</a>
+                            <form asp-controller="Login" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="profile-menu-item profile-menu-button">Logout</button>
+                            </form>
+                        </div>
+                    </details>
                 }
                 else
                 {
-                    <a href="/Home/Login">
-                        <button class="login">LOGIN</button>
-                    </a>
+                    <a href="/Login" class="profile-login-link">Login</a>
                 }
             </div>
         </nav>
@@ -60,6 +77,26 @@
     <partial name="Components/_Modal" />
     <script src="~/js/slideCapsule.js" asp-append-version="true"></script>
     <script type="module" src="~/js/modal.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileMenu = document.querySelector('.profile-menu');
+            if (!profileMenu) {
+                return;
+            }
+
+            document.addEventListener('click', function (event) {
+                if (!profileMenu.contains(event.target)) {
+                    profileMenu.removeAttribute('open');
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    profileMenu.removeAttribute('open');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

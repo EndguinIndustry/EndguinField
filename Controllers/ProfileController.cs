@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using EndguinField.Models;
 using EndguinField.Models.ViewModels;
@@ -19,7 +20,12 @@ public class ProfileController : Controller
 
 	public IActionResult Index()
 	{
-		string currentUserId = "1";
+		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		if (string.IsNullOrWhiteSpace(currentUserId))
+		{
+			return RedirectToAction("Index", "Login");
+		}
+
 		return RedirectToAction("ViewProfile", new { id = currentUserId });
 	}
 
@@ -34,6 +40,11 @@ public class ProfileController : Controller
 		}
 
 		var viewModel = await ProfileViewModel.FromUserAsync(user, _userService);
+		
+		// Check if this is the current user's own profile
+		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+		viewModel.IsOwnProfile = !string.IsNullOrWhiteSpace(currentUserId) && currentUserId == id;
+		
 		return View(viewModel);
 	}
 
@@ -52,10 +63,17 @@ public class ProfileController : Controller
 
 	[HttpPost]
 	[Route("Profile/Edit/{id}")]
-	public IActionResult Edit(string id, User updatedUser)
+	public async Task<IActionResult> Edit(string id, User updatedUser)
 	{
 		if (!ModelState.IsValid)
 		{
+			return View(updatedUser);
+		}
+
+		var (success, error) = await _userService.UpdateUserAsync(id, updatedUser);
+		if (!success)
+		{
+			ModelState.AddModelError(string.Empty, error ?? "Failed to update user");
 			return View(updatedUser);
 		}
 
@@ -64,6 +82,7 @@ public class ProfileController : Controller
 
 	[HttpPost]
 	[Route("Profile/Update/{id}")]
+	[Route("API/User/Update/{id}")]
 	public async Task<IActionResult> Update(string id, [FromForm] UpdateProfileDTO dto, IFormFile? imageFile)
 	{
 		try
@@ -77,6 +96,7 @@ public class ProfileController : Controller
 			user.Name = dto.Name;
 			user.Contact = dto.Contact;
 			user.Bio = dto.Bio;
+			user.Gender = dto.Gender;
 
 			if (imageFile != null && imageFile.Length > 0)
 			{
@@ -93,21 +113,14 @@ public class ProfileController : Controller
 					return BadRequest(new { success = false, message = "File size must be less than 5MB" });
 				}
 
-				var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profiles");
-				Directory.CreateDirectory(uploadsFolder);
-
-				var uniqueFileName = $"{id}_{Guid.NewGuid()}{extension}";
-				var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-				using (var stream = new FileStream(filePath, FileMode.Create))
-				{
-					await imageFile.CopyToAsync(stream);
-				}
-
-				user.Image = $"/uploads/profiles/{uniqueFileName}";
+				user.Image = await _s3Service.UploadFileAsync(imageFile);
 			}
 
-			// await _userService.UpdateUserAsync(user);
+			var (success, error) = await _userService.UpdateUserAsync(id, user);
+			if (!success)
+			{
+				return BadRequest(new { success = false, message = error ?? "Failed to update profile" });
+			}
 
 			return Ok(new
 			{
@@ -156,7 +169,11 @@ public class ProfileController : Controller
 				newUser.Image = await _s3Service.UploadFileAsync(userData.ProfileImageFile);
 			}
 
-			await _userService.CreateUserAsync(newUser);
+			var (success, error) = await _userService.CreateUserAsync(newUser);
+			if (!success)
+			{
+				return BadRequest(new { success = false, message = error ?? "Failed to create user" });
+			}
 
 			return Ok(new
 			{
@@ -168,5 +185,39 @@ public class ProfileController : Controller
 		{
 			return StatusCode(500, new { success = false, message = ex.Message });
 		}
+	}
+
+	[HttpGet]
+	[Route("API/User")]
+	public async Task<IActionResult> GetAllUsers()
+	{
+		var users = await _userService.GetAllUsersAsync();
+		return Ok(users);
+	}
+
+	[HttpGet]
+	[Route("API/User/{id}")]
+	public async Task<IActionResult> GetUserById(string id)
+	{
+		var user = await _userService.GetUserByIdAsync(id);
+		if (user == null)
+		{
+			return NotFound(new { success = false, message = "User not found" });
+		}
+
+		return Ok(user);
+	}
+
+	[HttpDelete]
+	[Route("API/User/Delete/{id}")]
+	public async Task<IActionResult> DeleteUser(string id)
+	{
+		var (success, error) = await _userService.DeleteUserAsync(id);
+		if (!success)
+		{
+			return NotFound(new { success = false, message = error ?? "User not found" });
+		}
+
+		return Ok(new { success = true, message = "User deleted successfully" });
 	}
 }

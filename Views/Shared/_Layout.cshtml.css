@@ -128,3 +128,145 @@ a {
   -ms-border-radius: 50%;
   -o-border-radius: 50%;
 }
+
+.profile-section {
+  position: relative;
+}
+
+.profile-menu {
+  position: relative;
+}
+
+.profile-menu-trigger {
+  list-style: none;
+  cursor: pointer;
+}
+
+.profile-menu-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.profile-menu-content {
+  position: absolute;
+  right: 0;
+  margin-top: 10px;
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  z-index: 100;
+}
+
+.profile-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+}
+
+.profile-menu-item:hover {
+  background: #f3f4f6;
+}
+
+.profile-menu-button {
+  cursor: pointer;
+  font: inherit;
+}
+
+.profile-login-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+
+.profile-login-link:hover {
+  background: #f9fafb;
+}
+
+.profile-section {
+  position: relative;
+}
+
+.profile-menu {
+  position: relative;
+}
+
+.profile-menu-trigger {
+  list-style: none;
+  cursor: pointer;
+}
+
+.profile-menu-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.profile-menu-content {
+  position: absolute;
+  right: 0;
+  margin-top: 10px;
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  z-index: 100;
+}
+
+.profile-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+}
+
+.profile-menu-item:hover {
+  background: #f3f4f6;
+}
+
+.profile-menu-button {
+  cursor: pointer;
+  font: inherit;
+}
+
+.profile-login-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+
+.profile-login-link:hover {
+  background: #f9fafb;
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+  background-color: white;
+}

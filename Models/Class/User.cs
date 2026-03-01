@@ -12,6 +12,7 @@ namespace EndguinField.Models
 		public string? Bio { get; set; }
 		public string? Image { get; set; }
 		public string? Contact { get; set; }
+		public string? Gender { get; set; }
 		public DateTime JoinWhen { get; set; }
 		public List<string> Friends { get; set; } = new List<string>();
 		public List<string> BlockLists { get; set; } = new List<string>();
