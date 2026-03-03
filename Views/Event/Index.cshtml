@@ -1,6 +1,9 @@
 @model EventViewModel
+@{
+    ViewData["Title"] = Model.IsCreateMode ? "Create Event" : Model.Name;
+}
 
-<div id="event-detail-view" class="event-detail-container" data-event-id="@Model.Id"
+<div id="event-detail-view" class="container event-detail-container" data-event-id="@Model.Id"
 	 data-is-create-mode="@Json.Serialize(Model.IsCreateMode)" data-background-image="@Model.BackgroundImage"
 	 data-status="@Model.Status">
 	<partial name="_Header" model="Model" />
@@ -42,21 +45,26 @@
 					Delete Event
 				</button>
 			}
-			else if (Model.UserStatus == "Pending")
+			else if (Model.Status == "Open")
 			{
-				<button class="btn btn-secondary" type="button" disabled>Requested</button>
-			}
-			else if (Model.UserStatus == "Accepted")
-			{
-				<button class="btn btn-primary" type="button" disabled>Joined</button>
-			}
-			else if (Model.UserStatus == "Rejected")
-			{
-				<button class="btn btn-danger" type="button" disabled>Request Rejected</button>
-			}
-			else
-			{
-				<button class="btn btn-success join-event-btn" type="button">Join Event</button>
+				<div class="join-actions-container">
+					@if (Model.UserStatus == "Pending")
+					{
+						<button class="btn btn-secondary cancel-join-btn" type="button">Cancel Request</button>
+					}
+					else if (Model.UserStatus == "Accepted")
+					{
+						<button class="btn btn-danger quit-event-btn" type="button">Quit Event</button>
+					}
+					else if (!Model.IsLoggedIn)
+					{
+						<a href="/Login" class="btn btn-primary" style="text-decoration: none; text-align: center; display: block;">Login to Join</a>
+					}
+					else
+					{
+						<button class="btn btn-primary join-event-btn" type="button">Join Event</button>
+					}
+				</div>
 			}
 		</div>
 	</div>

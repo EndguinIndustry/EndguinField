@@ -1,5 +1,7 @@
 using EndguinField.Models;
 using EndguinField.Services.MongoDB;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace EndguinField.Services
 
@@ -9,17 +11,25 @@ namespace EndguinField.Services
         Task<User?> GetUserByIdAsync(string id);
         Task<List<User>> GetAllUsersAsync();
 		Task<(bool success, string? error)> CreateUserAsync(User userData);
-			Task<(bool success, string? error)> UpdateUserAsync(string id, User userData);
-			Task<(bool success, string? error)> DeleteUserAsync(string id);
+		Task<(bool success, string? error)> UpdateUserAsync(string id, User userData);
+		Task<(bool success, string? error)> DeleteUserAsync(string id);
+		string? GetCurrentUserId();
     }
 
 	public class UserService : IUserService
 	{
 		private readonly IUserMongoService _userStore;
+		private readonly IHttpContextAccessor _httpContextAccessor;
 
-		public UserService(IUserMongoService userStore)
+		public UserService(IUserMongoService userStore, IHttpContextAccessor httpContextAccessor)
 		{
 			_userStore = userStore;
+			_httpContextAccessor = httpContextAccessor;
+		}
+
+		public string? GetCurrentUserId()
+		{
+			return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
 		}
 
 		public async  Task<User?> GetUserByIdAsync(string id)

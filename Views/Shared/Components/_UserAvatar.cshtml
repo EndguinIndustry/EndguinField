@@ -1,0 +1,8 @@
+@model EndguinField.Models.ViewModels.Components.UserAvatarViewModel
+
+@{
+    var imgClass = string.IsNullOrEmpty(Model.CssClass) ? "avatar" : Model.CssClass;
+    var imageSrc = !string.IsNullOrEmpty(Model.ImageUrl) ? Model.ImageUrl : "/asset/profile.svg";
+}
+
+<img class="@imgClass" src="@imageSrc" alt="@(Model.AltText ?? Model.Name)" />

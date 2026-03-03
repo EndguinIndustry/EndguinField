@@ -7,17 +7,20 @@
 }
 
 <div class="event-header">
-    <div class="event-title-wrapper">
+    <div class="event-title-wrapper" title="@eventName">
         <h1 id="viewName">@eventName</h1>
-        <input type="text" id="editNameInput" class="form-control form-control-lg edit-mode-only" value="@eventName" />
+        <div class="edit-mode-only w-100">
+            <input type="text" id="editNameInput" class="form-control form-control-lg" value="@eventName" maxlength="100" />
+            <div class="char-counter"><span id="nameCharCount">0</span>/100</div>
+        </div>
     </div>
     <div class="event-header-actions">
-        @if (Model.IsOwner && !Model.IsCreateMode)
+        @if (Model?.IsOwner == true && !Model.IsCreateMode)
         {
             <partial name="Components/_IconButton" model='new IconButtonViewModel { Id = "editBtn", IconPath = "/assets/icons/edit.svg", AltText = "Edit Event", Title = "Edit Event", AdditionalClasses = "icon-dark" }' />
             <partial name="Components/_IconButton" model='new IconButtonViewModel { Id = "cancelEditBtn", IconPath = "/assets/icons/decline.svg", AltText = "Cancel Edit", Title = "Cancel Edit", AdditionalClasses = "icon-dark edit-mode-only" }' />
         }
-        @if (!Model.IsCreateMode)
+        @if (Model?.IsCreateMode == false)
         {
              <partial name="Components/_IconButton" model='new IconButtonViewModel { Id = "toggleBtn", IconPath = "/assets/icons/comment.svg", AltText = "Show Comments", Title = "Show Comments", AdditionalClasses = "icon-dark view-mode-only" }' />
         }

@@ -1,17 +1,27 @@
 .event-header {
 	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
-	margin-bottom: 1.5rem;
-	gap: 1rem;
+	align-items: center;
+	margin-bottom: 2rem;
+	width: 100%;
 }
 
 .event-title-wrapper {
-	flex: 1;
+	flex-grow: 1;
+	flex-shrink: 1;
+	min-width: 0;
+	overflow: hidden;
+	margin-right: 1.5rem;
 }
 
 .event-title-wrapper h1 {
+	font-size: 2.25rem;
+	font-weight: 800;
 	margin: 0;
+	color: var(--text-heading);
+	letter-spacing: -0.5px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .event-header-actions {

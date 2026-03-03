@@ -46,14 +46,10 @@ public class EventService : IEventService
 
 	public async Task<(bool success, string? error)> CreateEventAsync(Event eventData)
 	{
-		if (eventData.Images == null || eventData.Images.Count < 1)
+		var (isValid, errorMessage) = checkValidEvent(eventData);
+		if (!isValid)
 		{
-			return (false, "At least 1 image is required.");
-		}
-
-		if (eventData.Images.Count > 10)
-		{
-			return (false, "Maximum 10 images allowed.");
+			return (false, errorMessage);
 		}
 
 		await _eventStore.CreateAsync(eventData);
@@ -63,6 +59,12 @@ public class EventService : IEventService
 
 	public async Task<(bool success, string? error)> UpdateEventAsync(string eventId, Event eventData)
 	{
+		var (isValid, errorMessage) = checkValidEvent(eventData);
+		if (!isValid)
+		{
+			return (false, errorMessage);
+		}
+
 		var participations = await _participationService.GetParticipationsByEventIdAsync(eventId);
 		int acceptedCount = participations.Count(participation => participation.Status == "Accepted");
 
@@ -141,6 +143,13 @@ public class EventService : IEventService
 		var participations = await _participationService.GetParticipationsByEventIdAsync(eventData.Id);
 		var userParticipation = participations.FirstOrDefault(participation => participation.UserId == currentUserId);
 
+		bool isOwner = eventData.OwnerId == currentUserId;
+		int acceptedCount = participations.Count(p => string.Equals(p.Status, "Accepted", StringComparison.OrdinalIgnoreCase));
+		
+		var displayedParticipations = isOwner 
+			? participations 
+			: participations.Where(p => string.Equals(p.Status, "Accepted", StringComparison.OrdinalIgnoreCase)).ToList();
+
 		return new EventViewModel
 		{
 			Id = eventData.Id,
@@ -152,15 +161,56 @@ public class EventService : IEventService
 			StartTime = eventData.StartTime,
 			EndTime = eventData.EndTime,
 			MaxParticipants = eventData.MaxParticipants,
-			Category = eventData.Category,
+			Tags = eventData.Tags,
 			Status = eventData.Status,
 			Owner = owner.ToSummaryViewModel(),
-			Participants = await MapParticipants(participations),
+			Participants = await MapParticipants(displayedParticipations),
+			ParticipationCount = acceptedCount,
 			Comments = await MapCommentsAsync(eventData.Comments),
-			IsOwner = eventData.OwnerId == currentUserId,
-			IsJoined = userParticipation?.Status == "Accepted",
+			IsOwner = isOwner,
+			IsJoined = userParticipation?.Status?.Equals("Accepted", StringComparison.OrdinalIgnoreCase) == true,
 			UserStatus = userParticipation?.Status
 		};
+	}
+
+	private (bool success, string? error) checkValidEvent(Event eventData)
+	{
+		if (string.IsNullOrWhiteSpace(eventData.Name) || eventData.Name.Length > 100)
+		{
+			return (false, "Event name is required and must be 100 characters or less.");
+		}
+
+		if (eventData.Description?.Length > 2000)
+		{
+			return (false, "Description must be 2000 characters or less.");
+		}
+
+		if (eventData.Location?.Length > 500)
+		{
+			return (false, "Location must be 500 characters or less.");
+		}
+
+		if (eventData.MaxParticipants < 1 || eventData.MaxParticipants > 100)
+		{
+			return (false, "Max participants must be between 1 and 100.");
+		}
+
+		if (eventData.Images == null || eventData.Images.Count < 1)
+		{
+			return (false, "At least 1 image is required.");
+		}
+
+		if (eventData.Images.Count > 10)
+		{
+			return (false, "Maximum 10 images allowed.");
+		}
+
+		if (eventData.EndTime <= eventData.StartTime)
+		{
+			return (false, "End date and time must be after the start date and time.");
+		}
+
+		return (true, null);
 	}
 
 	private async Task<List<ParticipationViewModel>> MapParticipants(List<Participation> participations)

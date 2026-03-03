@@ -10,10 +10,15 @@ const Modal = (() => {
     const closeBtn = () => document.getElementById('modal-close-btn');
 
     const close = (value = false) => {
-        const el = overlay();
-        if (!el) return;
-        el.classList.remove('active');
-        if (_resolve) { _resolve(value); _resolve = null; }
+        const overlay_element = overlay();
+        if (!overlay_element || !overlay_element.classList.contains('active')) return;
+
+        overlay_element.classList.add('closing');
+
+        setTimeout(() => {
+            overlay_element.classList.remove('active', 'closing');
+            if (_resolve) { _resolve(value); _resolve = null; }
+        }, 300);
     };
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -22,11 +27,11 @@ const Modal = (() => {
     });
 
     const open = ({ titleText = '', messageText = '', showCancel = false, customContent = null }) => {
-        const el = overlay();
-        if (!el) return Promise.resolve(false);
+        const overlay_element = overlay();
+        if (!overlay_element) return Promise.resolve(false);
 
         title().innerText = titleText;
-        
+
         if (customContent) {
             message().innerHTML = '';
             if (typeof customContent === 'string') {
@@ -44,7 +49,7 @@ const Modal = (() => {
         confirmBtn().onclick = () => close(true);
         cancelBtn().onclick = () => close(false);
 
-        el.classList.add('active');
+        overlay_element.classList.add('active');
 
         return new Promise(res => { _resolve = res; });
     };
@@ -57,7 +62,7 @@ const Modal = (() => {
             open({ titleText, messageText, showCancel: true }),
 
         show: (options) => open(options),
-        
+
         close: (value) => close(value)
     };
 })();

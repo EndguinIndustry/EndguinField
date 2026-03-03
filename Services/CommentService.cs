@@ -33,6 +33,14 @@ public class CommentService : ICommentService
 
 	public async Task CreateCommentAsync(Comment comment)
 	{
+		if (string.IsNullOrWhiteSpace(comment.Content))
+		{
+			throw new ArgumentException("Comment cannot be empty.");
+		}
+		if (comment.Content.Length > 1000)
+		{
+			throw new ArgumentException("Comment cannot exceed 1000 characters.");
+		}
 		await _commentStore.CreateAsync(comment);
 	}
 

@@ -12,13 +12,15 @@
 <div class="participants-section">
 	<div class="host-column">
 		<h4>Host</h4>
-		<img class="host-avatar" src="@hostImage" alt="@hostName" />
-		<div>@hostName</div>
+		<a href="/Profile/View/@Model.Owner?.Id" class="profile-link host-avatar-link" title="@hostName">
+			<partial name="Components/_UserAvatar" model='new EndguinField.Models.ViewModels.Components.UserAvatarViewModel { Name = hostName, ImageUrl = hostImage, CssClass = "host-avatar profile-hover" }' />
+		</a>
+		<a href="/Profile/View/@Model.Owner?.Id" class="profile-link host-name" title="@hostName">@hostName</a>
 	</div>
 	<div class="participants-column">
 		<div class="participants-container">
 			<div class="participants-header">
-				<h2>Participants (@Model.ParticipationCount / @maxEnrolls)</h2>
+				<h2>Participants (<span id="participantCount">@Model.ParticipationCount</span> / <span id="maxParticipants">@maxEnrolls</span>)</h2>
 			</div>
 			<div class="participants-list">
 				@if (participations.Any())
@@ -28,25 +30,27 @@
 						var pName = p.UserName ?? "Unknown User";
 						var pImage = p.UserImage ?? defaultImage;
 
-						<div class="participant-item">
-							<img class="avatar-sm" src="@pImage" alt="@pName" />
-							<span class="participant-name">@pName</span>
+						<div class="participant-item status-@p.Status?.ToLower()" data-user-id="@p.UserId">
+							<a href="/Profile/View/@p.UserId" class="profile-link" title="@pName">
+								<partial name="Components/_UserAvatar" model='new EndguinField.Models.ViewModels.Components.UserAvatarViewModel { Name = pName, ImageUrl = pImage, CssClass = "avatar-sm profile-hover" }' />
+							</a>
+							<a href="/Profile/View/@p.UserId" class="profile-link participant-name" title="@pName">@pName</a>
 
 							@if (Model.IsOwner)
 							{
 								<div class="participant-controls">
-									@if (p.Status == "pending")
+									@if (string.Equals(p.Status, "Pending", StringComparison.OrdinalIgnoreCase))
 									{
-										<button class="btn btn-icon-only" title="Accept">
+										<button class="btn btn-icon-only accept-join-btn" title="Accept">
 											<img src="~/assets/icons/accept.svg" alt="Accept" class="icon participant-icon" />
 										</button>
-										<button class="btn btn-icon-only" title="Decline">
+										<button class="btn btn-icon-only decline-join-btn" title="Decline">
 											<img src="~/assets/icons/decline.svg" alt="Decline" class="icon participant-icon" />
 										</button>
 									}
 									else
 									{
-										<button class="btn btn-icon-only" title="Remove">
+										<button class="btn btn-icon-only remove-join-btn" title="Remove">
 											<img src="~/assets/icons/delete.svg" alt="Remove" class="icon participant-icon" />
 										</button>
 									}
