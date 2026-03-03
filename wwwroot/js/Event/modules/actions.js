@@ -41,13 +41,6 @@ export function initQuitButton(config) {
                 await Modal.alert(result.message || "Successfully quit the event.", "Success");
                 container.innerHTML = "";
                 container.appendChild(createJoinButton());
-
-                // If the user was in the list, we might want to remove them. 
-                // However, since we don't know the current user's ID here conveniently, 
-                // and they might not even be in the visible part of the list, 
-                // a reload might actually be safer for "Quit" if we want to be 100% accurate.
-                // But the user asked for "don't reload", so I'll try to find them if possible.
-                // For now, at least swipe the button.
             } else {
                 await Modal.alert(result.message || "Failed to quit the event.", "Error");
             }
