@@ -27,51 +27,58 @@
 }
 
 .event-detail-container {
-	background-color: #fff;
+	background-color: var(--bg-card);
 	padding: 2rem;
 	border-radius: 2rem;
 	width: 100%;
 	margin-right: auto;
 	margin-left: auto;
-	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+	box-shadow: var(--shadow-subtle);
 	animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-@media (min-width: 576px) {
-	.event-detail-container {
-		max-width: 540px;
-	}
-}
-
-@media (min-width: 768px) {
-	.event-detail-container {
-		max-width: 720px;
-	}
-}
-
-@media (min-width: 992px) {
-	.event-detail-container {
-		max-width: 960px;
-	}
-}
-
-@media (min-width: 1200px) {
-	.event-detail-container {
-		max-width: 1140px;
-	}
-}
-
-@media (min-width: 1400px) {
-	.event-detail-container {
-		max-width: 1320px;
-	}
-}
-
-.event-title-wrapper h1 {
-	font-weight: 700;
-	letter-spacing: -0.02em;
+::deep .event-title-wrapper h1 {
+	font-weight: 800;
+	letter-spacing: -0.03em;
 	font-size: 2.5rem;
-	margin-bottom: 0.5rem;
+	margin: 0;
+	color: var(--text-heading);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+::deep .form-control {
+	border-radius: 12px;
+	padding: 0.75rem 1rem;
+	border: 1.5px solid var(--border-subtle);
+	transition: all 0.2s;
+}
+
+::deep .form-control:focus {
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 4px var(--primary-faint);
+	background-color: var(--bg-card);
+	outline: none;
+}
+
+::deep #editNameInput {
+	font-size: 1.25rem;
+}
+
+::deep #editNameInput,
+::deep #editLocationInput,
+::deep #editDescriptionInput {
+	width: 100% !important;
+}
+
+::deep h2 {
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: var(--text-heading);
+	margin-top: 1.5rem;
+	margin-bottom: 0.75rem;
+	letter-spacing: -0.01em;
 }
 
 .event-layout-grid {
@@ -103,11 +110,65 @@
 	display: flex;
 	flex-direction: column;
 	min-height: 0;
+	margin-top: 20px;
+	width: 100%;
 }
 
-.join-event-btn {
+::deep .btn-primary,
+::deep .btn-danger,
+::deep .join-event-btn,
+::deep .create-event-submit-btn,
+::deep .delete-event-btn,
+::deep .quit-event-btn,
+::deep .cancel-join-btn {
+	border: none;
+	border-radius: 12px;
+	padding: 0.8rem 1.5rem;
+	font-weight: 600;
+	transition:
+		transform 0.2s,
+		box-shadow 0.2s,
+		background-color 0.2s;
 	width: 100%;
+}
+
+::deep .btn-primary,
+::deep .join-event-btn,
+::deep .create-event-submit-btn {
+	background-color: var(--primary-color);
+	box-shadow: var(--shadow-card);
+}
+
+::deep .btn-primary:hover,
+::deep .join-event-btn:hover,
+::deep .create-event-submit-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 15px var(--primary-faint);
+}
+
+::deep .btn-danger,
+::deep .delete-event-btn,
+::deep .quit-event-btn {
+	background-color: var(--accent-danger);
+	color: white;
+	gap: 10px;
+}
+
+::deep .btn-danger:hover,
+::deep .delete-event-btn:hover,
+::deep .quit-event-btn:hover {
+	background-color: var(--accent-danger-hover);
+	transform: translateY(-2px);
+}
+
+::deep .quit-event-btn {
 	margin-top: 1rem;
+}
+
+::deep .btn .icon {
+	width: 20px;
+	height: 20px;
+	object-fit: contain;
 }
 
 .background-container {
@@ -121,8 +182,8 @@
 
 .edit-background-btn {
 	border-radius: 20px;
-	background-color: white;
-	border: 1px solid rgba(108, 117, 125, 0.25);
+	background-color: var(--bg-card);
+	border: 1px solid var(--border-color);
 	padding: 8px;
 	display: flex;
 	align-items: center;

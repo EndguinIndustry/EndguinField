@@ -40,7 +40,7 @@
 		@for (int i = 0; i < images.Count; i++)
 		{
 			<div class="image-list-item position-relative mb-2">
-				<img src="@images[i]" class="w-100 rounded-3" alt="Event image" style="height: 200px; object-fit: cover;">
+				<img src="@images[i]" class="w-100 rounded-3" alt="Event image" style="aspect-ratio: 16/9; object-fit: cover;">
 				<button type="button" class="remove-image-btn" data-index="@i">×</button>
 			</div>
 		}

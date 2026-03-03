@@ -25,6 +25,7 @@ builder.Services.AddAuthentication()
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
     });
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.AddSingleton<MongoDbService>();

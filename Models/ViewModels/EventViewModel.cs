@@ -11,7 +11,7 @@ public class EventViewModel
 	public DateTime StartTime { get; set; }
 	public DateTime EndTime { get; set; }
 	public int MaxParticipants { get; set; }
-	public string Category { get; set; } = string.Empty;
+	public List<string> Tags { get; set; } = new();
 	public string Status { get; set; } = "Open";
 
 	public UserSummaryViewModel Owner { get; set; } = null!;
@@ -21,9 +21,10 @@ public class EventViewModel
 	public bool IsOwner { get; set; }
 	public bool IsJoined { get; set; }
 	public bool IsCreateMode { get; set; }
+	public bool IsLoggedIn { get; set; }
 	public string? UserStatus { get; set; }
 
-	public int ParticipationCount => Participants?.Count ?? 0;
+	public int ParticipationCount { get; set; }
 }
 
 public class UserSummaryViewModel
@@ -60,6 +61,7 @@ public class EventUpdateModel
 	public DateTime EndTime { get; set; }
 	public int MaxParticipants { get; set; }
 	public string Status { get; set; } = "Open";
+	public List<string> Tags { get; set; } = new();
 	public IFormFile? BackgroundImageFile { get; set; }
 	public string? BackgroundImage { get; set; }
 	public List<IFormFile>? NewImages { get; set; }
@@ -81,7 +83,8 @@ public class EventUpdateModel
 			Participants = new List<string>(),
 			Comments = new List<string>(),
 			Images = new List<string>(),
-			BackgroundImage = BackgroundImage ?? "https://i.redd.it/n30vilg6ap6g1.jpeg"
+			BackgroundImage = BackgroundImage ?? "https://i.redd.it/n30vilg6ap6g1.jpeg",
+			Tags = Tags
 		};
 	}
 
@@ -94,5 +97,6 @@ public class EventUpdateModel
 		oldEventData.EndTime = EndTime;
 		oldEventData.MaxParticipants = MaxParticipants;
 		oldEventData.Status = Status;
+		oldEventData.Tags = Tags;
 	}
 }

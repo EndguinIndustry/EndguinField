@@ -3,12 +3,12 @@ namespace EndguinField.Models;
 
 public class Participation
 {
-	public string Id { get; set; }
-	public string UserId { get; set; }
-	public string EventId { get; set; }
+	public string Id { get; set; } = string.Empty;
+	public string UserId { get; set; } = string.Empty;
+	public string EventId { get; set; } = string.Empty;
 	public string User { get; set; } = null!;
 	public DateTime JoinedTime { get; set; }
-	public string Status { get; set; } = "pending"; // pending / accepted
+	public string Status { get; set; } = "Pending"; // Pending / Accepted / Rejected
 
 	public ParticipationViewModel ToViewModel(UserSummaryViewModel userSummary)
 	{

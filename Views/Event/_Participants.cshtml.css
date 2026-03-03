@@ -4,9 +4,13 @@
 }
 
 .host-column {
-	flex: 0 0 25%;
-	text-align: center;
-	padding-right: 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding-right: 1.5rem;
+	min-width: 120px;
+	max-width: 150px;
 }
 
 .participants-column {
@@ -20,7 +24,7 @@
 }
 
 .participants-header {
-	background-color: #ebe985;
+	background-color: var(--highlight-main);
 	padding: 0.5rem 1rem;
 	margin-bottom: 0;
 	border-radius: 0.5rem 0.5rem 0 0;
@@ -42,7 +46,18 @@
 	margin-bottom: 0.5rem;
 	padding: 0.5rem;
 	border-radius: 0.375rem;
-	background-color: rgba(0, 0, 0, 0.02);
+	background-color: var(--bg-alt);
+	transition: all 0.2s ease;
+}
+
+.participant-item.status-accepted {
+	background-color: var(--bg-tag);
+	border: 1px solid var(--border-tag);
+}
+
+.participant-item.status-accepted .participant-name {
+	color: var(--accent-secondary);
+	font-weight: 600;
 }
 
 .participant-name {
@@ -55,6 +70,66 @@
 .participant-controls {
 	display: flex;
 	gap: 0.25rem;
+	opacity: 0;
+	transform: translateX(10px);
+	transition: opacity 0.3s ease, transform 0.3s ease;
+	pointer-events: none;
+}
+
+.participant-item:hover .participant-controls {
+	opacity: 0.8;
+	transform: translateX(0);
+	pointer-events: auto;
+}
+
+.participant-item:hover .participant-controls:hover {
+	opacity: 1;
+}
+
+.btn-icon-only {
+	height: 32px;
+	width: 32px;
+	padding: 4px;
+	background: var(--bg-white-soft);
+	border: 1px solid transparent;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	cursor: pointer;
+}
+
+.btn-icon-only:hover {
+	background: var(--bg-card);
+	border-color: var(--border-tag);
+	transform: translateY(-2px) scale(1.1);
+	box-shadow: var(--shadow-sm);
+}
+
+.btn-icon-only:active {
+	transform: translateY(0) scale(0.95);
+}
+
+.accept-join-btn:hover {
+	background-color: var(--success-faint);
+	border-color: var(--success-color);
+}
+
+.decline-join-btn:hover,
+.remove-join-btn:hover {
+	background-color: var(--danger-faint);
+	border-color: var(--danger-color);
+}
+
+.participant-icon {
+	width: 20px;
+	height: 20px;
+	transition: transform 0.2s ease;
+}
+
+.btn-icon-only:hover .participant-icon {
+	filter: brightness(1.1);
 }
 
 .avatar-sm {
@@ -66,7 +141,7 @@
 }
 
 .host-column h4 {
-	color: #6c757d;
+	color: var(--secondary-color);
 	font-weight: bold;
 	margin-bottom: 0.5rem;
 }
@@ -76,11 +151,60 @@
 }
 
 .host-avatar {
-	width: 64px;
-	height: 64px;
-	object-fit: cover;
-	margin-bottom: 0.25rem;
+	width: 80px;
+	height: 80px;
 	border-radius: 50%;
+	object-fit: cover;
+	margin-bottom: 0.5rem;
+	border: 3px solid var(--primary-color);
+	box-shadow: 0 4px 10px var(--primary-color-light);
+}
+
+.host-name {
+	font-weight: 600;
+	color: var(--text-heading);
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+
+::deep .profile-link {
+	text-decoration: none;
+	color: inherit;
+	display: inline-block;
+	transition: transform 0.2s ease, color 0.2s ease;
+}
+
+::deep .profile-link.participant-name,
+::deep .profile-link.host-name,
+::deep .profile-link.comment-author {
+	color: var(--text-heading);
+}
+
+::deep .profile-link.participant-name:hover,
+::deep .profile-link.host-name:hover,
+::deep .profile-link.comment-author:hover {
+	color: var(--primary-color);
+	text-decoration: underline;
+}
+
+::deep .profile-hover {
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+::deep .profile-hover:hover {
+	transform: scale(1.05);
+}
+
+::deep .avatar.profile-hover:hover,
+::deep .avatar-sm.profile-hover:hover {
+	box-shadow: var(--shadow-md);
+}
+
+::deep .host-avatar.profile-hover:hover {
+	box-shadow: 0 6px 12px var(--primary-color-light);
 }
 
 .participants-header h2 {
@@ -91,26 +215,9 @@
 .no-participants {
 	padding: 1rem;
 	text-align: center;
-	color: #6c757d;
+	color: var(--secondary-color);
 }
 
 .participant-item img {
 	border-radius: 50%;
-}
-
-.btn-icon-only {
-	height: 30px;
-	width: 30px;
-	padding: 0;
-	background: none;
-	border: none;
-}
-
-.participant-icon {
-	width: 100%;
-	height: 100%;
-}
-
-.btn-icon-only:not(:last-child) {
-	margin-right: 0.25rem;
 }

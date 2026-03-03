@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using EndguinField.Models;
 using EndguinField.Models.ViewModels;
 using EndguinField.Services;
+using System.Security.Claims;
 
 namespace EndguinField.Controllers;
 
@@ -12,13 +13,6 @@ public class EventController : Controller
 	private readonly IUserService _userService;
 	private readonly IParticipationService _participationService;
 	private readonly S3Service _s3Service;
-
-	User currentUser = new User // Mocked current user
-	{
-		Id = "1",
-		Name = "Chen Qianyu",
-		Image = "https://preview.redd.it/the-origin-of-chen-sticker-v0-aulsmkoceg0g1.png?width=300&format=png&auto=webp&s=9578b04c0a2fa42f1472ed9bb29b07651ee5effd"
-	};
 
 
 	public EventController(IEventService eventService, IUserService userService, IParticipationService participationService, S3Service s3Service)
@@ -31,8 +25,20 @@ public class EventController : Controller
 
 	[HttpGet]
 	[Route("Event/Create")]
-	public IActionResult Create()
+	public async Task<IActionResult> Create()
 	{
+		var currentUserId = _userService.GetCurrentUserId();
+		if (string.IsNullOrEmpty(currentUserId))
+		{
+			return RedirectToAction("Index", "Login");
+		}
+
+		var currentUser = await _userService.GetUserByIdAsync(currentUserId);
+		if (currentUser == null)
+		{
+			return RedirectToAction("Index", "Login");
+		}
+
 		var viewModel = new EventViewModel
 		{
 			Id = string.Empty,
@@ -41,13 +47,9 @@ public class EventController : Controller
 			Location = string.Empty,
 			StartTime = DateTime.Now,
 			EndTime = DateTime.Now.AddHours(2),
-			Owner = new UserSummaryViewModel
-			{
-				Id = "1", // Mocked
-				Name = "Chen Qianyu",
-				Image = "https://preview.redd.it/the-origin-of-chen-sticker-v0-aulsmkoceg0g1.png?width=300&format=png&auto=webp&s=9578b04c0a2fa42f1472ed9bb29b07651ee5effd"
-			},
+			Owner = currentUser.ToSummaryViewModel(),
 			IsOwner = true,
+			IsLoggedIn = true,
 			IsCreateMode = true,
 			BackgroundImage = "https://i.redd.it/n30vilg6ap6g1.jpeg"
 		};
@@ -57,12 +59,14 @@ public class EventController : Controller
 	[Route("Event/{id}")]
 	public async Task<IActionResult> Index(string id)
 	{
-		var viewModel = await _eventService.GetEventViewModelAsync(id, currentUser.Id);
+		var currentUserId = _userService.GetCurrentUserId() ?? string.Empty;
+		var viewModel = await _eventService.GetEventViewModelAsync(id, currentUserId);
 		if (viewModel == null)
 		{
 			return NotFound();
 		}
 
+		viewModel.IsLoggedIn = !string.IsNullOrEmpty(currentUserId);
 		return View(viewModel);
 	}
 
@@ -78,7 +82,10 @@ public class EventController : Controller
 
 		try
 		{
-			var newEvent = eventData.ToEventModel(currentUser.Id);
+			var currentUserId = _userService.GetCurrentUserId();
+			if (string.IsNullOrEmpty(currentUserId)) return Unauthorized(new { success = false, message = "User not authenticated." });
+			
+			var newEvent = eventData.ToEventModel(currentUserId);
 
 			if (eventData.BackgroundImageFile != null)
 			{
@@ -159,7 +166,8 @@ public class EventController : Controller
 			if (existing == null)
 				return NotFound(new { success = false, message = "Event not found." });
 
-			if (existing.OwnerId != currentUser.Id)
+			var currentUserId = _userService.GetCurrentUserId();
+			if (existing.OwnerId != currentUserId)
 				return Forbid();
 
 			await _eventService.DeleteEventAsync(id);
@@ -175,7 +183,10 @@ public class EventController : Controller
 	[Route("API/Event/Join/{id}")]
 	public async Task<IActionResult> Join(string id)
 	{
-		var existingParticipation = await _participationService.GetParticipationAsync(id, currentUser.Id);
+		var currentUserId = _userService.GetCurrentUserId();
+		if (string.IsNullOrEmpty(currentUserId)) return Unauthorized(new { success = false, message = "User not authenticated." });
+		
+		var existingParticipation = await _participationService.GetParticipationAsync(id, currentUserId);
 		if (existingParticipation != null)
 		{
 			return BadRequest(new { success = false, message = "You have already requested to join or have already joined this event." });
@@ -183,8 +194,112 @@ public class EventController : Controller
 
 		try
 		{
-			var participation = await _participationService.JoinAsync(id, currentUser.Id);
+			var participation = await _participationService.JoinAsync(id, currentUserId);
 			return Ok(new { success = true, message = "Successfully requested to join the event.", participation });
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, new { success = false, message = ex.Message });
+		}
+	}
+
+	[HttpPost]
+	[Route("API/Event/CancelJoin/{id}")]
+	public async Task<IActionResult> CancelJoin(string id)
+	{
+		var currentUserId = _userService.GetCurrentUserId();
+		if (string.IsNullOrEmpty(currentUserId)) return Unauthorized(new { success = false, message = "User not authenticated." });
+
+		try
+		{
+			var success = await _participationService.CancelParticipationAsync(id, currentUserId);
+			if (!success) return BadRequest(new { success = false, message = "Failed to cancel join request." });
+			return Ok(new { success = true, message = "Successfully cancelled join request." });
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, new { success = false, message = ex.Message });
+		}
+	}
+
+	[HttpPost]
+	[Route("API/Event/AcceptJoin/{id}")]
+	public async Task<IActionResult> AcceptJoin(string id, [FromQuery] string userId)
+	{
+		var currentUserId = _userService.GetCurrentUserId();
+		if (string.IsNullOrEmpty(currentUserId)) return Unauthorized(new { success = false, message = "User not authenticated." });
+
+		var eventData = await _eventService.GetEventByIdAsync(id);
+		if (eventData == null || eventData.OwnerId != currentUserId) return Forbid();
+
+		try
+		{
+			var success = await _participationService.AcceptParticipationAsync(id, userId);
+			if (!success) return BadRequest(new { success = false, message = "Failed to accept join request." });
+			return Ok(new { success = true, message = "Successfully accepted join request." });
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, new { success = false, message = ex.Message });
+		}
+	}
+
+	[HttpPost]
+	[Route("API/Event/DeclineJoin/{id}")]
+	public async Task<IActionResult> DeclineJoin(string id, [FromQuery] string userId)
+	{
+		var currentUserId = _userService.GetCurrentUserId();
+		if (string.IsNullOrEmpty(currentUserId)) return Unauthorized(new { success = false, message = "User not authenticated." });
+
+		var eventData = await _eventService.GetEventByIdAsync(id);
+		if (eventData == null || eventData.OwnerId != currentUserId) return Forbid();
+
+		try
+		{
+			var success = await _participationService.RejectParticipationAsync(id, userId);
+			if (!success) return BadRequest(new { success = false, message = "Failed to decline join request." });
+			return Ok(new { success = true, message = "Successfully declined join request." });
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, new { success = false, message = ex.Message });
+		}
+	}
+
+	[HttpDelete]
+	[Route("API/Event/RemoveParticipant/{id}")]
+	public async Task<IActionResult> RemoveParticipant(string id, [FromQuery] string userId)
+	{
+		var currentUserId = _userService.GetCurrentUserId();
+		if (string.IsNullOrEmpty(currentUserId)) return Unauthorized(new { success = false, message = "User not authenticated." });
+
+		var eventData = await _eventService.GetEventByIdAsync(id);
+		if (eventData == null || eventData.OwnerId != currentUserId) return Forbid();
+
+		try
+		{
+			var success = await _participationService.CancelParticipationAsync(id, userId);
+			if (!success) return BadRequest(new { success = false, message = "Failed to remove participant." });
+			return Ok(new { success = true, message = "Successfully removed participant." });
+		}
+		catch (Exception ex)
+		{
+			return StatusCode(500, new { success = false, message = ex.Message });
+		}
+	}
+
+	[HttpDelete]
+	[Route("API/Event/Quit/{id}")]
+	public async Task<IActionResult> Quit(string id)
+	{
+		var currentUserId = _userService.GetCurrentUserId();
+		if (string.IsNullOrEmpty(currentUserId)) return Unauthorized(new { success = false, message = "User not authenticated." });
+
+		try
+		{
+			var success = await _participationService.CancelParticipationAsync(id, currentUserId);
+			if (!success) return BadRequest(new { success = false, message = "Failed to quit event." });
+			return Ok(new { success = true, message = "Successfully quit event." });
 		}
 		catch (Exception ex)
 		{
@@ -196,12 +311,15 @@ public class EventController : Controller
 	[Route("API/Event/Comment/{id}")]
 	public async Task<IActionResult> AddComment(string id, [FromBody] Comment request)
 	{
+		var currentUserId = _userService.GetCurrentUserId();
+		if (string.IsNullOrEmpty(currentUserId)) return Unauthorized(new { success = false, message = "User not authenticated." });
+		
 		if (string.IsNullOrWhiteSpace(request.Content))
 			return BadRequest(new { success = false, message = "Comment cannot be empty." });
 
 		try
 		{
-			var (success, error) = await _eventService.AddCommentAsync(id, currentUser.Id, request.Content, request.RepliedMessageId);
+			var (success, error) = await _eventService.AddCommentAsync(id, currentUserId, request.Content, request.RepliedMessageId);
 			if (!success)
 				return BadRequest(new { success = false, message = error });
 
@@ -211,6 +329,21 @@ public class EventController : Controller
 		{
 			return StatusCode(500, new { success = false, message = ex.Message });
 		}
+	}
+
+	[HttpGet]
+	[Route("Event/CommentsSection/{id}")]
+	public async Task<IActionResult> CommentsSection(string id)
+	{
+		var currentUserId = _userService.GetCurrentUserId() ?? string.Empty;
+		var viewModel = await _eventService.GetEventViewModelAsync(id, currentUserId);
+		if (viewModel == null)
+		{
+			return NotFound();
+		}
+		
+		viewModel.IsLoggedIn = !string.IsNullOrEmpty(currentUserId);
+		return PartialView("_CommentsSection", viewModel);
 	}
 
 	public IActionResult Privacy()

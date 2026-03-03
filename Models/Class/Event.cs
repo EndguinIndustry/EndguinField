@@ -13,8 +13,8 @@ public class Event
 	public DateTime StartTime { get; set; }
 	public DateTime EndTime { get; set; }
 	public int MaxParticipants { get; set; }
-	public string Category { get; set; } = string.Empty;
-	public string Status { get; set; } = "Open"; // Open / Close / Cancelled
+	public List<string> Tags { get; set; } = new List<string>();
+	public string Status { get; set; } = "Open"; // Open / Closed / Cancelled
 	public List<string> BlackLists { get; set; } = new List<string>();
 	public List<string> Comments { get; set; } = new List<string>();
 }
