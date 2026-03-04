@@ -17,12 +17,13 @@
 <body>
     @{
         var profileImageUrl = Url.Content("~/asset/profile.svg");
+        EndguinField.Models.User? currentUser = null;
         if (User.Identity?.IsAuthenticated == true)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!string.IsNullOrWhiteSpace(currentUserId))
             {
-                var currentUser = await UserService.GetUserByIdAsync(currentUserId);
+                currentUser = await UserService.GetUserByIdAsync(currentUserId);
                 if (!string.IsNullOrWhiteSpace(currentUser?.Image))
                 {
                     profileImageUrl = currentUser.Image;
@@ -49,6 +50,10 @@
                         </summary>
                         <div class="profile-menu-content">
                             <a href="/Profile" class="profile-menu-item">Profile</a>
+                            @if (currentUser?.Role == "Admin")
+                            {
+                                <a href="/Admin" class="profile-menu-item">Admin Console</a>
+                            }
                             <form asp-controller="Login" asp-action="Logout" method="post">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="profile-menu-item profile-menu-button">Logout</button>

@@ -1,5 +1,8 @@
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace EndguinField.Models;
 
+[BsonIgnoreExtraElements]
 public class Event
 {
 	public string Id { get; set; } = string.Empty;
