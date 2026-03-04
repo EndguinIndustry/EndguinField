@@ -7,15 +7,15 @@ namespace EndguinField.Services
 
 {
 	public interface IUserService
-    {
+	{
 		string? GetCurrentUserId();
-        Task<User?> GetUserByIdAsync(string id);
-        Task<List<User>> GetAllUsersAsync();
+		Task<User?> GetUserByIdAsync(string id);
+		Task<List<User>> GetAllUsersAsync();
 		Task<(bool success, string? error)> CreateUserAsync(User userData);
 		Task<(bool success, string? error)> UpdateUserAsync(string id, User userData);
 		Task<(bool success, string? error)> DeleteUserAsync(string id);
-		Task<List<Event>> GetAllJoinedEventAsync(string userId);
-    }
+		Task<List<String>> GetAllJoinedEventAsync(string userId);
+	}
 
 	public class UserService : IUserService
 	{
@@ -37,7 +37,7 @@ namespace EndguinField.Services
 			return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
 		}
 
-		public async  Task<User?> GetUserByIdAsync(string id)
+		public async Task<User?> GetUserByIdAsync(string id)
 		{
 			return await _userStore.GetByIdAsync(id);
 		}
@@ -47,7 +47,7 @@ namespace EndguinField.Services
 			return await _userStore.GetAllAsync();
 		}
 
-		public async Task<List<Event>> GetAllJoinedEventAsync(string userId)
+		public async Task<List<String>> GetAllJoinedEventAsync(string userId)
 		{
 			var participations = await _participationStore.GetByUserIdAsync(userId);
 			var matchedEventIds = participations
@@ -56,30 +56,26 @@ namespace EndguinField.Services
 				.Distinct()
 				.ToList();
 
-			var events = new List<Event>();
+			var events = new List<String>();
 			foreach (var eventId in matchedEventIds)
 			{
-				var ev = await _eventStore.GetByIdAsync(eventId);
-				if (ev != null)
-				{
-					events.Add(ev);
-				}
+				events.Add(eventId);
 			}
 
 			return events;
 		}
 
 		public async Task<(bool success, string? error)> CreateUserAsync(User userData)
-	{
+		{
 			if (string.IsNullOrWhiteSpace(userData.Id))
 			{
 				userData.Id = Guid.NewGuid().ToString();
 			}
 
 			if (string.IsNullOrWhiteSpace(userData.Email) || string.IsNullOrWhiteSpace(userData.Name) || string.IsNullOrWhiteSpace(userData.Role))
-		{
-			return (false, "Email, Name, and role are required");
-		}
+			{
+				return (false, "Email, Name, and role are required");
+			}
 
 			var existingUser = await _userStore.GetByIdAsync(userData.Id);
 			if (existingUser != null)
@@ -88,39 +84,39 @@ namespace EndguinField.Services
 			}
 
 
-		await _userStore.CreateAsync(userData);
-		
-		return (true, null);
-	}
+			await _userStore.CreateAsync(userData);
 
-			public async Task<(bool success, string? error)> UpdateUserAsync(string id, User userData)
-		{
-				var existingUser = await _userStore.GetByIdAsync(id);
-				if (existingUser == null)
-				{
-					return (false, "User not found");
-				}
-
-				if (string.IsNullOrWhiteSpace(userData.Email) || string.IsNullOrWhiteSpace(userData.Name) || string.IsNullOrWhiteSpace(userData.Role))
-				{
-					return (false, "Email, Name, and role are required");
-				}
-
-				userData.Id = id;
-				await _userStore.UpdateAsync(id, userData);
-				return (true, null);
+			return (true, null);
 		}
 
-			public async Task<(bool success, string? error)> DeleteUserAsync(string id)
+		public async Task<(bool success, string? error)> UpdateUserAsync(string id, User userData)
+		{
+			var existingUser = await _userStore.GetByIdAsync(id);
+			if (existingUser == null)
 			{
-				var existingUser = await _userStore.GetByIdAsync(id);
-				if (existingUser == null)
-				{
-					return (false, "User not found");
-				}
-
-				await _userStore.DeleteAsync(id);
-				return (true, null);
+				return (false, "User not found");
 			}
+
+			if (string.IsNullOrWhiteSpace(userData.Email) || string.IsNullOrWhiteSpace(userData.Name) || string.IsNullOrWhiteSpace(userData.Role))
+			{
+				return (false, "Email, Name, and role are required");
+			}
+
+			userData.Id = id;
+			await _userStore.UpdateAsync(id, userData);
+			return (true, null);
+		}
+
+		public async Task<(bool success, string? error)> DeleteUserAsync(string id)
+		{
+			var existingUser = await _userStore.GetByIdAsync(id);
+			if (existingUser == null)
+			{
+				return (false, "User not found");
+			}
+
+			await _userStore.DeleteAsync(id);
+			return (true, null);
+		}
 	}
 }

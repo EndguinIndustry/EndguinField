@@ -2,6 +2,7 @@ namespace EndguinField.Models
 {
     public class EventCardModel
     {
+        public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string ImgSrc { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }

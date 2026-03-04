@@ -12,7 +12,7 @@ public interface IEventService
 	Task<(bool success, string? error)> UpdateEventAsync(string eventId, Event eventData);
 	Task DeleteEventAsync(string eventId);
 	Task<(bool success, string? error)> AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null);
-	Task<EventViewModel?> GetEventViewModelAsync(string eventId, string currentUserId);
+	Task<EventViewModel> GetEventViewModelAsync(string eventId, string currentUserId);
 }
 
 public class EventService : IEventService
@@ -144,7 +144,6 @@ public class EventService : IEventService
 		var userParticipation = participations.FirstOrDefault(participation => participation.UserId == currentUserId);
 
 		bool isOwner = eventData.OwnerId == currentUserId;
-		int acceptedCount = participations.Count(p => string.Equals(p.Status, "Accepted", StringComparison.OrdinalIgnoreCase));
 		
 		var displayedParticipations = isOwner 
 			? participations 
@@ -165,7 +164,7 @@ public class EventService : IEventService
 			Status = eventData.Status,
 			Owner = owner.ToSummaryViewModel(),
 			Participants = await MapParticipants(displayedParticipations),
-			ParticipationCount = acceptedCount,
+			ParticipationCount = await _participationService.GetAcceptedParticipantCountAsync(eventData.Id),
 			Comments = await MapCommentsAsync(eventData.Comments),
 			IsOwner = isOwner,
 			IsJoined = userParticipation?.Status?.Equals("Accepted", StringComparison.OrdinalIgnoreCase) == true,

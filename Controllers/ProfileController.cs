@@ -11,11 +11,13 @@ public class ProfileController : Controller
 {
 	private readonly IUserService _userService;
 	private readonly S3Service _s3Service;
+	private readonly IEventService _eventService;
 
-	public ProfileController(IUserService userService,S3Service s3Service)
+	public ProfileController(IUserService userService, S3Service s3Service, IEventService eventService)
 	{
 		_userService = userService;
 		_s3Service = s3Service;
+		_eventService = eventService;
 	}
 
 	public IActionResult Index()
@@ -39,12 +41,12 @@ public class ProfileController : Controller
 			return NotFound();
 		}
 
-		var viewModel = await ProfileViewModel.FromUserAsync(user, _userService);
-		
+		var viewModel = await ProfileViewModel.FromUserAsync(user, _userService, _eventService);
+
 		// Check if this is the current user's own profile
 		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 		viewModel.IsOwnProfile = !string.IsNullOrWhiteSpace(currentUserId) && currentUserId == id;
-		
+
 		return View(viewModel);
 	}
 
@@ -145,7 +147,7 @@ public class ProfileController : Controller
 	[HttpGet]
 	[Route("Profile/Create")]
 	public async Task<IActionResult> Create()
-	{	
+	{
 		return View();
 	}
 

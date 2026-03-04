@@ -1,4 +1,6 @@
-﻿@{
+﻿@model HomeViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -10,22 +12,36 @@
     }
 </style>
 
-@if (User.Identity.IsAuthenticated)
+@if (User?.Identity?.IsAuthenticated == true)
 {
     <div class="text-center">
-        <h1 class="welcome-title">EndgiunField Welcome</h1>
+        <h1 class="welcome-title">EndguinField Welcome</h1>
         <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     </div>
 
     <div class="participated-event-section">
         <div style="text-align: left;">
             <h2>Participated Events</h2>
-            <partial name="_EventList" model="Model" />
+            @if (Model?.JoinedEvents != null)
+            {
+                <partial name="_EventList" model="Model.JoinedEvents" />
+            }
+            else
+            {
+                <p>No participated events to show.</p>
+            }
         </div>
 
         <div style="text-align: center;">
             <h2>Currently Open Events</h2>
-            <partial name="_EventList" model="Model" />
+            @if (Model?.OpenEvents != null)
+            {
+                <partial name="_EventList" model="Model.OpenEvents" />
+            }
+            else
+            {
+                <p>No open events to show.</p>
+            }
         </div>
 
     </div>
@@ -36,5 +52,3 @@ else
         window.location.href = '/Login/Index';
     </script>
 }
-
-</div>
