@@ -93,42 +93,42 @@ namespace EndguinField.Models
 	}
 
 	public class UserUpdateModel
-    {
-        public string? Id { get; set; }
+	{
+		public string? Id { get; set; }
 
-        [Required]
-        public string Email { get; set; } = string.Empty;
+		[Required]
+		public string Email { get; set; } = string.Empty;
 
-        [Required]
-        public string Name { get; set; } = string.Empty;
+		[Required]
+		public string Name { get; set; } = string.Empty;
 
-        public string Role { get; set; } = "User";
-        public string? Bio { get; set; }
-        public string? Contact { get; set; }
+		public string Role { get; set; } = "User";
+		public string? Bio { get; set; }
+		public string? Contact { get; set; }
 		public string? Gender { get; set; }
 
-        public IFormFile? ProfileImageFile { get; set; }
+		public IFormFile? ProfileImageFile { get; set; }
 
-        public User ToUserModel()
-        {
-            return new User
-            {
-                Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToString() : Id,
-                Email = Email,
-                Name = Name,
-                Role = Role,
-                Bio = Bio,
-                Contact = Contact,
+		public User ToUserModel()
+		{
+			return new User
+			{
+				Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToString() : Id,
+				Email = Email,
+				Name = Name,
+				Role = Role,
+				Bio = Bio,
+				Contact = Contact,
 				Gender = Gender,
-                JoinWhen = DateTime.UtcNow,
-                Friends = new(),
-                BlockLists = new(),
-                Enrolls = new(),
-                FriendRequests = new(),
-                BanUntil = null
-            };
-        }
-    }
+				JoinWhen = DateTime.UtcNow,
+				Friends = new(),
+				BlockLists = new(),
+				Enrolls = new(),
+				FriendRequests = new(),
+				BanUntil = null
+			};
+		}
+	}
 
 	public class UpdateProfileDTO
 	{

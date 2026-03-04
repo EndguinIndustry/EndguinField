@@ -19,15 +19,20 @@
     }
 </style>
 
+
 <div class="history-section">
     <h2>Past Events</h2>
     <div class="history-list">
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
+        @if (Model.PastEvents != null && Model.PastEvents.Count > 0)
+        {
+            foreach (var eventCard in Model.PastEvents)
+            {
+                <partial name="_EventCard" model="eventCard" />
+            }
+        }
+        else
+        {
+            <p>No past events to show.</p>
+        }
     </div>
 </div>
