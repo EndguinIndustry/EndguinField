@@ -16,11 +16,17 @@
         <nav class="navbar-custom">
             <a class="navbar-brand" href="/">EndguinField</a>
 
-            <div class="search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" class="search-input" placeholder="Search event">
-                <i class="fa-solid fa-filter"></i>
+            <div class="search-container">
+                <div class="search">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search event">
+                    <i class="fa-solid fa-filter"></i>
+                </div>
+                <button class="mobile-search-toggle" aria-label="Toggle search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
             </div>
+
             <div class="profile-section">
                 @if (ViewBag.CurrentUser != null)
                 {
@@ -52,6 +58,21 @@
         </main>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchToggle = document.querySelector('.mobile-search-toggle');
+            const searchContainer = document.querySelector('.search');
+
+            if (searchToggle && searchContainer) {
+                searchToggle.addEventListener('click', function () {
+                    searchContainer.classList.toggle('active');
+                    if (searchContainer.classList.contains('active')) {
+                        searchContainer.querySelector('.search-input').focus();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
