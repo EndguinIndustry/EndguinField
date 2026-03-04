@@ -20,7 +20,8 @@ header {
 .navbar-custom {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Brand on left, Search on right */
+  justify-content: space-between;
+  /* Brand on left, Search on right */
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -58,6 +59,7 @@ footer {
   color: #666;
   margin-top: 50px;
 }
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;
@@ -95,6 +97,7 @@ a {
 .border-top {
   border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
   border-bottom: 1px solid #e5e5e5;
 }
@@ -114,6 +117,7 @@ a {
 .box-shadow {
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
 }
+
 .profile-section img {
   width: 50px;
   height: 50px;
@@ -126,87 +130,144 @@ a {
   -o-border-radius: 50%;
 }
 
-/* Responsive Design */
-.search-container {
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-  justify-content: center;
-  margin: 0 20px;
+.profile-section {
+  position: relative;
 }
 
-.mobile-search-toggle {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  color: #333;
+.profile-menu {
+  position: relative;
+}
+
+.profile-menu-trigger {
+  list-style: none;
   cursor: pointer;
+}
+
+.profile-menu-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.profile-menu-content {
+  position: absolute;
+  right: 0;
+  margin-top: 10px;
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
   padding: 8px;
+  z-index: 100;
 }
 
-@media (max-width: 768px) {
-  .navbar-custom {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .search-container {
-    order: 3;
-    width: 100%;
-    margin: 10px 0 0 0;
-  }
-
-  .search {
-    max-width: 100%;
-  }
+.profile-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+  background: transparent;
+  border: none;
 }
 
-@media (max-width: 480px) {
-  .navbar-custom {
-    flex-wrap: nowrap;
-    justify-content: space-between;
-  }
+.profile-menu-item:hover {
+  background: #f3f4f6;
+}
 
-  .search-container {
-    order: unset;
-    width: auto;
-    flex-grow: 0;
-    margin: 0;
-  }
+.profile-menu-button {
+  cursor: pointer;
+  font: inherit;
+}
 
-  .search {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    width: calc(100% - 30px);
-    margin: 10px 15px;
-    box-sizing: border-box;
-    z-index: 1000;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
+.profile-login-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 14px;
+}
 
-  .search.active {
-    display: flex;
-  }
+.profile-login-link:hover {
+  background: #f9fafb;
+}
 
-  .mobile-search-toggle {
-    display: block;
-  }
+.profile-section {
+  position: relative;
+}
 
-  .navbar-brand {
-    font-size: 1.2rem;
-  }
+.profile-menu {
+  position: relative;
+}
 
-  .profile-section img {
-    width: 40px;
-    height: 40px;
-  }
+.profile-menu-trigger {
+  list-style: none;
+  cursor: pointer;
+}
 
-  .login {
-    padding: 6px 12px;
-    font-size: 14px;
-  }
+.profile-menu-trigger::-webkit-details-marker {
+  display: none;
+}
+
+.profile-menu-content {
+  position: absolute;
+  right: 0;
+  margin-top: 10px;
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  z-index: 100;
+}
+
+.profile-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+}
+
+.profile-menu-item:hover {
+  background: #f3f4f6;
+}
+
+.profile-menu-button {
+  cursor: pointer;
+  font: inherit;
+}
+
+.profile-login-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+
+.profile-login-link:hover {
+  background: #f9fafb;
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+  background-color: white;
 }

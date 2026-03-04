@@ -1,0 +1,51 @@
+@using EndguinField.Models.ViewModels
+@model EventViewModel
+@{
+	var comments = Model?.Comments ?? new List<CommentViewModel>();
+}
+
+<div id="commentsSection" class="comments-section hidden-section">
+	<div class="d-flex justify-content-between align-items-center mb-2">
+		<h2 class="mb-0">Comments</h2>
+		<button type="button" id="refreshCommentsBtn" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" title="Refresh Comments">
+			<img src="/assets/icons/refresh.svg" alt="Refresh" class="icon-dark" style="width: 16px; height: 16px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';" />
+			<i class="fa-solid fa-rotate-right" style="display: none;"></i>
+			<span>Refresh</span>
+		</button>
+	</div>
+	<div class="comments-scrollable" id="commentsScrollableContainer">
+		@if (comments.Any())
+		{
+			@foreach (var comment in comments)
+			{
+				<partial name="_Comment" model="comment" />
+			}
+		}
+		else
+		{
+			<p class="text-muted ms-3">No comments yet.</p>
+		}
+	</div>
+	<div class="comment-input-area">
+		@if (Model.IsLoggedIn)
+		{
+			<div class="reply-target-container">
+				<div id="replyTargetWrapper" class="reply-wrapper">
+					<div class="reply-content-box">
+						<span class="reply-target-label">Replying to <span id="replyTargetName"></span>:</span>
+						<span id="replyTargetContent" class="reply-target-text"></span>
+					</div>
+					<button type="button" id="cancelReplyBtn" class="cancel-reply">
+						<span aria-hidden="true" style="font-size: 1.25rem; line-height: 1; color: var(--secondary-color);">&times;</span>
+					</button>
+				</div>
+			</div>
+			<div class="comment-input-row">
+				<textarea id="newCommentInput" class="comment-input" rows="1" maxlength="1000" placeholder="Write a comment... (Ctrl + Enter to send)"></textarea>
+				<partial name="Components/_IconButton"
+						 model='new IconButtonViewModel { Id = "sendCommentBtn", IconPath = "/assets/icons/comment-send.svg", AltText = "Send", Title = "Send Comment", AdditionalClasses = "icon-dark" }' />
+			</div>
+			<div class="char-counter text-end"><span id="newCommentCharCount">0</span>/1000</div>
+		}
+	</div>
+</div>

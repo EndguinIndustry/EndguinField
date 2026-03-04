@@ -1,0 +1,34 @@
+@model CommentViewModel
+
+@{
+	var userName = Model.Sender?.Name ?? "Unknown User";
+	var userImage = Model.Sender?.Image ?? "";
+	var content = Model.Content ?? "";
+	var commentId = Model.Id ?? "";
+}
+
+<div id="@commentId" class="comment-item">
+	<a href="/Profile/View/@Model.Sender?.Id" class="profile-link" title="@userName">
+		<partial name="Components/_UserAvatar" model='new EndguinField.Models.ViewModels.Components.UserAvatarViewModel { Name = userName, ImageUrl = userImage, CssClass = "avatar profile-hover" }' />
+	</a>
+	<div class="comment-content">
+		<h5 class="comment-author">
+			<a href="/Profile/View/@Model.Sender?.Id" class="profile-link" title="@userName">@userName</a>
+		</h5>
+        @if (!string.IsNullOrEmpty(Model.RepliedMessageId))
+        {
+            <div tabindex="0" class="replied-reference replied-reference-btn" data-target-id="@Model.RepliedMessageId">
+                 <img src="~/assets/icons/reply.svg" alt="Reply" class="icon-secondary" asp-append-version="true" />
+                 <span class="replied-reference-text"></span>
+            </div>
+        }
+		<p class="comment-text">@content</p>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <button type="button" class="reply-btn">
+                <img src="~/assets/icons/reply.svg" alt="Reply" class="icon-secondary" asp-append-version="true" />
+                <span>Reply</span>
+            </button>
+        }
+	</div>
+</div>

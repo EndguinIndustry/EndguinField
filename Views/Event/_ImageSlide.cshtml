@@ -1,0 +1,82 @@
+@model EventViewModel
+@{
+	var images = Model?.Images ?? new List<string>();
+}
+
+<!-- View Mode -->
+<div id="eventImageCarousel" class="image-carousel-view">
+	@if (images.Any())
+	{
+		<div id="eventImageSlideInner" class="imageSlide-inner">
+			@for (int i = 0; i < images.Count; i++)
+			{
+				<div class="imageSlide-item">
+					<img src="@images[i]" class="d-block w-100 rounded-3" alt="Event image @(i + 1)">
+				</div>
+			}
+		</div>
+
+		@if (images.Count > 1)
+		{
+			<button id="imageSlidePrevBtn" class="Btn"></button>
+			<button id="imageSlideNextBtn" class="Btn"></button>
+		}
+	}
+	else
+	{
+		<div class="imageSlide-inner">
+			<div class="imageSlide-item active">
+				<div class="preview-image-placeholder">
+					<span>No images available</span>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+<!-- Edit Mode -->
+<div id="eventImageListEditor" class="edit-mode-only mt-3">
+	<div id="imageListContainer" class="d-flex flex-column gap-3">
+		@for (int i = 0; i < images.Count; i++)
+		{
+			<div class="image-list-item position-relative mb-2">
+				<img src="@images[i]" class="w-100 rounded-3" alt="Event image" style="aspect-ratio: 16/9; object-fit: cover;">
+				<button type="button" class="remove-image-btn" data-index="@i">×</button>
+			</div>
+		}
+	</div>
+
+	<button type="button" id="addImageBtn"
+			class="btn btn-outline-primary w-100 mt-3 d-flex align-items-center justify-content-center gap-2 dashed-border-btn">
+		<img src="~/assets/icons/plus.svg" class="icon-dark" style="width: 20px; height: 20px;" />
+		Add Image
+	</button>
+	<input type="file" id="imageUploadInput" accept="image/*" multiple style="display: none;" />
+</div>
+
+<script>
+	(function () {
+		function initCarousel() {
+			const inner = document.querySelector('#eventImageSlideInner');
+			const prevButton = document.querySelector('#imageSlidePrevBtn');
+			const nextButton = document.querySelector('#imageSlideNextBtn');
+
+			if (inner) {
+				if (prevButton) {
+					prevButton.onclick = () => {
+						inner.scrollBy({ left: -inner.offsetWidth, behavior: 'smooth' });
+					};
+				}
+				if (nextButton) {
+					nextButton.onclick = () => {
+						inner.scrollBy({ left: inner.offsetWidth, behavior: 'smooth' });
+					};
+				}
+			}
+		}
+
+		// Run immediately and also on a short delay to ensure DOM is ready if injected dynamically
+		initCarousel();
+		setTimeout(initCarousel, 100);
+	})();
+</script>

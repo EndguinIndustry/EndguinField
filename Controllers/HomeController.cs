@@ -14,35 +14,35 @@ public class HomeController : Controller
         _userService = userService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         string currentUserId = "1";
-        var currentUser = _userService.GetUserById(currentUserId);
+        var currentUser = await _userService.GetUserByIdAsync(currentUserId);
         ViewBag.CurrentUser = currentUser;
         return View();
     }
 
-    public IActionResult Privacy()
+    public async Task<IActionResult> Privacy()
     {
         string currentUserId = "1";
-        var currentUser = _userService.GetUserById(currentUserId);
+        var currentUser = await _userService.GetUserByIdAsync(currentUserId);
         ViewBag.CurrentUser = currentUser;
         return View();
     }
 
-    public IActionResult Login()
+    public async Task<IActionResult> Login()
     {
         string currentUserId = "1";
-        var currentUser = _userService.GetUserById(currentUserId);
+        var currentUser = await _userService.GetUserByIdAsync(currentUserId);
         ViewBag.CurrentUser = currentUser;
         return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    public async Task<IActionResult> Error()
     {
         string currentUserId = "1";
-        var currentUser = _userService.GetUserById(currentUserId);
+        var currentUser = await _userService.GetUserByIdAsync(currentUserId);
         ViewBag.CurrentUser = currentUser;
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }

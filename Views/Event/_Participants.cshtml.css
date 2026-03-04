@@ -1,0 +1,223 @@
+.participants-section {
+	display: flex;
+	margin-top: 1.5rem;
+}
+
+.host-column {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding-right: 1.5rem;
+	min-width: 120px;
+	max-width: 150px;
+}
+
+.participants-column {
+	flex: 1;
+}
+
+.participants-container {
+	background-color: transparent;
+	border-radius: 0.5rem;
+	overflow: hidden;
+}
+
+.participants-header {
+	background-color: var(--highlight-main);
+	padding: 0.5rem 1rem;
+	margin-bottom: 0;
+	border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.participants-header h2 {
+	margin-top: 0px;
+}
+
+.participants-list {
+	max-height: 300px;
+	overflow-y: auto;
+	padding: 0.5rem;
+}
+
+.participant-item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 0.5rem;
+	padding: 0.5rem;
+	border-radius: 0.375rem;
+	background-color: var(--bg-alt);
+	transition: all 0.2s ease;
+}
+
+.participant-item.status-accepted {
+	background-color: var(--bg-tag);
+	border: 1px solid var(--border-tag);
+}
+
+.participant-item.status-accepted .participant-name {
+	color: var(--accent-secondary);
+	font-weight: 600;
+}
+
+.participant-name {
+	flex-grow: 1;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.participant-controls {
+	display: flex;
+	gap: 0.25rem;
+	opacity: 0;
+	transform: translateX(10px);
+	transition: opacity 0.3s ease, transform 0.3s ease;
+	pointer-events: none;
+}
+
+.participant-item:hover .participant-controls {
+	opacity: 0.8;
+	transform: translateX(0);
+	pointer-events: auto;
+}
+
+.participant-item:hover .participant-controls:hover {
+	opacity: 1;
+}
+
+.btn-icon-only {
+	height: 32px;
+	width: 32px;
+	padding: 4px;
+	background: var(--bg-white-soft);
+	border: 1px solid transparent;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	cursor: pointer;
+}
+
+.btn-icon-only:hover {
+	background: var(--bg-card);
+	border-color: var(--border-tag);
+	transform: translateY(-2px) scale(1.1);
+	box-shadow: var(--shadow-sm);
+}
+
+.btn-icon-only:active {
+	transform: translateY(0) scale(0.95);
+}
+
+.accept-join-btn:hover {
+	background-color: var(--success-faint);
+	border-color: var(--success-color);
+}
+
+.decline-join-btn:hover,
+.remove-join-btn:hover {
+	background-color: var(--danger-faint);
+	border-color: var(--danger-color);
+}
+
+.participant-icon {
+	width: 20px;
+	height: 20px;
+	transition: transform 0.2s ease;
+}
+
+.btn-icon-only:hover .participant-icon {
+	filter: brightness(1.1);
+}
+
+.avatar-sm {
+	width: 50px;
+	height: 50px;
+	object-fit: cover;
+	flex-shrink: 0;
+	margin-right: 0.5rem;
+}
+
+.host-column h4 {
+	color: var(--secondary-color);
+	font-weight: bold;
+	margin-bottom: 0.5rem;
+}
+
+.host-column div {
+	font-weight: bold;
+}
+
+.host-avatar {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	object-fit: cover;
+	margin-bottom: 0.5rem;
+	border: 3px solid var(--primary-color);
+	box-shadow: 0 4px 10px var(--primary-color-light);
+}
+
+.host-name {
+	font-weight: 600;
+	color: var(--text-heading);
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+
+::deep .profile-link {
+	text-decoration: none;
+	color: inherit;
+	display: inline-block;
+	transition: transform 0.2s ease, color 0.2s ease;
+}
+
+::deep .profile-link.participant-name,
+::deep .profile-link.host-name,
+::deep .profile-link.comment-author {
+	color: var(--text-heading);
+}
+
+::deep .profile-link.participant-name:hover,
+::deep .profile-link.host-name:hover,
+::deep .profile-link.comment-author:hover {
+	color: var(--primary-color);
+	text-decoration: underline;
+}
+
+::deep .profile-hover {
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+::deep .profile-hover:hover {
+	transform: scale(1.05);
+}
+
+::deep .avatar.profile-hover:hover,
+::deep .avatar-sm.profile-hover:hover {
+	box-shadow: var(--shadow-md);
+}
+
+::deep .host-avatar.profile-hover:hover {
+	box-shadow: 0 6px 12px var(--primary-color-light);
+}
+
+.participants-header h2 {
+	font-size: 1.25rem;
+	margin-bottom: 0;
+}
+
+.no-participants {
+	padding: 1rem;
+	text-align: center;
+	color: var(--secondary-color);
+}
+
+.participant-item img {
+	border-radius: 50%;
+}

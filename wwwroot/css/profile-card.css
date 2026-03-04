@@ -7,6 +7,18 @@
     margin: 20px auto;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     position: relative;
+    animation: profilePopUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes profilePopUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .profile-card.profile-banned {
@@ -152,6 +164,32 @@
 
 .edit-button svg {
     color: #4a5568;
+}
+
+.add-friend-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-friend-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.add-friend-button svg {
+    color: white;
 }
 
 .profile-bio {
@@ -335,13 +373,13 @@ textarea.form-input {
 }
 
 .btn-save {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--primary-color, #0d6efd);
     color: white;
 }
 
 .btn-save:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.4);
 }
 
 .btn-save:active {
@@ -383,12 +421,58 @@ textarea.form-input {
 }
 
 @media (max-width: 768px) {
+    .profile-card {
+        margin: 10px;
+        border-radius: 12px;
+    }
+
     .profile-card-header {
         flex-direction: column;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .profile-avatar {
+        margin-bottom: 15px;
+    }
+
+    .edit-button,
+    .add-friend-button {
+        top: 15px;
+        right: 15px;
+        width: 36px;
+        height: 36px;
+    }
+
+    .profile-info {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-name {
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    .profile-details {
+        width: 100%;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .detail-item {
+        width: 100%;
+        max-width: none;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.6);
     }
     
     .profile-info-edit {
         padding: 20px 0;
+        width: 100%;
+        text-align: left;
     }
     
     .form-row {
@@ -398,12 +482,23 @@ textarea.form-input {
     
     .profile-edit-actions {
         flex-direction: column;
+        gap: 10px;
+        padding: 15px 20px;
     }
     
     .btn-cancel,
     .btn-save {
         width: 100%;
         justify-content: center;
+    }
+
+    .joined-date {
+        justify-content: center;
+    }
+
+    .profile-bio {
+        padding: 20px;
+        text-align: center;
     }
 }
 
@@ -512,4 +607,18 @@ textarea.form-input {
     background: linear-gradient(90deg, #667eea, #764ba2);
     width: 0%;
     transition: width 0.3s ease;
+}
+
+.profile-content-container {
+    display: flex;
+    flex-direction: row;
+    column-gap: 2vw;
+    margin-top: 2vw;
+}
+
+@media (max-width: 768px) {
+    .profile-content-container {
+        flex-direction: column;
+        gap: 20px;
+    }
 }

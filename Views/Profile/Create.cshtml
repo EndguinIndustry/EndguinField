@@ -1,0 +1,37 @@
+<form id="createUserForm" enctype="multipart/form-data">
+    <input type="text" name="Name" placeholder="Name" required />
+    <input type="email" name="Email" placeholder="Email" required />
+    <input type="text" name="Role" placeholder="Role" />
+    <textarea name="Bio" placeholder="Bio"></textarea>
+    <input type="text" name="Contact" placeholder="Contact" />
+    <select name="Gender">
+        <option value="">Prefer not to say</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Non-binary">Non-binary</option>
+        <option value="Other">Other</option>
+    </select>
+    <input type="file" name="ProfileImageFile" />
+
+    <button type="submit">Create User</button>
+</form>
+
+<script>
+document.getElementById("createUserForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    const res = await fetch("/API/User/Create", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await res.json();
+    if (data.success) {
+        window.location.href = data.redirectUrl;
+    } else {
+        alert(data.message);
+    }
+});
+</script>

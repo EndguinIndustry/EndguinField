@@ -1,0 +1,160 @@
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.modal-overlay.active {
+    display: flex;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.modal-overlay.closing {
+    display: flex;
+    animation: fadeOut 0.3s ease forwards;
+}
+
+.modal-box {
+    background: #fff;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transform: translateY(-20px);
+    opacity: 0;
+}
+
+.modal-overlay.active .modal-box {
+    animation: slideUpIn 0.3s ease forwards;
+}
+
+.modal-overlay.closing .modal-box {
+    animation: slideDownOut 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes slideUpIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideDownOut {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem 0.75rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 0 0.25rem;
+    transition: color 0.15s;
+}
+
+.modal-close-btn:hover {
+    color: #212529;
+}
+
+.modal-body {
+    padding: 1rem 1.25rem;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Progress Bar Styles */
+.upload-progress-item {
+    margin-bottom: 1rem;
+}
+
+.upload-progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.progress-bar-container {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: #007bff;
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+.progress-bar-fill.success {
+    background: #28a745;
+}
+
+.progress-bar-fill.error {
+    background: #dc3545;
+}

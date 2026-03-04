@@ -1,5 +1,6 @@
 using System.Globalization;
 using EndguinField.Services;
+using System.ComponentModel.DataAnnotations;
 namespace EndguinField.Models
 {
 	public class HistoryEventViewModel
@@ -26,6 +27,7 @@ namespace EndguinField.Models
 		public string? Bio { get; set; }
 		public string? ImageUrl { get; set; }
 		public string? Contact { get; set; }
+		public string? Gender { get; set; }
 		public string JoinedDate { get; set; } = string.Empty;
 		public List<string> FriendIds { get; set; } = new();
 		public List<FriendViewModel> Friends { get; set; } = new();
@@ -34,8 +36,9 @@ namespace EndguinField.Models
 		public DateTime? BanUntil { get; set; }
 		public List<string> PendingFriendRequestIds { get; set; } = new();
 		public List<FriendViewModel> PendingRequests { get; set; } = new();
+		public bool IsOwnProfile { get; set; }
 
-		public static ProfileViewModel FromUser(User user, IUserService userService)
+		public static async Task<ProfileViewModel> FromUserAsync(User user, IUserService userService)
 		{
 
 			var model = new ProfileViewModel
@@ -47,6 +50,7 @@ namespace EndguinField.Models
 				Bio = user.Bio,
 				ImageUrl = user.Image,
 				Contact = user.Contact,
+				Gender = user.Gender,
 				JoinedDate = user.JoinWhen.ToString("dd-MM-yyyy", new CultureInfo("en-US")),
 
 				FriendIds = user.Friends ?? new List<string>(),
@@ -56,34 +60,81 @@ namespace EndguinField.Models
 				IsBanned = user.BanUntil.HasValue && user.BanUntil.Value > DateTime.Now,
 				BanUntil = user.BanUntil
 			};
-			model.Friends = model.FriendIds
-				.Select(id => userService.GetUserById(id))
-				.Where(f => f != null)
-				.Select(f => new FriendViewModel
-				{
-					Id = f!.Id,
-					Name = f.Name,
-					ImageUrl = f.Image
-				}).ToList();
+			var friendTasks = model.FriendIds
+				.Select(id => userService.GetUserByIdAsync(id));
+			var friends = await Task.WhenAll(friendTasks);
 
-			model.PendingRequests = model.PendingFriendRequestIds
-				.Select(id => userService.GetUserById(id))
+			model.Friends = friends
 				.Where(f => f != null)
 				.Select(f => new FriendViewModel
 				{
 					Id = f!.Id,
 					Name = f.Name,
 					ImageUrl = f.Image
-				}).ToList();
+				})
+				.ToList();
+
+			var pendingTasks = model.PendingFriendRequestIds
+				.Select(id => userService.GetUserByIdAsync(id));
+			var pending = await Task.WhenAll(pendingTasks);
+
+			model.PendingRequests = pending
+				.Where(f => f != null)
+				.Select(f => new FriendViewModel
+				{
+					Id = f!.Id,
+					Name = f.Name,
+					ImageUrl = f.Image
+				})
+				.ToList();
 
 			return model;
 		}
 	}
+
+	public class UserUpdateModel
+    {
+        public string? Id { get; set; }
+
+        [Required]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        public string Name { get; set; } = string.Empty;
+
+        public string Role { get; set; } = "User";
+        public string? Bio { get; set; }
+        public string? Contact { get; set; }
+		public string? Gender { get; set; }
+
+        public IFormFile? ProfileImageFile { get; set; }
+
+        public User ToUserModel()
+        {
+            return new User
+            {
+                Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToString() : Id,
+                Email = Email,
+                Name = Name,
+                Role = Role,
+                Bio = Bio,
+                Contact = Contact,
+				Gender = Gender,
+                JoinWhen = DateTime.UtcNow,
+                Friends = new(),
+                BlockLists = new(),
+                Enrolls = new(),
+                FriendRequests = new(),
+                BanUntil = null
+            };
+        }
+    }
 
 	public class UpdateProfileDTO
 	{
 		public string Name { get; set; } = string.Empty;
 		public string? Contact { get; set; }
 		public string? Bio { get; set; }
+		public string? Gender { get; set; }
 	}
 }
