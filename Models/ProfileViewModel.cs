@@ -61,10 +61,13 @@ namespace EndguinField.Models
 			};
 			var pastEvents = await userService.GetAllJoinedEventAsync(user.Id);
 
-			model.PastEvents = pastEvents.Select(eventId => {
+			model.PastEvents = pastEvents.Select(eventId =>
+			{
 				var thisEvent = eventService.GetEventByIdAsync(eventId).GetAwaiter().GetResult();
-				
-				return new EventCardModel {
+
+				return new EventCardModel
+				{
+					Id = thisEvent.Id,
 					Name = thisEvent.Name,
 					ImgSrc = thisEvent.BackgroundImage,
 					StartTime = thisEvent.StartTime,
