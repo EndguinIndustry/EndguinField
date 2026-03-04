@@ -3,6 +3,7 @@ using DotNetEnv;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using EndguinField.Middleware;
 
 if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), ".env")))
 {
@@ -67,6 +68,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<BannedUserMiddleware>();
 
 app.MapStaticAssets();
 
