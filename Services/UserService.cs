@@ -8,23 +8,28 @@ namespace EndguinField.Services
 {
 	public interface IUserService
     {
+		string? GetCurrentUserId();
         Task<User?> GetUserByIdAsync(string id);
         Task<List<User>> GetAllUsersAsync();
 		Task<(bool success, string? error)> CreateUserAsync(User userData);
 		Task<(bool success, string? error)> UpdateUserAsync(string id, User userData);
 		Task<(bool success, string? error)> DeleteUserAsync(string id);
-		string? GetCurrentUserId();
+		Task<List<Event>> GetAllJoinedEventAsync(string userId);
     }
 
 	public class UserService : IUserService
 	{
 		private readonly IUserMongoService _userStore;
 		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly IParticipationMongoService _participationStore;
+		private readonly IEventMongoService _eventStore;
 
-		public UserService(IUserMongoService userStore, IHttpContextAccessor httpContextAccessor)
+		public UserService(IUserMongoService userStore, IHttpContextAccessor httpContextAccessor, IParticipationMongoService participationStore, IEventMongoService eventStore)
 		{
 			_userStore = userStore;
 			_httpContextAccessor = httpContextAccessor;
+			_participationStore = participationStore;
+			_eventStore = eventStore;
 		}
 
 		public string? GetCurrentUserId()
@@ -40,6 +45,28 @@ namespace EndguinField.Services
 		public async Task<List<User>> GetAllUsersAsync()
 		{
 			return await _userStore.GetAllAsync();
+		}
+
+		public async Task<List<Event>> GetAllJoinedEventAsync(string userId)
+		{
+			var participations = await _participationStore.GetByUserIdAsync(userId);
+			var matchedEventIds = participations
+				.Where(p => p.Status == "Pending" || p.Status == "Accepted")
+				.Select(p => p.EventId)
+				.Distinct()
+				.ToList();
+
+			var events = new List<Event>();
+			foreach (var eventId in matchedEventIds)
+			{
+				var ev = await _eventStore.GetByIdAsync(eventId);
+				if (ev != null)
+				{
+					events.Add(ev);
+				}
+			}
+
+			return events;
 		}
 
 		public async Task<(bool success, string? error)> CreateUserAsync(User userData)
