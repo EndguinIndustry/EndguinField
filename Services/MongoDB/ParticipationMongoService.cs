@@ -6,6 +6,7 @@ namespace EndguinField.Services.MongoDB;
 public interface IParticipationMongoService
 {
 	Task<List<Participation>> GetByEventIdAsync(string eventId, CancellationToken cancellationToken = default);
+	Task<List<Participation>> GetByUserIdAsync(string userId, CancellationToken cancellationToken = default);
 	Task<Participation?> GetAsync(string eventId, string userId, CancellationToken cancellationToken = default);
 	Task<Participation> CreateAsync(Participation participation, CancellationToken cancellationToken = default);
 	Task<bool> UpdateStatusAsync(string eventId, string userId, string status, CancellationToken cancellationToken = default);
@@ -25,6 +26,11 @@ public class ParticipationMongoService : IParticipationMongoService
 	public async Task<List<Participation>> GetByEventIdAsync(string eventId, CancellationToken cancellationToken = default)
 	{
 		return await _participations.Find(p => p.EventId == eventId).ToListAsync(cancellationToken);
+	}
+
+	public async Task<List<Participation>> GetByUserIdAsync(string userId, CancellationToken cancellationToken = default)
+	{
+		return await _participations.Find(p => p.UserId == userId).ToListAsync(cancellationToken);
 	}
 
 	public async Task<Participation?> GetAsync(string eventId, string userId, CancellationToken cancellationToken = default)
