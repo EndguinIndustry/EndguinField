@@ -1,3 +1,4 @@
+@using System.Globalization
 @model List<EndguinField.Models.Event>
 
 @{
@@ -90,7 +91,7 @@
                             <div style="font-size: 0.85em; color: #666;">@evt.Location</div>
                         </td>
                         <td>
-                            <div>@evt.StartTime.ToString("MMM dd, yyyy")</div>
+                            <div>@evt.StartTime.ToString("dd MMM yyyy", new CultureInfo("en-US"))</div>
                             <div style="font-size: 0.85em; color: #666;">@evt.StartTime.ToString("HH:mm") - @evt.EndTime.ToString("HH:mm")</div>
                         </td>
                         <td>
