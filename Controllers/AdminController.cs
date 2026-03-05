@@ -123,7 +123,7 @@ namespace EndguinField.Controllers
         {
             if (!await IsAdminAsync()) return RedirectToAction("Index", "Home");
 
-            var events = await _eventService.GetAllEventsAsync();
+            var events = await _eventService.GetAllEventsWithParticipantsAsync();
 
              if (!string.IsNullOrEmpty(search))
             {
