@@ -12,7 +12,7 @@ public class ProfileController : Controller
 	private readonly IUserService _userService;
 	private readonly S3Service _s3Service;
 
-	public ProfileController(IUserService userService,S3Service s3Service)
+	public ProfileController(IUserService userService, S3Service s3Service)
 	{
 		_userService = userService;
 		_s3Service = s3Service;
@@ -40,11 +40,11 @@ public class ProfileController : Controller
 		}
 
 		var viewModel = await ProfileViewModel.FromUserAsync(user, _userService);
-		
+
 		// Check if this is the current user's own profile
 		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 		viewModel.IsOwnProfile = !string.IsNullOrWhiteSpace(currentUserId) && currentUserId == id;
-		
+
 		return View(viewModel);
 	}
 
@@ -141,50 +141,28 @@ public class ProfileController : Controller
 		return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 	}
 
-
-	[HttpGet]
-	[Route("Profile/Create")]
-	public async Task<IActionResult> Create()
-	{	
-		return View();
-	}
-
-
 	[HttpPost]
-	[Route("API/User/Create")]
-	public async Task<IActionResult> Create([FromForm] UserUpdateModel userData)
+	[Route("API/AddFriend")]
+	public async Task<IActionResult> SendRequest([FromBody] AddFriendRequest request)
 	{
-		if (!ModelState.IsValid)
+		var senderId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+		if (senderId == request.ReceiverId)
+			return BadRequest("Cannot add yourself");
+
+		var receiver = await _userService.GetUserByIdAsync(request.ReceiverId);
+		if (receiver == null)
+			return NotFound();
+
+
+		receiver.FriendRequests ??= new List<string>();
+		if (!receiver.FriendRequests.Contains(senderId))
 		{
-			return BadRequest(new { success = false, message = "Invalid data" });
+			receiver.FriendRequests.Add(senderId);
+			await _userService.UpdateUserAsync(request.ReceiverId,receiver);
 		}
 
-		try
-		{
-			var newUser = userData.ToUserModel();
-
-			// Upload profile image to S3
-			if (userData.ProfileImageFile != null)
-			{
-				newUser.Image = await _s3Service.UploadFileAsync(userData.ProfileImageFile);
-			}
-
-			var (success, error) = await _userService.CreateUserAsync(newUser);
-			if (!success)
-			{
-				return BadRequest(new { success = false, message = error ?? "Failed to create user" });
-			}
-
-			return Ok(new
-			{
-				success = true,
-				redirectUrl = Url.Action("ViewProfile", "Profile", new { id = newUser.Id })
-			});
-		}
-		catch (Exception ex)
-		{
-			return StatusCode(500, new { success = false, message = ex.Message });
-		}
+		return Json(new { success = true });
 	}
 
 	[HttpGet]
