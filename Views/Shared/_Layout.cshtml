@@ -35,17 +35,11 @@
         <nav class="navbar-custom">
             <a class="navbar-brand" href="/">EndguinField</a>
 
-            <div class="search-container">
-                <div class="search">
-                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Search event">
-                    <i class="fa-solid fa-filter"></i>
-                </div>
-                <button class="mobile-search-toggle" aria-label="Toggle search">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" placeholder="Search event">
+                <i class="fa-solid fa-filter"></i>
             </div>
-
             <div class="profile-section">
                 @if (User.Identity?.IsAuthenticated == true)
                 {

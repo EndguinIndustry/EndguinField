@@ -14,7 +14,6 @@ header {
   -moz-border-radius: 0px 0px 15px 15px;
   -ms-border-radius: 0px 0px 15px 15px;
   -o-border-radius: 0px 0px 15px 15px;
-  position: relative; /* Added for absolute positioning of search bar on mobile */
 }
 
 .navbar-custom {
