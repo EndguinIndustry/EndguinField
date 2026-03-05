@@ -37,8 +37,9 @@
 
             <div class="search">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" class="search-input" placeholder="Search event">
+                <input id="navbar-search-input" type="text" class="search-input" placeholder="Search event" autocomplete="off">
                 <i class="fa-solid fa-filter"></i>
+                <div id="navbar-search-results" class="search-results" hidden></div>
             </div>
             <div class="profile-section">
                 @if (User.Identity?.IsAuthenticated == true)
@@ -75,32 +76,30 @@
         </main>
     </div>
 
-    <footer>
-        &copy; 2026 - EndguinField - <a href="/privacy" style="color: #8A2BE2; text-decoration: none;">Privacy</a>
-    </footer>
 
     <partial name="Components/_Modal" />
     <script src="~/js/Shared/slideCapsule.js" asp-append-version="true"></script>
     <script type="module" src="~/js/Shared/modal.js" asp-append-version="true"></script>
+    <script src="~/js/Shared/navbarSearch.js" asp-append-version="true"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const profileMenu = document.querySelector('.profile-menu');
-            if (!profileMenu) {
-                return;
-            }
+                document.addEventListener('DOMContentLoaded', function () {
+                    const profileMenu = document.querySelector('.profile-menu');
+                    if (!profileMenu) {
+                        return;
+                    }
 
-            document.addEventListener('click', function (event) {
-                if (!profileMenu.contains(event.target)) {
-                    profileMenu.removeAttribute('open');
-                }
-            });
+                    document.addEventListener('click', function (event) {
+                        if (!profileMenu.contains(event.target)) {
+                            profileMenu.removeAttribute('open');
+                        }
+                    });
 
-            document.addEventListener('keydown', function (event) {
-                if (event.key === 'Escape') {
-                    profileMenu.removeAttribute('open');
-                }
-            });
-        });
+                    document.addEventListener('keydown', function (event) {
+                        if (event.key === 'Escape') {
+                            profileMenu.removeAttribute('open');
+                        }
+                    });
+                });
     </script>
 </body>
 

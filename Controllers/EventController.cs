@@ -70,6 +70,49 @@ public class EventController : Controller
 		return View(viewModel);
 	}
 
+	[HttpGet]
+	[Route("API/Search/NavbarData")]
+	public async Task<IActionResult> GetNavbarSearchData()
+	{
+		var events = await _eventService.GetAllEventsAsync();
+		var allUsers = await _userService.GetAllUsersAsync();
+
+		var eventItems = events
+			.Where(eventData => !string.IsNullOrWhiteSpace(eventData.Id) && !string.IsNullOrWhiteSpace(eventData.Name))
+			.Select(eventData => new
+			{
+				id = eventData.Id,
+				name = eventData.Name,
+				location = eventData.Location ?? string.Empty,
+				image = eventData.BackgroundImage ?? string.Empty,
+				startTime = eventData.StartTime,
+				maxParticipants = eventData.MaxParticipants,
+				participantCount = eventData.Participants?.Count ?? 0,
+				url = Url.Action("Index", "Event", new { id = eventData.Id }) ?? $"/Event/{eventData.Id}"
+			})
+			.ToList();
+
+		var userItems = allUsers
+			.Where(user =>
+				!string.IsNullOrWhiteSpace(user.Id) &&
+				!string.IsNullOrWhiteSpace(user.Name))
+			.Select(user => new
+			{
+				id = user.Id,
+				name = user.Name,
+				image = user.Image ?? string.Empty,
+				url = Url.Action("ViewProfile", "Profile", new { id = user.Id }) ?? $"/Profile/{user.Id}"
+			})
+			.Cast<object>()
+			.ToList();
+
+		return Ok(new
+		{
+			events = eventItems,
+			users = userItems
+		});
+	}
+
 
 	[HttpPost]
 	[Route("API/Event/Create")]
