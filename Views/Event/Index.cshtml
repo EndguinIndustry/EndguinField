@@ -6,7 +6,7 @@
 <div id="event-detail-view" class="container event-detail-container" data-event-id="@Model.Id"
 	 data-max-participants="@Model.MaxParticipants"
 	 data-is-create-mode="@Json.Serialize(Model.IsCreateMode)" data-background-image="@Model.BackgroundImage"
-	 data-status="@Model.Status">
+	 data-status="@Model.DisplayStatus">
 	<partial name="_Header" model="Model" />
 
 	<div class="event-layout-grid">
@@ -28,7 +28,7 @@
 		</div>
 
 		<div class="event-side-content">
-			<div id="eventStatus" class="view-mode-only event-status @Model.Status.ToLower()">@Model.Status</div>
+			<div id="eventStatus" class="view-mode-only event-status @Model.DisplayStatus.ToLower()">@Model.DisplayStatus</div>
 
 			<div class="event-actions-wrapper">
 				<partial name="_DetailsSection" model="Model" />
@@ -39,14 +39,14 @@
 			{
 				<button class="btn btn-primary create-event-submit-btn" type="button">Create Event</button>
 			}
-			else if (Model.IsOwner)
+			else if (Model.IsOwner && Model.DisplayStatus != "Ended")
 			{
 				<button class="edit-mode-only btn btn-danger delete-event-btn" type="button">
 					<img src="~/assets/icons/delete.svg" alt="Delete" class="icon-white icon" asp-append-version="true" />
 					Delete Event
 				</button>
 			}
-			else if (Model.Status == "Open")
+			else if (Model.DisplayStatus == "Open")
 			{
 				<div class="join-actions-container">
 					@if (Model.UserStatus == "Pending")
