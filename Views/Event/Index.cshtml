@@ -4,6 +4,7 @@
 }
 
 <div id="event-detail-view" class="container event-detail-container" data-event-id="@Model.Id"
+	 data-max-participants="@Model.MaxParticipants"
 	 data-is-create-mode="@Json.Serialize(Model.IsCreateMode)" data-background-image="@Model.BackgroundImage"
 	 data-status="@Model.Status">
 	<partial name="_Header" model="Model" />

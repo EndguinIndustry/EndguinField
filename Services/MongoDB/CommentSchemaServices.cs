@@ -5,14 +5,10 @@ using CommentModel = EndguinField.Models.Comment;
 public interface ICommentSchemaServices
 {
     Task<List<CommentModel>> GetAllAsync(CancellationToken ct = default);
-
-    Task<CommentModel?> GetByIdAsync(string id, CancellationToken ct = default);
-
+    Task<CommentModel> GetByIdAsync(string id, CancellationToken ct = default);
     Task<CommentModel> CreateAsync(CommentModel data, CancellationToken ct = default);
-
-    Task<bool> UpdateAsync(string id, CommentModel updatedData, CancellationToken ct = default);
-
-    Task<bool> DeleteAsync(string id, CancellationToken ct = default);
+    Task UpdateAsync(string id, CommentModel updatedData, CancellationToken ct = default);
+    Task DeleteAsync(string id, CancellationToken ct = default);
 }
 
 public class CommentSchemaServices : ICommentSchemaServices
@@ -30,10 +26,12 @@ public class CommentSchemaServices : ICommentSchemaServices
         return await _collection.Find(_ => true).ToListAsync(ct);
     }
 
-    public async Task<CommentModel?> GetByIdAsync(string id, CancellationToken ct = default)
+    public async Task<CommentModel> GetByIdAsync(string id, CancellationToken ct = default)
     {
-        if (string.IsNullOrWhiteSpace(id)) return null;
-        return await _collection.Find(x => x.Id == id).FirstOrDefaultAsync(ct);
+        if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("Id cannot be null or empty.");
+        var item = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync(ct);
+        if (item == null) throw new KeyNotFoundException("Comment not found.");
+        return item;
     }
 
     public async Task<CommentModel> CreateAsync(CommentModel data, CancellationToken ct = default)
@@ -44,18 +42,18 @@ public class CommentSchemaServices : ICommentSchemaServices
         return data;
     }
 
-    public async Task<bool> UpdateAsync(string id, CommentModel updatedData, CancellationToken ct = default)
+    public async Task UpdateAsync(string id, CommentModel updatedData, CancellationToken ct = default)
     {
-        if (string.IsNullOrEmpty(id)) return false;
+        if (string.IsNullOrEmpty(id)) throw new ArgumentException("Id cannot be null or empty.");
         updatedData.Id = id;
         var result = await _collection.ReplaceOneAsync(x => x.Id == id, updatedData, cancellationToken: ct);
-        return result.ModifiedCount == 1;
+        if (result.MatchedCount == 0) throw new KeyNotFoundException("Comment not found.");
     }
 
-    public async Task<bool> DeleteAsync(string id, CancellationToken ct = default)
+    public async Task DeleteAsync(string id, CancellationToken ct = default)
     {
-        if (string.IsNullOrEmpty(id)) return false;
+        if (string.IsNullOrEmpty(id)) throw new ArgumentException("Id cannot be null or empty.");
         var result = await _collection.DeleteOneAsync(x => x.Id == id, cancellationToken: ct);
-        return result.DeletedCount == 1;
+        if (result.DeletedCount == 0) throw new KeyNotFoundException("Comment not found.");
     }
 }
