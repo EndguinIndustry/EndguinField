@@ -117,7 +117,7 @@ namespace EndguinField.Services
 		{
 			var participations = await _participationStore.GetByUserIdAsync(userId);
 			var matchedEventIds = participations
-				.Where(p => p.Status == "Accepted" && _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().EndTime < DateTime.Now)
+				.Where(p => (p.Status == "Accepted" || _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().OwnerId == userId) && _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().EndTime < DateTime.Now)
 				.Select(p => p.EventId)
 				.Distinct()
 				.ToList();
