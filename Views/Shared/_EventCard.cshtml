@@ -2,60 +2,59 @@
 
 <style>
     div.EventCard {
-        flex-shrink: 0;
-        border-style: solid;
-        border-color: lightgray;
-        border-radius: 40px;
-        display: grid;
-        row-gap: 0.01vh;
-        width: 25vw;
-        max-height: fit-content;
+        width: 375px;
+        height: fit-content;
+        border-radius: 16px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid lightgray;
     }
 
-    div.EventCard h1 {
-        padding: 0.5vw;
-        max-width: 20vw;
-        font-size: 1.5vw;
+    .EventImage {
+        width: 100%;
+        height: 150px;
+        overflow: hidden;
     }
 
-    div.EventCard img {
+    .EventImage img {
         width: 100%;
         height: 100%;
-        object-fit: contain;
-        border-top-right-radius: 40px;
-        border-top-left-radius: 40px;
+        object-fit: cover;
     }
 
-    div.EventCard p {
-        margin-left: 0.5vw;
-        padding: 0.25vw;
-        font-size: 0.75vw;
+    .CardInfo {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+    }
+
+    .CardDetail {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .EventCard h1 {
+        justify-self: left;
+        font-size: clamp(16px, 1.2vw, 22px);
+        margin: 0;
+    }
+
+    .EventCard p {
+        font-size: clamp(12px, 0.8vw, 14px);
     }
 
     a.EventLink {
         text-decoration: none;
-        max-width: fit-content;
         color: inherit;
-        display: block;
-    }
-
-    div.CardInfo {
-        column-gap: 2vw;
-        align-items: center;
-        display: flex;
-        flex-direction: row;
-    }
-
-    div.CardDetail {
-        display: flex;
-        flex-direction: column;
     }
 </style>
 
 <a class="EventLink" href="/Event/@Model.Id">
     <div class="EventCard">
-        <img src="@Model.ImgSrc"
-             alt="EventBanner">
+        <div class="EventImage">
+            <img src="@Model.ImgSrc" alt="EventBanner">
+        </div>
         <div class="CardInfo">
             <div class="CardDetail">
                 <h1>@Model.Name</h1>
