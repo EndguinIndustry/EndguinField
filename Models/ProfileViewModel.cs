@@ -37,6 +37,7 @@ namespace EndguinField.Models
 		public List<string> PendingFriendRequestIds { get; set; } = new();
 		public List<FriendViewModel> PendingRequests { get; set; } = new();
 		public bool IsOwnProfile { get; set; }
+		public bool IsFriend { get; set; }
 
 		public static async Task<ProfileViewModel> FromUserAsync(User user, IUserService userService)
 		{
@@ -93,42 +94,42 @@ namespace EndguinField.Models
 	}
 
 	public class UserUpdateModel
-    {
-        public string? Id { get; set; }
+	{
+		public string? Id { get; set; }
 
-        [Required]
-        public string Email { get; set; } = string.Empty;
+		[Required]
+		public string Email { get; set; } = string.Empty;
 
-        [Required]
-        public string Name { get; set; } = string.Empty;
+		[Required]
+		public string Name { get; set; } = string.Empty;
 
-        public string Role { get; set; } = "User";
-        public string? Bio { get; set; }
-        public string? Contact { get; set; }
+		public string Role { get; set; } = "User";
+		public string? Bio { get; set; }
+		public string? Contact { get; set; }
 		public string? Gender { get; set; }
 
-        public IFormFile? ProfileImageFile { get; set; }
+		public IFormFile? ProfileImageFile { get; set; }
 
-        public User ToUserModel()
-        {
-            return new User
-            {
-                Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToString() : Id,
-                Email = Email,
-                Name = Name,
-                Role = Role,
-                Bio = Bio,
-                Contact = Contact,
+		public User ToUserModel()
+		{
+			return new User
+			{
+				Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToString() : Id,
+				Email = Email,
+				Name = Name,
+				Role = Role,
+				Bio = Bio,
+				Contact = Contact,
 				Gender = Gender,
-                JoinWhen = DateTime.UtcNow,
-                Friends = new(),
-                BlockLists = new(),
-                Enrolls = new(),
-                FriendRequests = new(),
-                BanUntil = null
-            };
-        }
-    }
+				JoinWhen = DateTime.UtcNow,
+				Friends = new(),
+				BlockLists = new(),
+				Enrolls = new(),
+				FriendRequests = new(),
+				BanUntil = null
+			};
+		}
+	}
 
 	public class UpdateProfileDTO
 	{
@@ -136,5 +137,10 @@ namespace EndguinField.Models
 		public string? Contact { get; set; }
 		public string? Bio { get; set; }
 		public string? Gender { get; set; }
+	}
+
+	public class AddFriendRequest
+	{
+		public string? ReceiverId { get; set; }
 	}
 }

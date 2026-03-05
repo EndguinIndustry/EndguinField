@@ -1,6 +1,45 @@
 @model ProfileViewModel
 
 <div class="friend-component">
-    <h3>Friend List</h3>
+    <div style="display: flex;">
+        <h3>Friend List</h3>
+        @if (Model.IsOwnProfile)
+        {
+            <button class="friend-request-button" onclick="toggleFriendRequest(true)">
+                friend request
+            </button>
+        }
+    </div>
+
     <partial name="_FriendList" model="Model" />
 </div>
+
+@if (Model.IsOwnProfile)
+{
+    <div class="friend-request-component" id="friendRequestPanel">
+        <div class="friend-request-box">
+
+            <div class="request-header">
+                <h3>Friend Requests</h3>
+                <button onclick="toggleFriendRequest(false)">✕</button>
+            </div>
+
+            @foreach (var req in Model.PendingRequests)
+            {
+                <div class="request-card">
+                    <img src="@req.ImageUrl" width="40" />
+                    <span>@req.Name</span>
+
+                    <button onclick="handleFriendRequest('@req.Id', true)">
+                        Accept
+                    </button>
+
+                    <button onclick="handleFriendRequest('@req.Id', false)">
+                        Reject
+                    </button>
+                </div>
+            }
+
+        </div>
+    </div>
+}
