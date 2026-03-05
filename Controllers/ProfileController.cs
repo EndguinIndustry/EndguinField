@@ -159,11 +159,46 @@ public class ProfileController : Controller
 		if (!receiver.FriendRequests.Contains(senderId))
 		{
 			receiver.FriendRequests.Add(senderId);
-			await _userService.UpdateUserAsync(request.ReceiverId,receiver);
+			await _userService.UpdateUserAsync(request.ReceiverId, receiver);
 		}
 
 		return Json(new { success = true });
 	}
+
+	[HttpPost]
+	[Route("API/HandleFriendRequest")]
+	public async Task<IActionResult> HandleFriendRequest(string senderId, bool accept)
+	{
+		var currentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+		var currentUser = await _userService.GetUserByIdAsync(currentId);
+		var sender = await _userService.GetUserByIdAsync(senderId);
+
+		if (currentUser == null || sender == null)
+			return NotFound();
+
+		currentUser.FriendRequests ??= new List<string>();
+		currentUser.Friends ??= new List<string>();
+		sender.Friends ??= new List<string>();
+
+		currentUser.FriendRequests.Remove(senderId);
+
+		if (accept)
+		{
+			if (!currentUser.Friends.Contains(senderId))
+				currentUser.Friends.Add(senderId);
+
+			if (!sender.Friends.Contains(currentId))
+				sender.Friends.Add(currentId);
+		}
+
+		await _userService.UpdateUserAsync(currentId, currentUser);
+		await _userService.UpdateUserAsync(senderId, sender);
+
+		return Json(new { success = true });
+	}
+
+
 
 	[HttpGet]
 	[Route("API/User")]

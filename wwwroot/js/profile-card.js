@@ -274,3 +274,38 @@ async function addFriend(userId) {
         showNotification("Error sending friend request", "error");
     }
 }
+
+
+function toggleFriendRequest(show) {
+
+    const panel = document.getElementById("friendRequestPanel");
+
+    if (show) {
+        panel.style.display = "flex";
+    } else {
+        panel.style.display = "none";
+    }
+}
+
+
+async function handleFriendRequest(userId, accept) {
+
+    const res = await fetch("/API/HandleFriendRequest", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `senderId=${encodeURIComponent(userId)}&accept=${accept}`
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        showNotification(
+            accept ? "Friend added!" : "Friend request rejected",
+            "success"
+        );
+
+        location.reload();
+    }
+}
