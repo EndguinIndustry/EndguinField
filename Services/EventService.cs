@@ -22,17 +22,20 @@ public class EventService : IEventService
 	private readonly IUserService _userService;
 	private readonly IParticipationService _participationService;
 	private readonly ICommentService _commentService;
+    private readonly INotificationService _notificationService;
 
 	public EventService(
 		IEventMongoService eventStore,
 		IUserService userService,
 		IParticipationService participationService,
-		ICommentService commentService)
+		ICommentService commentService,
+        INotificationService notificationService)
 	{
 		_eventStore = eventStore;
 		_userService = userService;
 		_participationService = participationService;
 		_commentService = commentService;
+        _notificationService = notificationService;
 	}
 
 	public async Task<List<Event>> GetAllEventsAsync()
@@ -90,6 +93,16 @@ public class EventService : IEventService
 
 		await _eventStore.UpdateAsync(eventId, eventData);
 		
+		foreach (var p in participations.Where(p => p.Status == "Accepted" || p.Status == "Pending"))
+        {
+            await _notificationService.CreateNotificationAsync(
+                p.UserId,
+                $"Event '{eventData.Name}' was updated.",
+                "EventUpdate",
+                eventId
+            );
+        }
+
 		return (true, null);
 	}
 
