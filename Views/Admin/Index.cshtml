@@ -34,6 +34,17 @@
              <div class="stat-icon">📅</div>
         </div>
 
+        <div class="admin-card stat-card">
+            <div class="stat-content">
+                <h3>Total Tags</h3>
+                <p class="stat-number">@ViewBag.TagCount</p>
+                <div class="action-buttons" style="margin-top: 1rem;">
+                    <a href="@Url.Action("Tags", "Admin")" class="admin-btn btn-outline" style="display: block; text-align: center;">Manage Tags</a>
+                </div>
+            </div>
+             <div class="stat-icon">🏷️</div>
+        </div>
+
     </div>
 
     @* <div class="admin-card">
