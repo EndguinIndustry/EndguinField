@@ -1,4 +1,4 @@
-﻿body {
+body {
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f8f9fa;
@@ -14,14 +14,15 @@ header {
   -moz-border-radius: 0px 0px 15px 15px;
   -ms-border-radius: 0px 0px 15px 15px;
   -o-border-radius: 0px 0px 15px 15px;
+  position: relative; 
 }
 
 .navbar-custom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* Brand on left, Search on right */
-  max-width: 1200px;
+
+max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -128,6 +129,90 @@ a {
   -moz-border-radius: 50%;
   -ms-border-radius: 50%;
   -o-border-radius: 50%;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: center;
+  margin: 0 20px;
+}
+
+.mobile-search-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #333;
+  cursor: pointer;
+  padding: 8px;
+}
+
+@media (max-width: 768px) {
+  .navbar-custom {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+.search-container {
+    order: 3;
+    width: 100%;
+    margin: 10px 0 0 0;
+  }
+
+.search {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-custom {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+.search-container {
+    order: unset;
+    width: auto;
+    flex-grow: 0;
+    margin: 0;
+  }
+
+.search {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: calc(100% - 30px);
+    margin: 10px 15px;
+    box-sizing: border-box;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+.search.active {
+    display: flex;
+  }
+
+.mobile-search-toggle {
+    display: block;
+  }
+
+.navbar-brand {
+    font-size: 1.2rem;
+  }
+
+.profile-section img {
+    width: 40px;
+    height: 40px;
+  }
+
+.login {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
 }
 
 .profile-section {
