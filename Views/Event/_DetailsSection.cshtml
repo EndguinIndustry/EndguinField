@@ -59,7 +59,10 @@
 					@foreach (var tagId in Model.Tags)
 					{
 						var t = dbTags.FirstOrDefault(x => x.Id == tagId);
-						<span class="tag-chip">@(t != null ? t.TagName : tagId)</span>
+						if (t != null)
+						{
+							<span class="tag-chip">@t.TagName</span>
+						}
 					}
 				</div>
 			}
