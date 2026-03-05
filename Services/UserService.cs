@@ -53,7 +53,7 @@ namespace EndguinField.Services
 		{
 			var participations = await _participationStore.GetByUserIdAsync(userId);
 			var matchedEventIds = participations
-				.Where(p => p.Status == "Pending")
+				.Where(p => p.Status == "Pending" && _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().StartTime > DateTime.Now)
 				.Select(p => p.EventId)
 				.Distinct()
 				.ToList();
@@ -71,7 +71,7 @@ namespace EndguinField.Services
 		{
 			var participations = await _participationStore.GetByUserIdAsync(userId);
 			var matchedEventIds = participations
-				.Where(p => p.Status == "Accepted" && _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().StartTime >= DateTime.Now)
+				.Where(p => p.Status == "Accepted" && _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().EndTime >= DateTime.Now)
 				.Select(p => p.EventId)
 				.Distinct()
 				.ToList();
@@ -89,7 +89,7 @@ namespace EndguinField.Services
 		{
 			var participations = await _participationStore.GetByUserIdAsync(userId);
 			var matchedEventIds = participations
-				.Where(p => p.Status == "Accepted" && _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().StartTime < DateTime.Now)
+				.Where(p => p.Status == "Accepted" && _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().EndTime < DateTime.Now)
 				.Select(p => p.EventId)
 				.Distinct()
 				.ToList();

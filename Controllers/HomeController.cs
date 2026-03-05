@@ -42,6 +42,21 @@ public class HomeController : Controller
             MaxParticipants = e.MaxParticipants
         }).ToList();
 
+        var participatingEventsIds = await _userService.GetAllParticipatingEventAsync(currentUserId);
+        var participatingEventsList = await Task.WhenAll(participatingEventsIds.Select(e => _eventService.GetEventByIdAsync(e)).ToList());
+
+        var participatingEvents = participatingEventsList.Select(e => new EventCardModel
+        {
+            Id = e.Id,
+            Name = e.Name,
+            ImgSrc = e.Images[0],
+            StartTime = e.StartTime,
+            EndTime = e.EndTime,
+            Location = e.Location,
+            ParticipantCount = _participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
+            MaxParticipants = e.MaxParticipants
+        }).ToList();
+
         var openEventsList = await _eventService.GetAllEventsAsync();
         var openEvents = openEventsList.Select(e => new EventCardModel
         {
@@ -57,6 +72,7 @@ public class HomeController : Controller
 
         var viewModel = new HomeViewModel
         {
+            ParticipatingEvents = participatingEvents,
             PendingEvents = pendingEvents,
             OpenEvents = openEvents
         };
