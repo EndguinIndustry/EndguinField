@@ -14,7 +14,7 @@
     border-style: solid;
     border-color: lightgray;
     border-radius: 15px;
-    width: 300px;
+    width: 600px;
     padding: 7px;
 }
 
@@ -34,4 +34,17 @@
     margin-left: 1px;
     margin-right: 10px;
     border-radius: 100%;
+}
+
+.friend-request-component{
+    position: fixed;
+    inset: 0;
+    display: none;
+
+    background: rgba(0,0,0,0.4);
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 999;
 }

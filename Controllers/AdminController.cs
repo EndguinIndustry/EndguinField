@@ -13,12 +13,14 @@ namespace EndguinField.Controllers
         private readonly IUserService _userService;
         private readonly IEventService _eventService;
         private readonly ICommentService _commentService;
+        private readonly ITagSchemaServices _tagService;
 
-        public AdminController(IUserService userService, IEventService eventService, ICommentService commentService)
+        public AdminController(IUserService userService, IEventService eventService, ICommentService commentService, ITagSchemaServices tagService)
         {
             _userService = userService;
             _eventService = eventService;
             _commentService = commentService;
+            _tagService = tagService;
         }
 
         private async Task<bool> IsAdminAsync()
@@ -35,9 +37,11 @@ namespace EndguinField.Controllers
 
             var users = await _userService.GetAllUsersAsync();
             var events = await _eventService.GetAllEventsAsync();
+            var tags = await _tagService.GetAllAsync();
             
             ViewBag.UserCount = users.Count;
             ViewBag.EventCount = events.Count;
+            ViewBag.TagCount = tags.Count;
             
             return View();
         }
@@ -159,6 +163,41 @@ namespace EndguinField.Controllers
                 await _eventService.UpdateEventAsync(id, evt);
             }
             return RedirectToAction(nameof(Events));
+        }
+
+        public async Task<IActionResult> Tags()
+        {
+            if (!await IsAdminAsync()) return RedirectToAction("Index", "Home");
+            var tags = await _tagService.GetAllAsync();
+            return View(tags); 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTag(string tagName)
+        {
+            if (!await IsAdminAsync()) return Unauthorized();
+            if (!string.IsNullOrWhiteSpace(tagName))
+            {
+                var existingWrapper = await _tagService.GetAllAsync();
+                if (!existingWrapper.Any(t => t.TagName.Equals(tagName.Trim(), StringComparison.OrdinalIgnoreCase)))
+                {
+                    var newTag = new Tag { TagName = tagName.Trim() };
+                    // TagSchemaServices CreateAsync takes TagModel aka Tag
+                    await _tagService.CreateAsync(newTag);
+                }
+            }
+            return RedirectToAction(nameof(Tags));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteTag(string id)
+        {
+            if (!await IsAdminAsync()) return Unauthorized();
+            if (!string.IsNullOrEmpty(id))
+            {
+                await _tagService.DeleteAsync(id);
+            }
+            return RedirectToAction(nameof(Tags));
         }
     }
 }
