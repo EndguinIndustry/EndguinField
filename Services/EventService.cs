@@ -9,11 +9,11 @@ public interface IEventService
 	Task<Event?> GetEventByIdAsync(string eventId);
 	Task<List<Event>> GetAllEventsAsync();
 	Task<List<Event>> GetAllEventsWithParticipantsAsync();
-	Task<(bool success, string? error)> CreateEventAsync(Event eventData);
-	Task<(bool success, string? error)> UpdateEventAsync(string eventId, Event eventData);
-	Task DeleteEventAsync(string eventId);
-	Task<(bool success, string? error)> AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null);
-	Task<EventViewModel> GetEventViewModelAsync(string eventId, string currentUserId);
+	Task<Event> CreateEventAsync(Event eventData);
+	Task UpdateEventAsync(string eventId, Event eventData, string currentUserId);
+	Task DeleteEventAsync(string eventId, string currentUserId);
+	Task AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null);
+	Task<EventViewModel?> GetEventViewModelAsync(string eventId, string currentUserId);
 }
 
 public class EventService : IEventService
