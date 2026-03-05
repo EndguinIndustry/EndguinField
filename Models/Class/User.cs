@@ -16,7 +16,6 @@ namespace EndguinField.Models
 		public DateTime JoinWhen { get; set; }
 		public List<string> Friends { get; set; } = new List<string>();
 		public List<string> BlockLists { get; set; } = new List<string>();
-		public List<string> Enrolls { get; set; } = new List<string>();
 		public DateTime? BanUntil { get; set; }
 		public List<string> FriendRequests { get; set; } = new List<string>();
 

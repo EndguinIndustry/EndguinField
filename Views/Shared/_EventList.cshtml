@@ -1,4 +1,4 @@
-@model EndguinField.Models.ProfileViewModel
+@model IEnumerable<EndguinField.Models.EventCardModel>
 
 <style>
     div.event-list-section {
@@ -26,12 +26,16 @@
 
 <div class="event-list-section">
     <div class="event-list">
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
-        <partial name="_EventCard" model="Model" />
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <partial name="_EventCard" model="item" />
+            }
+        }
+        else
+        {
+            <p>No events available.</p>
+        }
     </div>
 </div>

@@ -36,12 +36,12 @@ namespace EndguinField.Models
 		public DateTime? BanUntil { get; set; }
 		public List<string> PendingFriendRequestIds { get; set; } = new();
 		public List<FriendViewModel> PendingRequests { get; set; } = new();
+		public List<EventCardModel> PastEvents { get; set; } = new();
 		public bool IsOwnProfile { get; set; }
 		public bool IsFriend { get; set; }
 
-		public static async Task<ProfileViewModel> FromUserAsync(User user, IUserService userService)
+		public static async Task<ProfileViewModel> FromUserAsync(User user, IUserService userService, IEventService eventService, IParticipationService participantService)
 		{
-
 			var model = new ProfileViewModel
 			{
 				Id = user.Id,
@@ -57,10 +57,25 @@ namespace EndguinField.Models
 				FriendIds = user.Friends ?? new List<string>(),
 				PendingFriendRequestIds = user.FriendRequests ?? new List<string>(),
 
-				EnrollsCount = user.Enrolls?.Count ?? 0,
 				IsBanned = user.BanUntil.HasValue && user.BanUntil.Value > DateTime.Now,
 				BanUntil = user.BanUntil
 			};
+			var pastEvents = await userService.GetAllPastEventAsync(user.Id);
+
+			var pastEventList = await Task.WhenAll(pastEvents.Select(e => eventService.GetEventByIdAsync(e)).ToList());
+
+			model.PastEvents = pastEventList.Select(e => new EventCardModel
+			{
+				Id = e.Id,
+				Name = e.Name,
+				ImgSrc = e.Images[0],
+				StartTime = e.StartTime,
+				EndTime = e.EndTime,
+				Location = e.Location,
+				ParticipantCount = participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
+				MaxParticipants = e.MaxParticipants
+			}).ToList();
+
 			var friendTasks = model.FriendIds
 				.Select(id => userService.GetUserByIdAsync(id));
 			var friends = await Task.WhenAll(friendTasks);
@@ -124,7 +139,6 @@ namespace EndguinField.Models
 				JoinWhen = DateTime.UtcNow,
 				Friends = new(),
 				BlockLists = new(),
-				Enrolls = new(),
 				FriendRequests = new(),
 				BanUntil = null
 			};
