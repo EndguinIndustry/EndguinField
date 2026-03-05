@@ -9,8 +9,9 @@ namespace EndguinField.Services
 	public interface IUserService
 	{
 		string? GetCurrentUserId();
-		Task<User?> GetUserByIdAsync(string id);
-		Task<List<User>> GetAllUsersAsync();
+		Task<bool> IsAdminAsync(string userId);
+        Task<User?> GetUserByIdAsync(string id);
+        Task<List<User>> GetAllUsersAsync();
 		Task<(bool success, string? error)> CreateUserAsync(User userData);
 		Task<(bool success, string? error)> UpdateUserAsync(string id, User userData);
 		Task<(bool success, string? error)> DeleteUserAsync(string id);
@@ -42,6 +43,13 @@ namespace EndguinField.Services
 		public async Task<User?> GetUserByIdAsync(string id)
 		{
 			return await _userStore.GetByIdAsync(id);
+		}
+
+		public async Task<bool> IsAdminAsync(string userId)
+		{
+			if (string.IsNullOrEmpty(userId)) return false;
+			var user = await _userStore.GetByIdAsync(userId);
+			return user != null && user.Role == "Admin";
 		}
 
 		public async Task<List<User>> GetAllUsersAsync()

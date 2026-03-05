@@ -31,10 +31,15 @@ public class CommentController : Controller
 
     public async Task<IActionResult> Details(string id, CancellationToken ct = default)
     {
-        if (string.IsNullOrEmpty(id)) return RedirectToAction(nameof(Index));
-        var item = await _commentService.GetByIdAsync(id, ct);
-        if (item == null) return RedirectToAction(nameof(Index));
-        return View(item);
+        try
+        {
+            var item = await _commentService.GetByIdAsync(id, ct);
+            return View(item);
+        }
+        catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentException)
+        {
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     public IActionResult Create()
@@ -65,10 +70,15 @@ public class CommentController : Controller
 
     public async Task<IActionResult> Edit(string id, CancellationToken ct = default)
     {
-        if (string.IsNullOrEmpty(id)) return RedirectToAction(nameof(Index));
-        var item = await _commentService.GetByIdAsync(id, ct);
-        if (item == null) return RedirectToAction(nameof(Index));
-        return View(item);
+        try
+        {
+            var item = await _commentService.GetByIdAsync(id, ct);
+            return View(item);
+        }
+        catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentException)
+        {
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
@@ -85,9 +95,9 @@ public class CommentController : Controller
         {
             try
             {
-                var ok = await _commentService.UpdateAsync(id, comment, ct);
-                if (ok) { TempData["Success"] = "Comment updated"; return RedirectToAction(nameof(Index)); }
-                ViewBag.Error = "Update failed";
+                await _commentService.UpdateAsync(id, comment, ct);
+                TempData["Success"] = "Comment updated";
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
@@ -100,10 +110,15 @@ public class CommentController : Controller
 
     public async Task<IActionResult> Delete(string id, CancellationToken ct = default)
     {
-        if (string.IsNullOrEmpty(id)) return RedirectToAction(nameof(Index));
-        var item = await _commentService.GetByIdAsync(id, ct);
-        if (item == null) return RedirectToAction(nameof(Index));
-        return View(item);
+        try
+        {
+            var item = await _commentService.GetByIdAsync(id, ct);
+            return View(item);
+        }
+        catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentException)
+        {
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost, ActionName("Delete")]
@@ -112,9 +127,8 @@ public class CommentController : Controller
     {
         try
         {
-            var ok = await _commentService.DeleteAsync(id, ct);
-            if (ok) TempData["Success"] = "Comment deleted";
-            else TempData["Error"] = "Delete failed";
+            await _commentService.DeleteAsync(id, ct);
+            TempData["Success"] = "Comment deleted";
         }
         catch (Exception ex)
         {
