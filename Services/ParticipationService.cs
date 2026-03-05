@@ -11,6 +11,7 @@ public interface IParticipationService
 	Task<Participation?> GetParticipationAsync(string eventId, string userId);
 	Task<Participation> JoinAsync(string eventId, string userId);
 	Task<bool> DeleteParticipationsByEventIdAsync(string eventId);
+	Task<int> GetAcceptedParticipantCountAsync(string eventId);
 }
 
 public class ParticipationService : IParticipationService
@@ -139,5 +140,11 @@ public class ParticipationService : IParticipationService
 	public async Task<bool> DeleteParticipationsByEventIdAsync(string eventId)
 	{
 		return await _participationStore.DeleteByEventIdAsync(eventId);
+	}
+
+	public async Task<int> GetAcceptedParticipantCountAsync(string eventId)
+	{
+		var participations = await _participationStore.GetByEventIdAsync(eventId);
+		return participations.Count(p => string.Equals(p.Status, "Accepted", StringComparison.OrdinalIgnoreCase));
 	}
 }
