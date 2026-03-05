@@ -16,7 +16,9 @@ namespace EndguinField.Services
 		Task<(bool success, string? error)> DeleteUserAsync(string id);
 		Task<List<String>> GetAllPendingEventAsync(string userId);
 		Task<List<String>> GetAllParticipatingEventAsync(string userId);
+		Task<List<String>> GetAllMyOngoingEventAsync(string userId);
 		Task<List<String>> GetAllPastEventAsync(string userId);
+		Task<List<String>> GetAllMyEventAsync(string userId);
 	}
 
 	public class UserService : IUserService
@@ -49,11 +51,37 @@ namespace EndguinField.Services
 			return await _userStore.GetAllAsync();
 		}
 
+		public async Task<List<String>> GetAllMyOngoingEventAsync(string userId)
+		{
+			var events = await _eventStore.GetAllAsync();
+
+			var matchedEventIds = events
+				.Where(e => e.OwnerId == userId && DateTime.Now <= e.StartTime && e.EndTime >= DateTime.Now)
+				.Select(e => e.Id)
+				.Distinct()
+				.ToList();
+
+			return matchedEventIds;
+		}
+
+		public async Task<List<String>> GetAllMyEventAsync(string userId)
+		{
+			var events = await _eventStore.GetAllAsync();
+
+			var matchedEventIds = events
+				.Where(e => e.OwnerId == userId)
+				.Select(e => e.Id)
+				.Distinct()
+				.ToList();
+
+			return matchedEventIds;
+		}
+
 		public async Task<List<String>> GetAllPendingEventAsync(string userId)
 		{
 			var participations = await _participationStore.GetByUserIdAsync(userId);
 			var matchedEventIds = participations
-				.Where(p => p.Status == "Pending" && _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().StartTime > DateTime.Now)
+				.Where(p => p.Status == "Pending" && DateTime.Now < _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().StartTime)
 				.Select(p => p.EventId)
 				.Distinct()
 				.ToList();

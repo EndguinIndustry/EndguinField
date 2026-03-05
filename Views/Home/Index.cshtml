@@ -54,6 +54,18 @@
             }
         </div>
 
+        <div style="text-align: center;">
+            <h2>My Ongoing Events</h2>
+            @if (Model?.MyOngoingEvents != null)
+            {
+                <partial name="_EventList" model="Model.MyOngoingEvents" />
+            }
+            else
+            {
+                <p>No ongoing events to show.</p>
+            }
+        </div>
+
     </div>
 }
 else

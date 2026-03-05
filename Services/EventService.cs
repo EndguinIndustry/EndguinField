@@ -53,7 +53,7 @@ public class EventService : IEventService
 		}
 
 		await _eventStore.CreateAsync(eventData);
-		
+
 		return (true, null);
 	}
 
@@ -74,14 +74,14 @@ public class EventService : IEventService
 		}
 
 		await _eventStore.UpdateAsync(eventId, eventData);
-		
+
 		return (true, null);
 	}
 
 	public async Task DeleteEventAsync(string eventId)
 	{
 		var eventData = await GetEventByIdAsync(eventId);
-		
+
 		if (eventData == null)
 		{
 			return;
@@ -95,7 +95,7 @@ public class EventService : IEventService
 	public async Task<(bool success, string? error)> AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null)
 	{
 		var eventData = await GetEventByIdAsync(eventId);
-		
+
 		if (eventData == null)
 		{
 			return (false, "Event not found.");
@@ -115,7 +115,7 @@ public class EventService : IEventService
 			await _commentService.CreateCommentAsync(comment);
 			eventData.Comments.Add(comment.Id);
 			await _eventStore.UpdateAsync(eventId, eventData);
-			
+
 			return (true, null);
 		}
 		catch (Exception exception)
@@ -127,14 +127,14 @@ public class EventService : IEventService
 	public async Task<EventViewModel?> GetEventViewModelAsync(string eventId, string currentUserId)
 	{
 		var eventData = await GetEventByIdAsync(eventId);
-		
+
 		if (eventData == null)
 		{
 			return null;
 		}
 
 		var owner = await _userService.GetUserByIdAsync(eventData.OwnerId);
-		
+
 		if (owner == null)
 		{
 			return null;
@@ -144,9 +144,9 @@ public class EventService : IEventService
 		var userParticipation = participations.FirstOrDefault(participation => participation.UserId == currentUserId);
 
 		bool isOwner = eventData.OwnerId == currentUserId;
-		
-		var displayedParticipations = isOwner 
-			? participations 
+
+		var displayedParticipations = isOwner
+			? participations
 			: participations.Where(p => string.Equals(p.Status, "Accepted", StringComparison.OrdinalIgnoreCase)).ToList();
 
 		return new EventViewModel
@@ -213,20 +213,20 @@ public class EventService : IEventService
 	}
 
 	private async Task<List<ParticipationViewModel>> MapParticipants(List<Participation> participations)
-{
-    var list = new List<ParticipationViewModel>();
+	{
+		var list = new List<ParticipationViewModel>();
 
-    foreach (var participation in participations)
-    {
-        var user = await _userService.GetUserByIdAsync(participation.UserId);
-        if (user != null)
-        {
-            list.Add(participation.ToViewModel(user.ToSummaryViewModel()));
-        }
-    }
+		foreach (var participation in participations)
+		{
+			var user = await _userService.GetUserByIdAsync(participation.UserId);
+			if (user != null)
+			{
+				list.Add(participation.ToViewModel(user.ToSummaryViewModel()));
+			}
+		}
 
-    return list;
-}
+		return list;
+	}
 
 	private async Task<List<CommentViewModel>> MapCommentsAsync(List<string> commentIds)
 	{
@@ -243,7 +243,7 @@ public class EventService : IEventService
 		});
 
 		var results = await Task.WhenAll(tasks);
-		
+
 		return results
 			.OfType<CommentViewModel>()
 			.ToList();
