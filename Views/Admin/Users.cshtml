@@ -1,0 +1,180 @@
+@model List<EndguinField.Models.User>
+
+@{
+    ViewData["Title"] = "Manage Users";
+    Layout = "_Layout";
+}
+<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+<style>
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+  tr:hover { background-color: #f1f1f1; }
+  
+  .search-form { display: flex; gap: 10px; margin-bottom: 20px; }
+  .search-form input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+  .search-form button { padding: 10px 20px; background: var(--admin-primary); color: white; border: none; border-radius: 4px; cursor: pointer; }
+  
+  .badge { display: inline-block; padding: 4px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; }
+  .bg-admin { background-color: #ffd700; color: #000; }
+  .bg-user { background-color: #e2e6ea; color: #333; }
+  .bg-banned { background-color: #dc3545; color: white; }
+
+  .actions { display: flex; gap: 5px; flex-wrap: wrap; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 3px; cursor: pointer; border: 1px solid transparent; }
+  .btn-primary-outline { border-color: var(--admin-primary); color: var(--admin-primary); background: transparent; }
+  .btn-warning { background-color: #ffc107; color: #000; }
+  .btn-danger-outline { border-color: #dc3545; color: #dc3545; background: transparent; }
+  
+  .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
+  .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 8px; }
+  .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+  .close:hover, .close:focus { color: black; text-decoration: none; cursor: pointer; }
+</style>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">User Management</h1>
+        <a href="@Url.Action("Index", "Admin")" class="admin-btn btn-outline" style="text-decoration:none;">&larr; Back to Dashboard</a>
+    </div>
+
+    <form method="get" action="@Url.Action("Users", "Admin")" class="search-form">
+        <input type="text" name="search" placeholder="Search by name or email..." value="@Context.Request.Query["search"]">
+        <button type="submit">Search</button>
+    </form>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 60px;">Avatar</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr onclick="window.location.href='@Url.Action("ViewProfile", "Profile", new { id = user.Id })'" style="cursor: pointer; transition: background-color 0.2s;">
+                        <td>
+                            @if (!string.IsNullOrEmpty(user.Image))
+                            {
+                                <img src="@user.Image" alt="@user.Name" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #ccc; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">
+                                    @if(!string.IsNullOrEmpty(user.Name)) { @user.Name.Substring(0, 1).ToUpper() } else { <text>?</text> }
+                                </div>
+                            }
+                        </td>
+                        <td>
+                            @user.Name
+                            @if (user.BanUntil.HasValue && user.BanUntil > DateTime.Now)
+                            {
+                                <span class="badge bg-banned ms-2">Banned until @user.BanUntil.Value.ToString("g")</span>
+                            }
+                        </td>
+                        <td>@user.Email</td>
+                        <td>
+                            <span class="badge @(user.Role == "Admin" ? "bg-admin" : "bg-user")">@user.Role</span>
+                        </td>
+                        <td>
+                             @if (user.BanUntil.HasValue && user.BanUntil > DateTime.Now)
+                            {
+                                <span class="badge bg-banned">Banned</span>
+                            }
+                            else
+                            {
+                                <span class="badge" style="background-color: #28a745; color: white;">Active</span>
+                            }
+                        </td>
+                        <td onclick="event.stopPropagation()">
+                            <div class="actions">
+                                <form method="post" action="@Url.Action("ToggleRole", "Admin")" style="display:inline;">
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <button type="submit" class="btn-sm btn-primary-outline">
+                                        @(user.Role == "Admin" ? "Demote" : "Promote")
+                                    </button>
+                                </form>
+
+                                @if (user.BanUntil.HasValue && user.BanUntil > DateTime.Now)
+                                {
+                                    <form method="post" action="@Url.Action("UnbanUser", "Admin")" style="display:inline;">
+                                        <input type="hidden" name="id" value="@user.Id" />
+                                        <button type="submit" class="btn-sm btn-warning">Unban</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                     <button type="button" class="btn-sm btn-danger-outline" onclick="openBanModal('@user.Id', '@user.Name')">
+                                        Ban
+                                    </button>
+                                }
+                                
+                                <form method="post" action="@Url.Action("DeleteUser", "Admin")" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user? This cannot be undone.');">
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <button type="submit" class="btn-sm" style="color: red; border: 1px solid red; background: none;">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="banModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeBanModal()">&times;</span>
+        <h2 id="banModalTitle">Ban User</h2>
+        <form method="post" action="@Url.Action("BanUser", "Admin")">
+            <input type="hidden" id="banUserId" name="id" />
+            <div style="margin-bottom: 15px;">
+                <label for="banUntil" style="display: block; margin-bottom: 5px; font-weight: bold;">Ban Until:</label>
+                <input type="datetime-local" id="banUntil" name="banUntil" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <p style="color: #dc3545; font-size: 0.9em; margin-bottom: 20px;">
+                Warning: Banning this user will prevent them from logging in until the specified date.
+            </p>
+            <div style="text-align: right;">
+                <button type="button" onclick="closeBanModal()" style="padding: 8px 16px; margin-right: 10px; background: #eee; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
+                <button type="submit" style="padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">Confirm Ban</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    var modal = document.getElementById("banModal");
+    var userIdInput = document.getElementById("banUserId");
+    var modalTitle = document.getElementById("banModalTitle");
+
+    function openBanModal(userId, userName) {
+        modal.style.display = "block";
+        userIdInput.value = userId;
+        modalTitle.innerText = "Ban User: " + userName;
+        
+        const now = new Date();
+        now.setDate(now.getDate() + 1);
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById("banUntil").value = now.toISOString().slice(0, 16);
+    }
+
+    function closeBanModal() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

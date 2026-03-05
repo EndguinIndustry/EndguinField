@@ -48,6 +48,7 @@ public class ProfileController : Controller
 		// Check if this is the current user's own profile
 		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 		viewModel.IsOwnProfile = !string.IsNullOrWhiteSpace(currentUserId) && currentUserId == id;
+		viewModel.IsFriend = user.Friends?.Contains(currentUserId) ?? false;
 
 		return View(viewModel);
 	}
@@ -145,50 +146,82 @@ public class ProfileController : Controller
 		return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 	}
 
-
-	[HttpGet]
-	[Route("Profile/Create")]
-	public async Task<IActionResult> Create()
+	[HttpPost]
+	[Route("API/AddFriend")]
+	public async Task<IActionResult> SendRequest([FromBody] AddFriendRequest request)
 	{
-		return View();
+		var senderId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+		if (senderId == request.ReceiverId)
+			return BadRequest("Cannot add yourself");
+
+		var receiver = await _userService.GetUserByIdAsync(request.ReceiverId);
+		if (receiver == null)
+			return NotFound();
+
+
+		receiver.FriendRequests ??= new List<string>();
+		if (!receiver.FriendRequests.Contains(senderId))
+		{
+			receiver.FriendRequests.Add(senderId);
+			await _userService.UpdateUserAsync(request.ReceiverId, receiver);
+		}
+
+		return Json(new { success = true });
 	}
 
+	[HttpPost]
+	[Route("API/HandleFriendRequest")]
+	public async Task<IActionResult> HandleFriendRequest(string senderId, bool accept)
+	{
+		var currentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+		var currentUser = await _userService.GetUserByIdAsync(currentId);
+		var sender = await _userService.GetUserByIdAsync(senderId);
+
+		if (currentUser == null || sender == null)
+			return NotFound();
+
+		currentUser.FriendRequests ??= new List<string>();
+		currentUser.Friends ??= new List<string>();
+		sender.Friends ??= new List<string>();
+
+		currentUser.FriendRequests.Remove(senderId);
+
+		if (accept)
+		{
+			if (!currentUser.Friends.Contains(senderId))
+				currentUser.Friends.Add(senderId);
+
+			if (!sender.Friends.Contains(currentId))
+				sender.Friends.Add(currentId);
+		}
+
+		await _userService.UpdateUserAsync(currentId, currentUser);
+		await _userService.UpdateUserAsync(senderId, sender);
+
+		return Json(new { success = true });
+	}
 
 	[HttpPost]
-	[Route("API/User/Create")]
-	public async Task<IActionResult> Create([FromForm] UserUpdateModel userData)
+	[Route("API/Unfriend")]
+	public async Task<IActionResult> Unfriend(string friendId)
 	{
-		if (!ModelState.IsValid)
-		{
-			return BadRequest(new { success = false, message = "Invalid data" });
-		}
+		var currentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-		try
-		{
-			var newUser = userData.ToUserModel();
+		var currentUser = await _userService.GetUserByIdAsync(currentId);
+		var friend = await _userService.GetUserByIdAsync(friendId);
 
-			// Upload profile image to S3
-			if (userData.ProfileImageFile != null)
-			{
-				newUser.Image = await _s3Service.UploadFileAsync(userData.ProfileImageFile);
-			}
+		if (currentUser == null || friend == null)
+			return NotFound();
 
-			var (success, error) = await _userService.CreateUserAsync(newUser);
-			if (!success)
-			{
-				return BadRequest(new { success = false, message = error ?? "Failed to create user" });
-			}
+		currentUser.Friends?.Remove(friendId);
+		friend.Friends?.Remove(currentId);
 
-			return Ok(new
-			{
-				success = true,
-				redirectUrl = Url.Action("ViewProfile", "Profile", new { id = newUser.Id })
-			});
-		}
-		catch (Exception ex)
-		{
-			return StatusCode(500, new { success = false, message = ex.Message });
-		}
+		await _userService.UpdateUserAsync(currentId, currentUser);
+		await _userService.UpdateUserAsync(friendId, friend);
+
+		return Json(new { success = true });
 	}
 
 	[HttpGet]

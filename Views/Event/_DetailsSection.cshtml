@@ -1,17 +1,18 @@
 @model EventViewModel
+@using System.Globalization
 @inject ITagSchemaServices TagService
 
 @{
 	var description = Model?.Description ?? "No description provided.";
 	var location = Model?.Location ?? "No location specified.";
 
-	var startEditDate = Model?.StartTime.ToString("yyyy-MM-dd") ?? "";
-	var startEditTime = Model?.StartTime.ToString("HH:mm") ?? "";
-	var endEditDate = Model?.EndTime.ToString("yyyy-MM-dd") ?? "";
-	var endEditTime = Model?.EndTime.ToString("HH:mm") ?? "";
+	var startEditDate = Model?.StartTime.ToString("yyyy-MM-dd", new CultureInfo("en-US")) ?? "";
+	var startEditTime = Model?.StartTime.ToString("HH:mm", new CultureInfo("en-US")) ?? "";
+	var endEditDate = Model?.EndTime.ToString("yyyy-MM-dd", new CultureInfo("en-US")) ?? "";
+	var endEditTime = Model?.EndTime.ToString("HH:mm", new CultureInfo("en-US")) ?? "";
 
-	var formattedStart = Model?.StartTime.ToString("MMMM d, yyyy h:mm tt") ?? "N/A";
-	var formattedEnd = Model?.EndTime.ToString("MMMM d, yyyy h:mm tt") ?? "N/A";
+	var formattedStart = Model?.StartTime.ToString("MMMM d, yyyy h:mm tt", new CultureInfo("en-US")) ?? "N/A";
+	var formattedEnd = Model?.EndTime.ToString("MMMM d, yyyy h:mm tt", new CultureInfo("en-US")) ?? "N/A";
 
 	var currentParticipantCount = Model?.ParticipationCount ?? 0;
 }
@@ -121,7 +122,7 @@
 			<label class="form-label fw-semibold">Start Date & Time</label>
 			<div class="date-time-container mb-3">
 				<div class="date-picker-overlay form-control mb-2">
-					<span class="date-display">@(string.IsNullOrEmpty(startEditDate) ? "dd/mm/yyyy" : DateTime.Parse(startEditDate).ToString("dd/MM/yyyy"))</span>
+					<span class="date-display">@(DateTime.Parse(startEditDate))</span>
 					<img src="/assets/icons/calendar.svg" class="calendar-icon icon-dark" alt="calendar" />
 					<input type="date" id="editStartDateInput" value="@startEditDate" />
 				</div>
@@ -131,7 +132,7 @@
 			<label class="form-label fw-semibold">End Date & Time</label>
 			<div class="date-time-container mb-3">
 				<div class="date-picker-overlay form-control mb-2">
-					<span class="date-display">@(string.IsNullOrEmpty(endEditDate) ? "dd/mm/yyyy" : DateTime.Parse(endEditDate).ToString("dd/MM/yyyy"))</span>
+					<span class="date-display">@(DateTime.Parse(endEditDate))</span>
 					<img src="/assets/icons/calendar.svg" class="calendar-icon icon-dark" alt="calendar" />
 					<input type="date" id="editEndDateInput" value="@endEditDate" />
 				</div>
