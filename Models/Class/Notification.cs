@@ -16,9 +16,7 @@ namespace EndguinField.Models
         public bool IsRead { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        // Optional fields for better functionality (e.g. deep linking)
-        public string? RelatedEntityId { get; set; } // EventId or UserId
-        public string Type { get; set; } = "General"; // "EventRequest", "FriendRequest", "EventUpdate", etc.
+        public string? RelatedEntityId { get; set; }
+        public string Type { get; set; } = "General"; 
     }
 }

@@ -23,7 +23,6 @@ public class NotificationService : INotificationService
 
     public async Task<List<Notification>> GetUserNotificationsAsync(string userId, int count = 10)
     {
-        // Simple implementation, could be paginated
         return await _notificationStore.GetByUserIdAsync(userId);
     }
 

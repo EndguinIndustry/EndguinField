@@ -27,7 +27,7 @@ namespace EndguinField.Controllers
                 return Unauthorized();
             }
 
-            var notifications = await _notificationService.GetUserNotificationsAsync(userId, 20); // Get last 20
+            var notifications = await _notificationService.GetUserNotificationsAsync(userId, 20); 
             return Ok(notifications);
         }
         
@@ -48,7 +48,6 @@ namespace EndguinField.Controllers
             }
             
             var hasUnread = await _notificationService.HasUnreadNotifications(userId);
-            // This could be improved to return count, but bool is okay for now
             return Ok(new { hasUnread });
         }
     }

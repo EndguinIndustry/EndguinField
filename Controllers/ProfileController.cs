@@ -47,7 +47,6 @@ public class ProfileController : Controller
 
 		var viewModel = await ProfileViewModel.FromUserAsync(user, _userService, _eventService, _participationService);
 
-		// Check if this is the current user's own profile
 		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 		viewModel.IsOwnProfile = !string.IsNullOrWhiteSpace(currentUserId) && currentUserId == id;
 		viewModel.IsFriend = user.Friends?.Contains(currentUserId) ?? false;
