@@ -14,7 +14,9 @@ namespace EndguinField.Services
 		Task<(bool success, string? error)> CreateUserAsync(User userData);
 		Task<(bool success, string? error)> UpdateUserAsync(string id, User userData);
 		Task<(bool success, string? error)> DeleteUserAsync(string id);
-		Task<List<String>> GetAllJoinedEventAsync(string userId);
+		Task<List<String>> GetAllPendingEventAsync(string userId);
+		Task<List<String>> GetAllParticipatingEventAsync(string userId);
+		Task<List<String>> GetAllPastEventAsync(string userId);
 	}
 
 	public class UserService : IUserService
@@ -47,11 +49,11 @@ namespace EndguinField.Services
 			return await _userStore.GetAllAsync();
 		}
 
-		public async Task<List<String>> GetAllJoinedEventAsync(string userId)
+		public async Task<List<String>> GetAllPendingEventAsync(string userId)
 		{
 			var participations = await _participationStore.GetByUserIdAsync(userId);
 			var matchedEventIds = participations
-				.Where(p => p.Status == "Pending" || p.Status == "Accepted")
+				.Where(p => p.Status == "Pending")
 				.Select(p => p.EventId)
 				.Distinct()
 				.ToList();
@@ -62,6 +64,41 @@ namespace EndguinField.Services
 				events.Add(eventId);
 			}
 
+			return events;
+		}
+
+		public async Task<List<String>> GetAllParticipatingEventAsync(string userId)
+		{
+			var participations = await _participationStore.GetByUserIdAsync(userId);
+			var matchedEventIds = participations
+				.Where(p => p.Status == "Accepted" && _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().StartTime >= DateTime.Now)
+				.Select(p => p.EventId)
+				.Distinct()
+				.ToList();
+
+			var events = new List<String>();
+			foreach (var eventId in matchedEventIds)
+			{
+				events.Add(eventId);
+			}
+
+			return events;
+		}
+
+		public async Task<List<String>> GetAllPastEventAsync(string userId)
+		{
+			var participations = await _participationStore.GetByUserIdAsync(userId);
+			var matchedEventIds = participations
+				.Where(p => p.Status == "Accepted" && _eventStore.GetByIdAsync(p.EventId).GetAwaiter().GetResult().StartTime < DateTime.Now)
+				.Select(p => p.EventId)
+				.Distinct()
+				.ToList();
+
+			var events = new List<String>();
+			foreach (var eventId in matchedEventIds)
+			{
+				events.Add(eventId);
+			}
 			return events;
 		}
 

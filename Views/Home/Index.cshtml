@@ -21,14 +21,24 @@
 
     <div class="participated-event-section">
         <div style="text-align: left;">
-            <h2>Participated Events</h2>
-            @if (Model?.JoinedEvents != null)
+            <h2>Pending Events</h2>
+            @if (Model?.PendingEvents != null)
             {
-                <partial name="_EventList" model="Model.JoinedEvents" />
+                <partial name="_EventList" model="Model.PendingEvents" />
             }
             else
             {
-                <p>No participated events to show.</p>
+                <p>No pending events to show.</p>
+            }
+
+            <h2>Participating Events</h2>
+            @if (Model?.ParticipatingEvents != null)
+            {
+                <partial name="_EventList" model="Model.ParticipatingEvents" />
+            }
+            else
+            {
+                <p>No participating events to show.</p>
             }
         </div>
 

@@ -39,7 +39,7 @@ namespace EndguinField.Models
 		public List<EventCardModel> PastEvents { get; set; } = new();
 		public bool IsOwnProfile { get; set; }
 
-		public static async Task<ProfileViewModel> FromUserAsync(User user, IUserService userService, IEventService eventService)
+		public static async Task<ProfileViewModel> FromUserAsync(User user, IUserService userService, IEventService eventService, IParticipationService participantService)
 		{
 			var model = new ProfileViewModel
 			{
@@ -59,23 +59,20 @@ namespace EndguinField.Models
 				IsBanned = user.BanUntil.HasValue && user.BanUntil.Value > DateTime.Now,
 				BanUntil = user.BanUntil
 			};
-			var pastEvents = await userService.GetAllJoinedEventAsync(user.Id);
+			var pastEvents = await userService.GetAllPastEventAsync(user.Id);
 
-			model.PastEvents = pastEvents.Select(eventId =>
+			var pastEventList = await Task.WhenAll(pastEvents.Select(e => eventService.GetEventByIdAsync(e)).ToList());
+
+			model.PastEvents = pastEventList.Select(e => new EventCardModel
 			{
-				var thisEvent = eventService.GetEventByIdAsync(eventId).GetAwaiter().GetResult();
-
-				return new EventCardModel
-				{
-					Id = thisEvent.Id,
-					Name = thisEvent.Name,
-					ImgSrc = thisEvent.BackgroundImage,
-					StartTime = thisEvent.StartTime,
-					EndTime = thisEvent.EndTime,
-					Location = thisEvent.Location,
-					ParticipantCount = thisEvent.Participants.Count,
-					MaxParticipants = thisEvent.MaxParticipants
-				};
+				Id = e.Id,
+				Name = e.Name,
+				ImgSrc = e.Images[0],
+				StartTime = e.StartTime,
+				EndTime = e.EndTime,
+				Location = e.Location,
+				ParticipantCount = participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
+				MaxParticipants = e.MaxParticipants
 			}).ToList();
 
 			var friendTasks = model.FriendIds

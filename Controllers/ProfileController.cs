@@ -12,12 +12,14 @@ public class ProfileController : Controller
 	private readonly IUserService _userService;
 	private readonly S3Service _s3Service;
 	private readonly IEventService _eventService;
+	private readonly IParticipationService _participationService;
 
-	public ProfileController(IUserService userService, S3Service s3Service, IEventService eventService)
+	public ProfileController(IUserService userService, S3Service s3Service, IEventService eventService, IParticipationService participationService)
 	{
 		_userService = userService;
 		_s3Service = s3Service;
 		_eventService = eventService;
+		_participationService = participationService;
 	}
 
 	public IActionResult Index()
@@ -41,7 +43,7 @@ public class ProfileController : Controller
 			return NotFound();
 		}
 
-		var viewModel = await ProfileViewModel.FromUserAsync(user, _userService, _eventService);
+		var viewModel = await ProfileViewModel.FromUserAsync(user, _userService, _eventService, _participationService);
 
 		// Check if this is the current user's own profile
 		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);

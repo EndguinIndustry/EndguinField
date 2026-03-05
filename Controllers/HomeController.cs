@@ -1,8 +1,9 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using EndguinField.Models;
 using EndguinField.Models.ViewModels;
 using EndguinField.Services;
-using EndguinField.Models;
 
 namespace EndguinField.Controllers;
 
@@ -22,14 +23,14 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        string currentUserId = "1";
+        string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var currentUser = await _userService.GetUserByIdAsync(currentUserId);
         ViewBag.CurrentUser = currentUser;
 
-        var joinedEventsIds = await _userService.GetAllJoinedEventAsync(currentUserId);
-        var joinedEventsList = await Task.WhenAll(joinedEventsIds.Select(e => _eventService.GetEventByIdAsync(e)).ToList());
+        var pendingEventsIds = await _userService.GetAllPendingEventAsync(currentUserId);
+        var pendingEventsList = await Task.WhenAll(pendingEventsIds.Select(e => _eventService.GetEventByIdAsync(e)).ToList());
 
-        var joinedEvents = joinedEventsList.Select(e => new EventCardModel
+        var pendingEvents = pendingEventsList.Select(e => new EventCardModel
         {
             Id = e.Id,
             Name = e.Name,
@@ -56,7 +57,7 @@ public class HomeController : Controller
 
         var viewModel = new HomeViewModel
         {
-            JoinedEvents = joinedEvents,
+            PendingEvents = pendingEvents,
             OpenEvents = openEvents
         };
         return View(viewModel);
