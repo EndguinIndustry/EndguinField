@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const state = {
         loaded: false,
+        loading: false,
         events: [],
         users: []
     };
@@ -124,10 +125,16 @@ document.addEventListener('DOMContentLoaded', () => {
         resultBox.hidden = false;
     };
 
-    const loadSearchData = async () => {
-        if (state.loaded) {
+    const loadSearchData = async ({ force = false } = {}) => {
+        if (state.loading) {
             return;
         }
+
+        if (state.loaded && !force) {
+            return;
+        }
+
+        state.loading = true;
 
         try {
             const response = await fetch('/API/Search/NavbarData', {
@@ -144,14 +151,14 @@ document.addEventListener('DOMContentLoaded', () => {
             state.users = Array.isArray(payload.users) ? payload.users : [];
             state.loaded = true;
         } catch {
-            state.events = [];
-            state.users = [];
-            state.loaded = true;
+            state.loaded = false;
+        } finally {
+            state.loading = false;
         }
     };
 
     input.addEventListener('focus', async () => {
-        await loadSearchData();
+        await loadSearchData({ force: true });
         if (input.value.trim()) {
             renderResults(input.value);
         }
