@@ -53,9 +53,13 @@
 			@if (Model?.Tags != null && Model.Tags.Any())
 			{
 				<div class="tags-view-container">
-					@foreach (var tag in Model.Tags)
+					@{
+						var dbTags = await TagService.GetAllAsync();
+					}
+					@foreach (var tagId in Model.Tags)
 					{
-						<span class="tag-chip">@tag</span>
+						var t = dbTags.FirstOrDefault(x => x.Id == tagId);
+						<span class="tag-chip">@(t != null ? t.TagName : tagId)</span>
 					}
 				</div>
 			}
@@ -66,14 +70,13 @@
 		</div>
 		<div class="edit-mode-only event-tags-container">
 			@{
-				var dbTags = await TagService.GetAllAsync();
-				var tagsList = dbTags.Select(t => t.TagName).ToList();
+				var dbTagsList = await TagService.GetAllAsync();
 			}
-			@foreach (var tag in tagsList)
+			@foreach (var tag in dbTagsList)
 			{
-				bool isSelected = Model?.Tags?.Contains(tag) == true;
-				<button type="button" class="btn badge rounded-pill event-tag-btn @(isSelected ? "bg-primary text-white selected" : "bg-secondary text-light")" data-tag-value="@tag">
-					@tag
+				bool isSelected = Model?.Tags?.Contains(tag.Id) == true;
+				<button type="button" class="btn badge rounded-pill event-tag-btn @(isSelected ? "bg-primary text-white selected" : "bg-secondary text-light")" data-tag-value="@tag.Id">
+					@tag.TagName
 				</button>
 			}
 		</div>

@@ -8,10 +8,10 @@ public interface IEventService
 {
 	Task<Event?> GetEventByIdAsync(string eventId);
 	Task<List<Event>> GetAllEventsAsync();
-	Task<(bool success, string? error)> CreateEventAsync(Event eventData);
-	Task<(bool success, string? error)> UpdateEventAsync(string eventId, Event eventData);
-	Task DeleteEventAsync(string eventId);
-	Task<(bool success, string? error)> AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null);
+	Task<Event> CreateEventAsync(Event eventData);
+	Task UpdateEventAsync(string eventId, Event eventData, string currentUserId);
+	Task DeleteEventAsync(string eventId, string currentUserId);
+	Task AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null);
 	Task<EventViewModel?> GetEventViewModelAsync(string eventId, string currentUserId);
 }
 
@@ -44,25 +44,37 @@ public class EventService : IEventService
 		return await _eventStore.GetByIdAsync(eventId);
 	}
 
-	public async Task<(bool success, string? error)> CreateEventAsync(Event eventData)
+	public async Task<Event> CreateEventAsync(Event eventData)
 	{
 		var (isValid, errorMessage) = checkValidEvent(eventData);
 		if (!isValid)
 		{
-			return (false, errorMessage);
+			throw new ArgumentException(errorMessage ?? "Invalid event data.");
 		}
 
 		await _eventStore.CreateAsync(eventData);
 		
-		return (true, null);
+		return eventData;
 	}
 
-	public async Task<(bool success, string? error)> UpdateEventAsync(string eventId, Event eventData)
+	public async Task UpdateEventAsync(string eventId, Event eventData, string currentUserId)
 	{
+		var existingEvent = await _eventStore.GetByIdAsync(eventId);
+		if (existingEvent == null)
+		{
+			throw new KeyNotFoundException("Event not found.");
+		}
+
+		bool isAdmin = await _userService.IsAdminAsync(currentUserId);
+		if (existingEvent.OwnerId != currentUserId && !isAdmin)
+		{
+			throw new UnauthorizedAccessException("Forbidden.");
+		}
+
 		var (isValid, errorMessage) = checkValidEvent(eventData);
 		if (!isValid)
 		{
-			return (false, errorMessage);
+			throw new ArgumentException(errorMessage ?? "Invalid event data.");
 		}
 
 		var participations = await _participationService.GetParticipationsByEventIdAsync(eventId);
@@ -70,21 +82,25 @@ public class EventService : IEventService
 
 		if (eventData.MaxParticipants < acceptedCount)
 		{
-			return (false, $"Cannot set max participants below current accepted count ({acceptedCount}).");
+			throw new ArgumentException($"Cannot set max participants below current accepted count ({acceptedCount}).");
 		}
 
 		await _eventStore.UpdateAsync(eventId, eventData);
-		
-		return (true, null);
 	}
 
-	public async Task DeleteEventAsync(string eventId)
+	public async Task DeleteEventAsync(string eventId, string currentUserId)
 	{
 		var eventData = await GetEventByIdAsync(eventId);
 		
 		if (eventData == null)
 		{
-			return;
+			throw new KeyNotFoundException("Event not found.");
+		}
+
+		bool isAdmin = await _userService.IsAdminAsync(currentUserId);
+		if (eventData.OwnerId != currentUserId && !isAdmin)
+		{
+			throw new UnauthorizedAccessException("Forbidden.");
 		}
 
 		await _participationService.DeleteParticipationsByEventIdAsync(eventId);
@@ -92,13 +108,13 @@ public class EventService : IEventService
 		await _eventStore.DeleteAsync(eventId);
 	}
 
-	public async Task<(bool success, string? error)> AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null)
+	public async Task AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null)
 	{
 		var eventData = await GetEventByIdAsync(eventId);
 		
 		if (eventData == null)
 		{
-			return (false, "Event not found.");
+			throw new KeyNotFoundException("Event not found.");
 		}
 
 		var comment = new Comment
@@ -110,18 +126,9 @@ public class EventService : IEventService
 			RepliedMessageId = repliedMessageId
 		};
 
-		try
-		{
-			await _commentService.CreateCommentAsync(comment);
-			eventData.Comments.Add(comment.Id);
-			await _eventStore.UpdateAsync(eventId, eventData);
-			
-			return (true, null);
-		}
-		catch (Exception exception)
-		{
-			return (false, exception.Message);
-		}
+		await _commentService.CreateCommentAsync(comment);
+		eventData.Comments.Add(comment.Id);
+		await _eventStore.UpdateAsync(eventId, eventData);
 	}
 
 	public async Task<EventViewModel?> GetEventViewModelAsync(string eventId, string currentUserId)
