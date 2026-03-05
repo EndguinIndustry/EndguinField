@@ -44,6 +44,7 @@ public class ProfileController : Controller
 		// Check if this is the current user's own profile
 		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 		viewModel.IsOwnProfile = !string.IsNullOrWhiteSpace(currentUserId) && currentUserId == id;
+		viewModel.IsFriend = user.Friends?.Contains(currentUserId) ?? false;
 
 		return View(viewModel);
 	}
@@ -198,7 +199,26 @@ public class ProfileController : Controller
 		return Json(new { success = true });
 	}
 
+	[HttpPost]
+	[Route("API/Unfriend")]
+	public async Task<IActionResult> Unfriend(string friendId)
+	{
+		var currentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+		var currentUser = await _userService.GetUserByIdAsync(currentId);
+		var friend = await _userService.GetUserByIdAsync(friendId);
+
+		if (currentUser == null || friend == null)
+			return NotFound();
+
+		currentUser.Friends?.Remove(friendId);
+		friend.Friends?.Remove(currentId);
+
+		await _userService.UpdateUserAsync(currentId, currentUser);
+		await _userService.UpdateUserAsync(friendId, friend);
+
+		return Json(new { success = true });
+	}
 
 	[HttpGet]
 	[Route("API/User")]

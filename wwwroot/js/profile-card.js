@@ -309,3 +309,21 @@ async function handleFriendRequest(userId, accept) {
         location.reload();
     }
 }
+
+async function unfriend(userId) {
+
+    const res = await fetch("/API/Unfriend", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `friendId=${encodeURIComponent(userId)}`
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        showNotification("Friend removed", "success");
+        location.reload();
+    }
+}

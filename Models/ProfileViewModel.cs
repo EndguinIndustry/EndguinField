@@ -37,6 +37,7 @@ namespace EndguinField.Models
 		public List<string> PendingFriendRequestIds { get; set; } = new();
 		public List<FriendViewModel> PendingRequests { get; set; } = new();
 		public bool IsOwnProfile { get; set; }
+		public bool IsFriend { get; set; }
 
 		public static async Task<ProfileViewModel> FromUserAsync(User user, IUserService userService)
 		{
