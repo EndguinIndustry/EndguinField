@@ -41,6 +41,7 @@
                        autocomplete="off">
                 <div id="navbar-search-results" class="search-results" hidden></div>
             </div>
+
             <div class="profile-section">
                 @if (User.Identity?.IsAuthenticated == true)
                 {
@@ -81,24 +82,24 @@
     <script type="module" src="~/js/Shared/modal.js" asp-append-version="true"></script>
     <script src="~/js/Shared/navbarSearch.js" asp-append-version="true"></script>
     <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const profileMenu = document.querySelector('.profile-menu');
-                if (!profileMenu) {
-                    return;
-                }
-
-                document.addEventListener('click', function (event) {
-                    if (!profileMenu.contains(event.target)) {
-                        profileMenu.removeAttribute('open');
+                document.addEventListener('DOMContentLoaded', function () {
+                    const profileMenu = document.querySelector('.profile-menu');
+                    if (!profileMenu) {
+                        return;
                     }
-                });
 
-                document.addEventListener('keydown', function (event) {
-                    if (event.key === 'Escape') {
-                        profileMenu.removeAttribute('open');
-                    }
+                    document.addEventListener('click', function (event) {
+                        if (!profileMenu.contains(event.target)) {
+                            profileMenu.removeAttribute('open');
+                        }
+                    });
+
+                    document.addEventListener('keydown', function (event) {
+                        if (event.key === 'Escape') {
+                            profileMenu.removeAttribute('open');
+                        }
+                    });
                 });
-            });
     </script>
 </body>
 

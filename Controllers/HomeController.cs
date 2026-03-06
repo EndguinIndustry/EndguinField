@@ -12,13 +12,14 @@ public class HomeController : Controller
     private readonly IUserService _userService;
     private readonly IEventService _eventService;
     private readonly IParticipationService _participantService;
+    private readonly ITagSchemaServices _tagService;
 
-
-    public HomeController(IUserService userService, IEventService eventService, IParticipationService participantService)
+    public HomeController(IUserService userService, IEventService eventService, IParticipationService participantService, ITagSchemaServices tagService)
     {
         _userService = userService;
         _eventService = eventService;
         _participantService = participantService;
+        _tagService = tagService;
     }
 
     public async Task<IActionResult> Index()
@@ -39,7 +40,8 @@ public class HomeController : Controller
             EndTime = e.EndTime,
             Location = e.Location,
             ParticipantCount = _participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
-            MaxParticipants = e.MaxParticipants
+            MaxParticipants = e.MaxParticipants,
+            Tags = e.Tags ?? new List<string>()
         }).ToList();
 
         var openEventsList = await _eventService.GetAllEventsAsync();
@@ -52,13 +54,24 @@ public class HomeController : Controller
             EndTime = e.EndTime,
             Location = e.Location,
             ParticipantCount = _participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
-            MaxParticipants = e.MaxParticipants
+            MaxParticipants = e.MaxParticipants,
+            Tags = e.Tags ?? new List<string>()
         }).ToList();
+
+        ProfileViewModel profileVM = null;
+        if (currentUser != null)
+        {
+            profileVM = await ProfileViewModel.FromUserAsync(currentUser, _userService, _eventService, _participantService);
+        }
+
+        var allTags = await _tagService.GetAllAsync();
 
         var viewModel = new HomeViewModel
         {
             PendingEvents = pendingEvents,
-            OpenEvents = openEvents
+            OpenEvents = openEvents,
+            CurrentUserProfile = profileVM,
+            AllTags = allTags
         };
         return View(viewModel);
     }
