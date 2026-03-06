@@ -353,6 +353,12 @@ body {
   padding: 8px;
 }
 
+@media only screen and (max-width: 412px) {
+  .search-results {
+    width: 100sv;
+  }
+}
+
 .search-result-section {
   margin-bottom: 8px;
   padding-bottom: 8px;

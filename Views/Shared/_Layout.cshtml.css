@@ -23,6 +23,7 @@ header {
   /* Brand on left, Search on right */
   max-width: 1200px;
   margin: 0 auto;
+  gap: 10px;
 }
 
 .navbar-brand {
@@ -30,6 +31,12 @@ header {
   font-weight: bold;
   text-decoration: none;
   color: #333;
+}
+
+@media only screen and (max-width: 412px) {
+  .navbar-brand {
+    display: none;
+  }
 }
 
 .fa-magnifying-glass {
