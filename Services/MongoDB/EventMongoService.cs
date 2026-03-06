@@ -7,6 +7,7 @@ public interface IEventMongoService
 {
 	Task<List<Event>> GetAllAsync(CancellationToken cancellationToken = default);
 	Task<Event?> GetByIdAsync(string id, CancellationToken cancellationToken = default);
+	Task<Event?> GetByOwnerIdAsync(string id, CancellationToken cancellationToken = default);
 	Task CreateAsync(Event eventObj, CancellationToken cancellationToken = default);
 	Task UpdateAsync(string id, Event eventIn, CancellationToken cancellationToken = default);
 	Task DeleteAsync(string id, CancellationToken cancellationToken = default);
@@ -26,6 +27,9 @@ public class EventMongoService : IEventMongoService
 
 	public async Task<Event?> GetByIdAsync(string id, CancellationToken cancellationToken = default) =>
 		await _events.Find(e => e.Id == id).FirstOrDefaultAsync(cancellationToken);
+
+	public async Task<Event?> GetByOwnerIdAsync(string id, CancellationToken cancellationToken = default) =>
+		await _events.Find(e => e.OwnerId == id).FirstOrDefaultAsync(cancellationToken);
 
 	public async Task CreateAsync(Event eventObj, CancellationToken cancellationToken = default) =>
 		await _events.InsertOneAsync(eventObj, cancellationToken: cancellationToken);
