@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     return `
                             <a class="EventLink search-event-link" href="${escapeHtml(item.url)}">
-                                <div class="EventCard search-event-card">
+                                <div class=" search-event-card">
                                     <img src="${escapeHtml(item.image || '/asset/profile.svg')}" alt="EventBanner">
                                     <div class="CardInfo">
                                         <div class="CardDetail">
@@ -79,16 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 return `
                     <a class="EventLink search-event-link" href="${escapeHtml(item.url)}">
-                        <div class="EventCard search-event-card">
+                        <div class=" search-event-card">
                             <img src="${escapeHtml(item.image || '/asset/profile.svg')}" alt="${escapeHtml(item.name)}">
                             <div class="CardInfo">
                                 <div class="CardDetail">
                                     <h1>${escapeHtml(item.name)}</h1>
                                     <p>User profile</p>
                                 </div>
-                                <div class="Participant">
-                                    <h1>USER</h1>
-                                </div>
+
                             </div>
                         </div>
                     </a>
