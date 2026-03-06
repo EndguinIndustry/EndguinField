@@ -13,6 +13,7 @@ public class EventViewModel
 	public int MaxParticipants { get; set; }
 	public List<string> Tags { get; set; } = new();
 	public string Status { get; set; } = "Open";
+	public string DisplayStatus { get; set; } = "Open";
 
 	public UserSummaryViewModel Owner { get; set; } = null!;
 	public List<ParticipationViewModel> Participants { get; set; } = new();

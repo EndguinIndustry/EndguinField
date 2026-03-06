@@ -61,6 +61,12 @@ export function initEditMode(config) {
         return;
     }
 
+    const disabledStatuses = ["ended", "cancelled"];
+    if (disabledStatuses.includes(config.status?.toLowerCase())) {
+        toggleEditUI(false);
+        return;
+    }
+
     setupTagsInteraction();
     setupDateValidation();
     toggleEditUI(false);
@@ -107,6 +113,20 @@ export function initEditMode(config) {
         toggleEditUI(isEditModeActive);
 
         if (!isEditModeActive) {
+            if (config.status?.toLowerCase() === "cancelled") {
+                const confirmed = await Modal.confirm(
+                    "Setting the status to Cancelled will prevent users from joining or managing participation. Continue?",
+                    "Cancel this event?"
+                );
+                if (!confirmed) {
+                    config.status = "Open";
+                    const openInput = document.querySelector('input[name="eventStatus"][value="Open"]');
+                    if (openInput) openInput.click();
+                    isEditModeActive = true;
+                    toggleEditUI(true);
+                    return;
+                }
+            }
             await submitEvent(config, false);
         }
     });
