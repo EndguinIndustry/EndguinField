@@ -5,68 +5,124 @@
 }
 
 <style>
-    div.participated-event-section {
-        display: flex;
-        flex-direction: row;
+    .dashboard-events {
+        display: grid;
+        grid-template-columns: 30% 1fr;
         gap: 2vw;
+
+        width: 100%;
+        margin: auto;
+    }
+
+    .left-panel {
+        border: 1px solid lightgray;
+        border-radius: 20px;
+        padding: 1vw;
+    }
+
+    .right-panel {
+        border: 1px solid lightgray;
+        border-radius: 20px;
+        padding: 1vw;
+    }
+
+    .switch-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 0.5vw;
+        margin-bottom: 1vw;
+    }
+
+    .switch-buttons button {
+        border: none;
+        padding: 0.5vw 1vw;
+        border-radius: 20px;
+        background: #e5e5e5;
+        cursor: pointer;
+    }
+
+    .switch-buttons button.active {
+        background: #cfcfcf;
+    }
+
+    .event-panel {
+        display: none;
+    }
+
+    .event-panel.active {
+        display: block;
     }
 </style>
 
+
 @if (User?.Identity?.IsAuthenticated == true)
 {
-    <div class="text-center">
-        <h1 class="welcome-title">EndguinField Welcome</h1>
-        <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    </div>
 
-    <div class="participated-event-section">
-        <div style="text-align: left;">
-            <h2>Pending Events</h2>
-            @if (Model?.PendingEvents != null)
-            {
-                <partial name="_EventList" model="Model.PendingEvents" />
-            }
-            else
-            {
-                <p>No pending events to show.</p>
-            }
+    <div class="dashboard-events">
 
-            <h2>Participating Events</h2>
-            @if (Model?.ParticipatingEvents != null)
-            {
-                <partial name="_EventList" model="Model.ParticipatingEvents" />
-            }
-            else
-            {
-                <p>No participating events to show.</p>
-            }
+        <div class="left-panel">
+
+            <div class="switch-buttons">
+                <button id="btn-pending" class="active" onclick="showPanel('pending')">Pending</button>
+                <button id="btn-participating" onclick="showPanel('participating')">Participating</button>
+                <button id="btn-ongoing" onclick="showPanel('ongoing')">My Ongoing</button>
+            </div>
+
+
+            <div id="pending" class="event-panel active">
+                @if (Model?.PendingEvents != null)
+                {
+                    <partial name="_EventList" model="Model.PendingEvents" />
+                }
+                else
+                {
+                    <p>No pending events.</p>
+                }
+            </div>
+
+
+            <div id="participating" class="event-panel">
+                @if (Model?.ParticipatingEvents != null)
+                {
+                    <partial name="_EventList" model="Model.ParticipatingEvents" />
+                }
+                else
+                {
+                    <p>No participating events.</p>
+                }
+            </div>
+
+
+            <div id="ongoing" class="event-panel">
+                @if (Model?.MyOngoingEvents != null)
+                {
+                    <partial name="_EventList" model="Model.MyOngoingEvents" />
+                }
+                else
+                {
+                    <p>No ongoing events.</p>
+                }
+            </div>
+
         </div>
 
-        <div style="text-align: center;">
-            <h2>Currently Open Events</h2>
+        <div class="right-panel">
+
+            <h2 style="text-align:center;">Currently Open Events</h2>
+
             @if (Model?.OpenEvents != null)
             {
                 <partial name="_EventList" model="Model.OpenEvents" />
             }
             else
             {
-                <p>No open events to show.</p>
+                <p>No open events.</p>
             }
-        </div>
 
-        <div style="text-align: center;">
-            <h2>My Ongoing Events</h2>
-            @if (Model?.MyOngoingEvents != null)
-            {
-                <partial name="_EventList" model="Model.MyOngoingEvents" />
-            }
-            else
-            {
-                <p>No ongoing events to show.</p>
-            }
         </div>
 
     </div>
+
 }
 else
 {
@@ -74,3 +130,24 @@ else
         window.location.href = '/Login/Index';
     </script>
 }
+
+
+
+<script>
+
+    function showPanel(panel) {
+
+        document.querySelectorAll(".event-panel").forEach(p => {
+            p.classList.remove("active")
+        })
+
+        document.querySelectorAll(".switch-buttons button").forEach(b => {
+            b.classList.remove("active")
+        })
+
+        document.getElementById(panel).classList.add("active")
+        document.getElementById("btn-" + panel).classList.add("active")
+
+    }
+
+</script>

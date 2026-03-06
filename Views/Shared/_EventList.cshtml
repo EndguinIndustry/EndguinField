@@ -2,25 +2,20 @@
 
 <style>
     div.event-list-section {
+        margin: auto;
         width: 100%;
         padding: 1vw;
-        border-style: solid;
-        border-color: lightgray;
         border-radius: 20px;
-        overflow: hidden;
+        box-sizing: border-box;
     }
 
     div.event-list {
-        height: 30vw;
+        margin: auto;
+        height: 32vw;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-        row-gap: 1vw;
-        padding-bottom: 5px;
-    }
-
-    h2.event-list-title {
-        font-size: 1.5vw;
+        gap: 1.2vw;
     }
 </style>
 
@@ -28,7 +23,7 @@
     <div class="event-list">
         @if (Model != null && Model.Any())
         {
-            foreach (var item in Model)
+            foreach (EventCardModel item in Model)
             {
                 <partial name="_EventCard" model="item" />
             }
