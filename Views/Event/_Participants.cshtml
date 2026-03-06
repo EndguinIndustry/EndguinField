@@ -36,7 +36,7 @@
 							</a>
 							<a href="/Profile/View/@p.UserId" class="profile-link participant-name" title="@pName">@pName</a>
 
-							@if (Model.IsOwner)
+							@if (Model.IsOwner && !Model.DisplayStatus.Equals("Ended", StringComparison.OrdinalIgnoreCase) && !Model.DisplayStatus.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
 							{
 								<div class="participant-controls">
 									@if (string.Equals(p.Status, "Pending", StringComparison.OrdinalIgnoreCase))

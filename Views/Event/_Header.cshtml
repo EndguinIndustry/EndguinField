@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="event-header-actions">
-        @if (Model?.IsOwner == true && !Model.IsCreateMode)
+        @if (Model?.IsOwner == true && !Model.IsCreateMode && Model.DisplayStatus == "Open")
         {
             <partial name="Components/_IconButton" model='new IconButtonViewModel { Id = "editBtn", IconPath = "/assets/icons/edit.svg", AltText = "Edit Event", Title = "Edit Event", AdditionalClasses = "icon-dark" }' />
             <partial name="Components/_IconButton" model='new IconButtonViewModel { Id = "cancelEditBtn", IconPath = "/assets/icons/decline.svg", AltText = "Cancel Edit", Title = "Cancel Edit", AdditionalClasses = "icon-dark edit-mode-only" }' />

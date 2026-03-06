@@ -27,7 +27,7 @@
 		}
 	</div>
 	<div class="comment-input-area">
-		@if (Model.IsLoggedIn)
+		@if (Model?.IsLoggedIn ?? false)
 		{
 			<div class="reply-target-container">
 				<div id="replyTargetWrapper" class="reply-wrapper">
