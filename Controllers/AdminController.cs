@@ -123,7 +123,7 @@ namespace EndguinField.Controllers
         {
             if (!await IsAdminAsync()) return RedirectToAction("Index", "Home");
 
-            var events = await _eventService.GetAllEventsAsync();
+            var events = await _eventService.GetAllEventsWithParticipantsAsync();
 
              if (!string.IsNullOrEmpty(search))
             {
@@ -147,20 +147,22 @@ namespace EndguinField.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteEvent(string id)
         {
+            var adminUserId = _userService.GetCurrentUserId() ?? string.Empty;
             if (!await IsAdminAsync()) return Unauthorized();
-            await _eventService.DeleteEventAsync(id);
+            await _eventService.DeleteEventAsync(id, adminUserId);
             return RedirectToAction(nameof(Events));
         }
 
         [HttpPost]
         public async Task<IActionResult> CancelEvent(string id)
         {
+            var adminUserId = _userService.GetCurrentUserId() ?? string.Empty;
             if (!await IsAdminAsync()) return Unauthorized();
             var evt = await _eventService.GetEventByIdAsync(id);
             if (evt != null)
             {
                 evt.Status = "Cancelled";
-                await _eventService.UpdateEventAsync(id, evt);
+                await _eventService.UpdateEventAsync(id, evt, adminUserId);
             }
             return RedirectToAction(nameof(Events));
         }
