@@ -1,5 +1,6 @@
 @model ProfileViewModel
 
+<div  class="friend-panel" id="friendListPanel">
 <div class="friend-component">
     <div style="display: flex;">
         <h3>Friend List</h3>
@@ -18,58 +19,18 @@
                     }
                 </div>
             </button>
+
+            <button class="close-friend-list-button" onclick="toggleFriendList(false)">
+                <div class="icon-wrapper">
+                    ✕
+                </div>
+            </button>
         }
     </div>
 
     <partial name="_FriendList" model="Model" />
 </div>
+</div>
 
-@if (Model.IsOwnProfile)
-{
-    <div class="friend-request-component" id="friendRequestPanel">
-        <div class="friend-request-box">
 
-            <div class="request-header">
-                <h3>Friend Requests</h3>
-                <button class="close-btn" onclick="toggleFriendRequest(false)">✕</button>
-            </div>
 
-            <div class="request-list">
-
-                @if (Model.PendingRequests != null && Model.PendingRequests.Any())
-                {
-                    @foreach (var req in Model.PendingRequests)
-                    {
-                        <div class="request-card">
-                            @if (!string.IsNullOrEmpty(req.ImageUrl))
-                            {
-                                <img class="avatar" src="@req.ImageUrl" />
-                            }
-                            else
-                            {
-                                <div class="avatar-tmp">
-                                    <span>@req.Name.Substring(0, 1).ToUpper()</span>
-                                </div>
-                            }
-                            <span class="username">@req.Name</span>
-                            <div class="request-actions">
-                                <button class="accept-btn"                  onclick="handleFriendRequest('@req.Id', true)">
-                                    ✓
-                                </button>
-                                <button class="reject-btn"                                 onclick="handleFriendRequest('@req.Id', false)">
-                                    ✕
-                                </button>
-                            </div>
-                        </div>
-                    }
-                }
-                else
-                {
-                    <div class="no-requests">
-                        <p>No pending friend requests</p>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-}

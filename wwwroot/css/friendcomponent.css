@@ -1,16 +1,16 @@
-.friend-list{
+.friend-list {
     overflow-y: auto;
     max-height: 100%;
-    scrollbar-width: none;  
+    scrollbar-width: none;
     padding-bottom: 5px;
 }
 
-.friend-list-section{
+.friend-list-section {
     height: 200px;
     overflow: hidden;
 }
 
-.friend-component{
+.friend-component {
     border-style: solid;
     border-color: lightgray;
     border-radius: 15px;
@@ -22,7 +22,7 @@
     position: relative;
 }
 
-.friend-each{
+.friend-each {
     /* border-style: solid;
     border-color: gray; */
     margin: 3px;
@@ -32,7 +32,7 @@
     box-shadow: 0px 2px 2px lightgray;
 }
 
-.friend-each > img{
+.friend-each>img {
     width: 40px;
     height: 40px;
     margin-left: 1px;
@@ -42,7 +42,8 @@
 
 
 
-.friend-request-button {
+.friend-request-button,
+.close-friend-list-button {
     background: none;
     border: none;
     cursor: pointer;
@@ -72,7 +73,7 @@
 .friend-request-component {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
     display: none;
     justify-content: center;
     align-items: center;
@@ -85,7 +86,7 @@
     background: white;
     border-radius: 12px;
     padding: 15px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
 }
@@ -141,7 +142,8 @@
     margin-left: 1px;
     margin-right: 10px;
 }
-.avatar-tmp{
+
+.avatar-tmp {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -200,4 +202,57 @@
 .reject-btn:hover {
     background: #dc2626;
     transform: scale(1.1);
+}
+
+
+.friend-panel {
+    position: static;
+    display:flex;
+    }
+
+.close-friend-list-button{
+    display:none;
+}
+
+@media only screen and (max-width: 768px) {
+
+    .friend-panel{
+        display:none;
+    }
+
+
+    .friend-panel.active {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+    }
+
+    .friend-component {
+        position: relative;
+        border-style: solid;
+        border-color: lightgray;
+        background-color: white;
+        border-radius: 15px;
+        margin: 5% auto;
+        padding: 7px;
+        width: calc(100% - 100px);   
+        height: calc(100% - 200px); 
+        max-width: 700px;
+    }
+
+    .friend-list-section {
+        height: calc(100% - 70px);
+    }
+
+    .friend-request-button{
+        display: none;
+    }
+
+    .close-friend-list-button{
+        display:inline-block;
+    }
 }
