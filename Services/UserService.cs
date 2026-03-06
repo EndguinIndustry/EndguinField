@@ -151,7 +151,6 @@ namespace EndguinField.Services
 			{
 				events.Add(eventId);
 				var eventData = await _eventStore.GetByIdAsync(eventId);
-				Console.WriteLine($"EventId: {eventId}, EventName: {eventData?.Name}, EndTime: {eventData?.EndTime}");
 			}
 			return events;
 		}
