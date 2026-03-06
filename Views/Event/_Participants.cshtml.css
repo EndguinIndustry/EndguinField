@@ -221,3 +221,21 @@
 .participant-item img {
 	border-radius: 50%;
 }
+
+@media (max-width: 768px) {
+	.participants-section {
+		flex-direction: column;
+	}
+
+	.host-column {
+		padding-right: 0;
+		margin-bottom: 1.5rem;
+		max-width: none;
+	}
+
+	.participant-controls {
+		opacity: 1;
+		transform: none;
+		pointer-events: auto;
+	}
+}
