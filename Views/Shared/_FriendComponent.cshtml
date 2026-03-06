@@ -6,7 +6,17 @@
         @if (Model.IsOwnProfile)
         {
             <button class="friend-request-button" onclick="toggleFriendRequest(true)">
-                friend request
+                <div class="icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                        d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+                    </svg>
+
+                    @if (Model.PendingRequests != null && Model.PendingRequests.Any())
+                    {
+                        <span class="notification-dot"></span>
+                    }
+                </div>
             </button>
         }
     </div>
@@ -21,25 +31,47 @@
 
             <div class="request-header">
                 <h3>Friend Requests</h3>
-                <button onclick="toggleFriendRequest(false)">✕</button>
+                <button class="close-btn" onclick="toggleFriendRequest(false)">✕</button>
             </div>
 
-            @foreach (var req in Model.PendingRequests)
+            <div class="request-list">
+
+            @if (Model.PendingRequests != null && Model.PendingRequests.Any())
             {
-                <div class="request-card">
-                    <img src="@req.ImageUrl" width="40" />
-                    <span>@req.Name</span>
-
-                    <button onclick="handleFriendRequest('@req.Id', true)">
-                        Accept
-                    </button>
-
-                    <button onclick="handleFriendRequest('@req.Id', false)">
-                        Reject
-                    </button>
+                @foreach (var req in Model.PendingRequests)
+                {
+                    <div class="request-card">
+                        @if (!string.IsNullOrEmpty(req.ImageUrl))
+                        {
+                            <img class="avatar" src="@req.ImageUrl" />
+                        }
+                        else
+                        {
+                            <div class="avatar-tmp">
+                                <span>@req.Name.Substring(0,1).ToUpper()</span>
+                            </div>
+                        }
+                        <span class="username">@req.Name</span>
+                        <div class="request-actions">
+                            <button class="accept-btn"
+                                    onclick="handleFriendRequest('@req.Id', true)">
+                                ✓
+                            </button>
+                            <button class="reject-btn"
+                                    onclick="handleFriendRequest('@req.Id', false)">
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="no-requests">
+                    <p>No pending friend requests</p>
                 </div>
             }
-
+            </div>
         </div>
     </div>
 }
