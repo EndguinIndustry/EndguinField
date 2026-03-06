@@ -8,6 +8,7 @@ public interface IEventService
 {
 	Task<Event?> GetEventByIdAsync(string eventId);
 	Task<List<Event>> GetAllEventsAsync();
+	Task<List<Event>> GetAllEventsWithParticipantsAsync();
 	Task<Event> CreateEventAsync(Event eventData);
 	Task UpdateEventAsync(string eventId, Event eventData, string currentUserId);
 	Task DeleteEventAsync(string eventId, string currentUserId);
@@ -38,6 +39,20 @@ public class EventService : IEventService
 	public async Task<List<Event>> GetAllEventsAsync()
 	{
 		return await _eventStore.GetAllAsync();
+	}
+
+	public async Task<List<Event>> GetAllEventsWithParticipantsAsync()
+	{
+		var events = await _eventStore.GetAllAsync();
+		foreach (var evt in events)
+		{
+			var participations = await _participationService.GetParticipationsByEventIdAsync(evt.Id);
+			evt.Participants = participations
+				.Where(p => p.Status == "Accepted") 
+				.Select(p => p.UserId)
+				.ToList();
+		}
+		return events;
 	}
 
 	public async Task<Event?> GetEventByIdAsync(string eventId)
