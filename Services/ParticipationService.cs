@@ -20,12 +20,14 @@ public class ParticipationService : IParticipationService
 	private readonly IParticipationMongoService _participationStore;
 	private readonly IUserService _userService;
 	private readonly IEventMongoService _eventStore;
+	private readonly INotificationService _notificationService;
 
-	public ParticipationService(IParticipationMongoService participationStore, IUserService userService, IEventMongoService eventStore)
+	public ParticipationService(IParticipationMongoService participationStore, IUserService userService, IEventMongoService eventStore, INotificationService notificationService)
 	{
 		_participationStore = participationStore;
 		_userService = userService;
 		_eventStore = eventStore;
+		_notificationService = notificationService;
 	}
 
 	public async Task<List<Participation>> GetParticipationsByEventIdAsync(string eventId)
@@ -118,6 +120,17 @@ public class ParticipationService : IParticipationService
 		if (!result)
 		{
 			throw new InvalidOperationException("Failed to decline join request.");
+		} else {
+			var eventObj = await _eventStore.GetByIdAsync(eventId);
+			if (eventObj != null)
+			{
+				await _notificationService.CreateNotificationAsync(
+					userId,
+					$"You were rejected from joining {eventObj.Name}",
+					"EventStatus",
+					eventId
+				);
+			}
 		}
 	}
 
@@ -169,6 +182,8 @@ public class ParticipationService : IParticipationService
 			throw new KeyNotFoundException("User not found.");
 		}
 
+		var eventObj = await _eventStore.GetByIdAsync(eventId);
+
 		var participation = new Participation
 		{
 			EventId = eventId,
@@ -177,7 +192,20 @@ public class ParticipationService : IParticipationService
 			JoinedTime = DateTime.UtcNow,
 			User = user.Name
 		};
-		return await _participationStore.CreateAsync(participation);
+
+		await _participationStore.CreateAsync(participation);
+
+		if (eventObj != null)
+		{
+			await _notificationService.CreateNotificationAsync(
+				eventObj.OwnerId,
+				$"{user.Name} requested to join your event {eventObj.Name}",
+				"EventRequest",
+				eventId
+			);
+		}
+
+		return participation;
 	}
 
 	public async Task<bool> DeleteParticipationsByEventIdAsync(string eventId)

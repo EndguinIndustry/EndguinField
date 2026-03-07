@@ -13,13 +13,15 @@ public class ProfileController : Controller
 	private readonly S3Service _s3Service;
 	private readonly IEventService _eventService;
 	private readonly IParticipationService _participationService;
+    private readonly INotificationService _notificationService;
 
-	public ProfileController(IUserService userService, S3Service s3Service, IEventService eventService, IParticipationService participationService)
+	public ProfileController(IUserService userService, S3Service s3Service, IEventService eventService, IParticipationService participationService, INotificationService notificationService)
 	{
 		_userService = userService;
 		_s3Service = s3Service;
 		_eventService = eventService;
 		_participationService = participationService;
+        _notificationService = notificationService;
 	}
 
 	public IActionResult Index()
@@ -45,10 +47,14 @@ public class ProfileController : Controller
 
 		var viewModel = await ProfileViewModel.FromUserAsync(user, _userService, _eventService, _participationService);
 
-		// Check if this is the current user's own profile
 		var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 		viewModel.IsOwnProfile = !string.IsNullOrWhiteSpace(currentUserId) && currentUserId == id;
 		viewModel.IsFriend = user.Friends?.Contains(currentUserId) ?? false;
+        
+        if (viewModel.IsOwnProfile)
+        {
+            viewModel.Notifications = await _notificationService.GetUserNotificationsAsync(id);
+        }
 
 		return View(viewModel);
 	}
@@ -165,6 +171,17 @@ public class ProfileController : Controller
 		{
 			receiver.FriendRequests.Add(senderId);
 			await _userService.UpdateUserAsync(request.ReceiverId, receiver);
+
+			var sender = await _userService.GetUserByIdAsync(senderId);
+			if (sender != null)
+			{
+				await _notificationService.CreateNotificationAsync(
+					request.ReceiverId,
+					$"{sender.Name} sent you a friend request",
+					"FriendRequest",
+					senderId
+				);
+			}
 		}
 
 		return Json(new { success = true });
@@ -186,19 +203,38 @@ public class ProfileController : Controller
 		currentUser.Friends ??= new List<string>();
 		sender.Friends ??= new List<string>();
 
-		currentUser.FriendRequests.Remove(senderId);
-
-		if (accept)
+		if (currentUser.FriendRequests.Contains(senderId))
 		{
-			if (!currentUser.Friends.Contains(senderId))
-				currentUser.Friends.Add(senderId);
+			currentUser.FriendRequests.Remove(senderId);
 
-			if (!sender.Friends.Contains(currentId))
-				sender.Friends.Add(currentId);
+			if (accept)
+			{
+				if (!currentUser.Friends.Contains(senderId))
+					currentUser.Friends.Add(senderId);
+
+				if (!sender.Friends.Contains(currentId))
+					sender.Friends.Add(currentId);
+
+				await _notificationService.CreateNotificationAsync(
+					senderId,
+					$"{currentUser.Name} accepted your friend request",
+					"FriendRequestResult",
+					currentId
+				);
+			}
+			else
+			{
+				await _notificationService.CreateNotificationAsync(
+					senderId,
+					$"{currentUser.Name} rejected your friend request",
+					"FriendRequestResult",
+					currentId
+				);
+			}
+
+			await _userService.UpdateUserAsync(currentId, currentUser);
+			await _userService.UpdateUserAsync(senderId, sender);
 		}
-
-		await _userService.UpdateUserAsync(currentId, currentUser);
-		await _userService.UpdateUserAsync(senderId, sender);
 
 		return Json(new { success = true });
 	}
