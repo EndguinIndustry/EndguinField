@@ -46,7 +46,6 @@ namespace EndguinField.Models
 			var model = new ProfileViewModel
 			{
 				Id = user.Id,
-                // ...
 				Name = user.Name,
 				Email = user.Email,
 				Role = user.Role,
