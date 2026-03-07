@@ -22,7 +22,7 @@ public class Event
 
 	public int MaxParticipants { get; set; }
 	public List<string> Tags { get; set; } = new List<string>();
-	public string Status { get; set; } = "Open"; // Open / Closed / Cancelled
+	public string Status { get; set; } = "Open"; // Open / Cancelled
 	public List<string> BlackLists { get; set; } = new List<string>();
 	public List<string> Comments { get; set; } = new List<string>();
 }

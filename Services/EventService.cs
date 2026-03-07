@@ -14,6 +14,7 @@ public interface IEventService
 	Task DeleteEventAsync(string eventId, string currentUserId);
 	Task AddCommentAsync(string eventId, string senderId, string content, string? repliedMessageId = null);
 	Task<EventViewModel?> GetEventViewModelAsync(string eventId, string currentUserId);
+	Task<string> GetEventDisplayStatusAsync(string eventId);
 }
 
 public class EventService : IEventService
@@ -59,7 +60,18 @@ public class EventService : IEventService
 
 	public async Task<Event?> GetEventByIdAsync(string eventId)
 	{
-		return await _eventStore.GetByIdAsync(eventId);
+		var ev = await _eventStore.GetByIdAsync(eventId);
+		if (ev != null)
+		{
+			var displayStatus = ev.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase)
+				? "Cancelled"
+				: (DateTime.Now > ev.EndTime ? "Ended" : "Open");
+			if (displayStatus == "Ended")
+			{
+				await _participationService.RemovePendingParticipationsAsync(eventId);
+			}
+		}
+		return ev;
 	}
 
 	public async Task<Event> CreateEventAsync(Event eventData)
@@ -81,6 +93,16 @@ public class EventService : IEventService
 		if (existingEvent == null)
 		{
 			throw new KeyNotFoundException("Event not found.");
+		}
+
+		var displayStatus = await GetEventDisplayStatusAsync(eventId);
+		if (displayStatus != "Open")
+		{
+			bool isAdminAction = await _userService.IsAdminAsync(currentUserId);
+			if (!(isAdminAction && eventData.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase)))
+			{
+				throw new InvalidOperationException("Cannot update an event that is already ended or cancelled.");
+			}
 		}
 
 		bool isAdmin = await _userService.IsAdminAsync(currentUserId);
@@ -159,6 +181,19 @@ public class EventService : IEventService
 		await _eventStore.UpdateAsync(eventId, eventData);
 	}
 
+	public async Task<string> GetEventDisplayStatusAsync(string eventId)
+	{
+		var eventData = await GetEventByIdAsync(eventId);
+		if (eventData == null)
+		{
+			throw new KeyNotFoundException("Event not found.");	
+		}
+
+		return eventData.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase) 
+			? "Cancelled" 
+			: (DateTime.Now > eventData.EndTime ? "Ended" : "Open");
+	}
+
 	public async Task<EventViewModel?> GetEventViewModelAsync(string eventId, string currentUserId)
 	{
 		var eventData = await GetEventByIdAsync(eventId);
@@ -166,6 +201,11 @@ public class EventService : IEventService
 		if (eventData == null)
 		{
 			return null;
+		}
+
+		if (await GetEventDisplayStatusAsync(eventId) == "Ended")
+		{
+			await _participationService.RemovePendingParticipationsAsync(eventId);
 		}
 
 		var owner = await _userService.GetUserByIdAsync(eventData.OwnerId);
@@ -197,6 +237,7 @@ public class EventService : IEventService
 			MaxParticipants = eventData.MaxParticipants,
 			Tags = eventData.Tags,
 			Status = eventData.Status,
+			DisplayStatus = await GetEventDisplayStatusAsync(eventData.Id),
 			Owner = owner.ToSummaryViewModel(),
 			Participants = await MapParticipants(displayedParticipations),
 			ParticipationCount = await _participationService.GetAcceptedParticipantCountAsync(eventData.Id),
