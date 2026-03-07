@@ -368,6 +368,49 @@ body {
   gap: 10px;
 }
 
+.search-results-top {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  z-index: 2;
+}
+
+.search-results-close {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-right: 5px;
+  border-radius: 9999px;
+  -webkit-border-radius: 9999px;
+  -moz-border-radius: 9999px;
+  -ms-border-radius: 9999px;
+  -o-border-radius: 9999px;
+}
+
+.search-results > .search-result-section:first-of-type,
+.search-results > .search-empty {
+  margin-top: 34px;
+}
+
+.search-results-close:hover {
+  background: #f3f4f6;
+}
+
+.search-results-close-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
 .search-result-header {
   font-size: 24px;
   font-weight: 700;
@@ -439,6 +482,21 @@ body {
 @media only screen and (max-width: 412px) {
   .search-event-card .Participant h1 {
     visibility: hidden;
+  }
+
+  .search-results-close {
+    width: 32px;
+    height: 32px;
+  }
+
+  .search-results-top {
+    top: 10px;
+    right: 0;
+  }
+
+  .search-results-close-icon {
+    width: 18px;
+    height: 18px;
   }
 }
 .search-empty {

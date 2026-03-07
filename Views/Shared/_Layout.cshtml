@@ -12,6 +12,36 @@
     <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EndguinField.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <style>
+                    .navbar-brand-text {
+                        display: inline !important;
+                    }
+
+                    .navbar-brand-mobile {
+                        display: none !important;
+                        width: 34px;
+                        height: 34px;
+                    }
+
+                    @@media (max-width: 643px) {
+                        .navbar-brand-text {
+                            display: none !important;
+                        }
+
+                        .navbar-brand-mobile {
+                            display: block !important;
+                        }
+
+                        .search .search-results {
+                            width: min(96vw, 680px) !important;
+                            left: 50% !important;
+                            right: auto !important;
+                            transform: translateX(-50%);
+                            max-height: 50vh !important;
+                            padding: 12px !important;
+                        }
+                    }
+    </style>
 </head>
 
 <body>
@@ -33,7 +63,10 @@
     }
     <header>
         <nav class="navbar-custom">
-            <a class="navbar-brand" href="/">EndguinField</a>
+            <a class="navbar-brand" href="/" aria-label="EndguinField Home">
+                <span class="navbar-brand-text">EndguinField</span>
+                <img class="navbar-brand-mobile" src="~/assets/icons/logo.svg" alt="EndguinField" />
+            </a>
 
             <div class="search">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -82,24 +115,24 @@
     <script type="module" src="~/js/Shared/modal.js" asp-append-version="true"></script>
     <script src="~/js/Shared/navbarSearch.js" asp-append-version="true"></script>
     <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const profileMenu = document.querySelector('.profile-menu');
-                    if (!profileMenu) {
-                        return;
-                    }
+                                                                                                                    document.addEventListener('DOMContentLoaded', function () {
+                                                                                                                        const profileMenu = document.querySelector('.profile-menu');
+                                                                                                                        if (!profileMenu) {
+                                                                                                                            return;
+                                                                                                                        }
 
-                    document.addEventListener('click', function (event) {
-                        if (!profileMenu.contains(event.target)) {
-                            profileMenu.removeAttribute('open');
-                        }
-                    });
+                                                                                                                        document.addEventListener('click', function (event) {
+                                                                                                                            if (!profileMenu.contains(event.target)) {
+                                                                                                                                profileMenu.removeAttribute('open');
+                                                                                                                            }
+                                                                                                                        });
 
-                    document.addEventListener('keydown', function (event) {
-                        if (event.key === 'Escape') {
-                            profileMenu.removeAttribute('open');
-                        }
-                    });
-                });
+                                                                                                                        document.addEventListener('keydown', function (event) {
+                                                                                                                            if (event.key === 'Escape') {
+                                                                                                                                profileMenu.removeAttribute('open');
+                                                                                                                            }
+                                                                                                                        });
+                                                                                                                    });
     </script>
 </body>
 

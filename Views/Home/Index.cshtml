@@ -20,7 +20,7 @@
         border: none;
         transition: all 0.2s ease;
     }
-    
+
     .status-tab.active {
         background-color: #333;
         color: white;
@@ -40,7 +40,7 @@
 
     div.participated-event-section {
         display: grid;
-        grid-template-columns: 1fr; 
+        grid-template-columns: 1fr;
         gap: 20px;
         align-items: start;
     }
@@ -58,13 +58,13 @@
         align-items: center;
         margin-bottom: 10px;
         cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-    
+
     .mobile-toggle-btn i {
         transition: transform 0.3s;
     }
-    
+
     .mobile-toggle-btn.active i {
         transform: rotate(180deg);
     }
@@ -72,6 +72,7 @@
     .collapsible-wrapper {
         display: none;
     }
+
     .collapsible-wrapper.show {
         display: block;
     }
@@ -82,25 +83,28 @@
 
     @@media (min-width: 992px) {
         div.participated-event-section {
-            grid-template-columns: 30% 48% 20%; 
+            grid-template-columns: 30% 48% 20%;
             justify-content: space-between;
         }
 
         .mobile-only {
             display: none !important;
         }
+
         .collapsible-wrapper {
             display: block !important;
         }
-        
+
         .events-side-col {
-            order: 1 !important; 
+            order: 1 !important;
         }
+
         .center-col-wrapper {
-            order: 2 !important; 
+            order: 2 !important;
         }
+
         .friends-col {
-            order: 3 !important; 
+            order: 3 !important;
         }
     }
 
@@ -119,16 +123,16 @@
         padding: 0 !important;
         margin: 0 !important;
     }
-    
+
     div.event-list {
-        height: 65vh !important; 
-        padding-bottom: 90px !important; 
+        height: 65vh !important;
+        padding-bottom: 90px !important;
         scrollbar-width: thin;
     }
 
     @@media (min-width: 992px) {
         div.event-list {
-            height: 80vh !important; 
+            height: 80vh !important;
         }
     }
 
@@ -137,10 +141,10 @@
         bottom: 0px;
         left: 0;
         width: 100%;
-        padding: 10px 15px 20px 15px; 
+        padding: 10px 15px 20px 15px;
         display: flex;
         gap: 10px;
-        background: linear-gradient(0deg, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%); 
+        background: linear-gradient(0deg, rgba(255, 255, 255, 1) 60%, rgba(255, 255, 255, 0) 100%);
         align-items: center;
         box-sizing: border-box;
         z-index: 1000;
@@ -148,26 +152,25 @@
     }
 
     .center-col-wrapper {
-        position: relative; 
+        position: relative;
         display: flex;
         flex-direction: column;
-        order: 2; 
+        order: 2;
     }
 
     @@media (min-width: 992px) {
         .action-bar-container {
-            position: absolute; 
+            position: absolute;
             background: transparent;
-            padding: 10px 0 20px 0; 
+            padding: 10px 0 20px 0;
         }
-        
-        .center-col-wrapper {
-        }
+
+        .center-col-wrapper {}
     }
 
     .btn-primary-action {
         flex: 1;
-        background-color: #cccccc; 
+        background-color: #cccccc;
         color: #333;
         border: none;
         padding: 14px 20px;
@@ -178,7 +181,7 @@
         transition: background-color 0.2s;
         text-align: center;
         text-decoration: none;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.15); 
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
     }
 
     .btn-primary-action:hover {
@@ -198,7 +201,7 @@
         cursor: pointer;
         font-size: 18px;
         color: #333;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.15); 
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
     }
 
     .btn-icon-action:hover {
@@ -213,13 +216,13 @@
 @if (User?.Identity?.IsAuthenticated == true)
 {
     <div class="participated-event-section">
-        
+
         <div style="text-align: left; order: 2;" class="events-side-col">
             <button class="mobile-toggle-btn mobile-only" onclick="toggleMobileSection('my-events')">
-                <span>📅 My Events</span>
+                <span>My Events</span>
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
-            
+
             <div id="my-events" class="collapsible-wrapper">
                 <h2>My Events</h2>
 
@@ -282,7 +285,7 @@
 
         <div style="order: 3;" class="friends-col">
             <button class="mobile-toggle-btn mobile-only" onclick="toggleMobileSection('friend-list')">
-                <span>👥 Friend List</span>
+                <span>Friend List</span>
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
 
@@ -311,7 +314,7 @@ else
     function toggleMobileSection(sectionId) {
         const btn = event.currentTarget;
         const section = document.getElementById(sectionId);
-        
+
         section.classList.toggle('show');
         btn.classList.toggle('active');
     }
@@ -325,15 +328,17 @@ else
         background: white;
         border: 1px solid #ddd;
         border-radius: 12px;
-        padding: 5px 15px 15px 15px; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        padding: 5px 15px 15px 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         z-index: 1001;
         width: 250px;
     }
+
     .filter-menu-container h4 {
         margin-top: 10px;
         margin-bottom: 15px;
     }
+
     .tag-checkboxes {
         display: flex;
         flex-direction: column;
@@ -341,6 +346,7 @@ else
         max-height: 200px;
         overflow-y: auto;
     }
+
     .tag-label {
         font-size: 14px;
         cursor: pointer;
@@ -350,7 +356,7 @@ else
 <script>
     function toggleFilterMenu() {
         const menu = document.getElementById('filter-menu');
-        if(menu) {
+        if (menu) {
             menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
         }
     }
@@ -358,17 +364,17 @@ else
     function applyFilters() {
         const checkboxes = document.querySelectorAll('.tag-filter-checkbox:checked');
         const selectedTags = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
-        
+
         const openEventItems = document.querySelectorAll('.center-col-wrapper .event-item');
-        
+
         openEventItems.forEach(item => {
-            if(selectedTags.length === 0) {
-                item.style.display = ''; 
+            if (selectedTags.length === 0) {
+                item.style.display = '';
                 return;
             }
             const itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(',');
             const hasMatch = selectedTags.every(tag => itemTags.includes(tag));
-            if(hasMatch) {
+            if (hasMatch) {
                 item.style.display = '';
             } else {
                 item.style.display = 'none';
