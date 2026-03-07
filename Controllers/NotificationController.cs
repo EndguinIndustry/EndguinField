@@ -38,6 +38,19 @@ namespace EndguinField.Controllers
             return Ok();
         }
 
+        [HttpPost("read-all")]
+        public async Task<IActionResult> MarkAllAsRead()
+        {
+            var userId = _userService.GetCurrentUserId() ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            await _notificationService.MarkAllAsReadAsync(userId);
+            return Ok();
+        }
+
         [HttpGet("unread-count")]
         public async Task<IActionResult> GetUnreadCount()
         {

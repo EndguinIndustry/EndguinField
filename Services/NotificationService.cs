@@ -9,6 +9,7 @@ public interface INotificationService
     Task<Notification?> GetNotificationAsync(string id);
     Task CreateNotificationAsync(string to, string detail, string type, string? relatedId = null);
     Task MarkAsReadAsync(string id);
+    Task MarkAllAsReadAsync(string userId);
     Task<bool> HasUnreadNotifications(string userId);
 }
 
@@ -50,6 +51,11 @@ public class NotificationService : INotificationService
     public async Task MarkAsReadAsync(string id)
     {
         await _notificationStore.MarkAsReadAsync(id);
+    }
+
+    public async Task MarkAllAsReadAsync(string userId)
+    {
+        await _notificationStore.MarkAllAsReadAsync(userId);
     }
 
     public async Task<bool> HasUnreadNotifications(string userId)

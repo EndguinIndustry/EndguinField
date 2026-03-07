@@ -4,14 +4,11 @@
 }
 <link rel="stylesheet" href="~/css/profile-card.css" />
 <link rel="stylesheet" href="~/css/friendcomponent.css" />
+<link rel="stylesheet" href="~/css/notification.css" />
 
 <div class="container">
     <partial name="_ProfileCard" model="Model" />
     <div class="profile-content-container">
-        @if (Model.IsOwnProfile)
-        {
-            <partial name="_Notifications" model="Model" />
-        }
         <partial name="_History" model="Model" />
         <partial name="_FriendComponent" model="Model" />
     </div>

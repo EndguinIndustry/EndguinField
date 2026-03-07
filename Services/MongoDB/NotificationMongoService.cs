@@ -11,6 +11,7 @@ public interface INotificationMongoService
     Task CreateAsync(Notification notification, CancellationToken cancellationToken = default);
     Task UpdateAsync(string id, Notification notification, CancellationToken cancellationToken = default);
     Task MarkAsReadAsync(string id, CancellationToken cancellationToken = default);
+    Task MarkAllAsReadAsync(string userId, CancellationToken cancellationToken = default);
     Task DeleteAsync(string id, CancellationToken cancellationToken = default);
 }
 
@@ -42,6 +43,13 @@ public class NotificationMongoService : INotificationMongoService
     {
         var update = Builders<Notification>.Update.Set(n => n.IsRead, true);
         await _notifications.UpdateOneAsync(n => n.Id == id, update, cancellationToken: cancellationToken);
+    }
+
+    public async Task MarkAllAsReadAsync(string userId, CancellationToken cancellationToken = default)
+    {
+        var filter = Builders<Notification>.Filter.Eq(n => n.To, userId) & Builders<Notification>.Filter.Eq(n => n.IsRead, false);
+        var update = Builders<Notification>.Update.Set(n => n.IsRead, true);
+        await _notifications.UpdateManyAsync(filter, update, cancellationToken: cancellationToken);
     }
 
     public async Task DeleteAsync(string id, CancellationToken cancellationToken = default) =>
