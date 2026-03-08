@@ -193,6 +193,33 @@
     color: white;
 }
 
+
+.unfriend-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: linear-gradient(135deg, #d95945 0%, #dd1010 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.unfriend-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.unfriend-button svg {
+    color: white;
+}
+
 .friend-list-button {
     display: none;
 }

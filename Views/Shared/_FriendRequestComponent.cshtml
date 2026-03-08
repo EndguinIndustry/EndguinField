@@ -13,41 +13,43 @@
 
             <div class="request-list">
 
-            @if (Model.PendingRequests != null && Model.PendingRequests.Any())
-            {
-                @foreach (var req in Model.PendingRequests)
+                @if (Model.PendingRequests != null && Model.PendingRequests.Any())
                 {
-                    <div class="request-card">
-                        @if (!string.IsNullOrEmpty(req.ImageUrl))
-                        {
-                            <img class="avatar" src="@req.ImageUrl" />
-                        }
-                        else
-                        {
-                            <div class="avatar-tmp">
-                                <span>@req.Name.Substring(0,1).ToUpper()</span>
+                    @foreach (var req in Model.PendingRequests)
+                    {
+                        <div class="request-card">
+
+                            @if (!string.IsNullOrEmpty(req.ImageUrl))
+                            {
+                                <img class="avatar" src="@req.ImageUrl" />
+                            }
+                            else
+                            {
+                                <div class="avatar-tmp">
+                                    <span>@req.Name.Substring(0, 1).ToUpper()</span>
+                                </div>
+                            }
+                            <a href="/Profile/View/@Model.Id" style="color: black; text-decoration: none;">
+                                <span class="username">@req.Name</span>
+                            </a>
+                            <div class="request-actions">
+                                <button class="accept-btn" onclick="handleFriendRequest('@req.Id', true)">
+                                    ✓
+                                </button>
+                                <button class="reject-btn" onclick="handleFriendRequest('@req.Id', false)">
+                                    ✕
+                                </button>
                             </div>
-                        }
-                        <span class="username">@req.Name</span>
-                        <div class="request-actions">
-                            <button class="accept-btn"
-                                    onclick="handleFriendRequest('@req.Id', true)">
-                                ✓
-                            </button>
-                            <button class="reject-btn"
-                                    onclick="handleFriendRequest('@req.Id', false)">
-                                ✕
-                            </button>
                         </div>
+
+                    }
+                }
+                else
+                {
+                    <div class="no-requests">
+                        <p>No pending friend requests</p>
                     </div>
                 }
-            }
-            else
-            {
-                <div class="no-requests">
-                    <p>No pending friend requests</p>
-                </div>
-            }
             </div>
         </div>
     </div>

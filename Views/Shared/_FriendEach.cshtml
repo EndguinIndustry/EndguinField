@@ -1,18 +1,19 @@
-
 @model FriendViewModel
 
-<div class="friend-each" style="display:flex;">
-    @if (!string.IsNullOrEmpty(Model.ImageUrl))
-    {
-        <img class="avatar" src="@Model.ImageUrl" />
-    }
-    else
-    {
-        <div class="avatar-tmp">
-            <span>@Model.Name.Substring(0,1).ToUpper()</span>
-        </div>
-    }
-    <a href="/Profile/View/@Model.Id" >@Model.Name</a>
-</div>
 
+<a href="/Profile/View/@Model.Id" style="color: black; text-decoration: none;">
+    <div class="friend-each" style="display:flex;">
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img class="avatar" src="@Model.ImageUrl" />
+        }
+        else
+        {
+            <div class="avatar-tmp">
+                <span>@Model.Name.Substring(0, 1).ToUpper()</span>
+            </div>
+        }
+        <p>@Model.Name</p>
 
+    </div>
+</a>
