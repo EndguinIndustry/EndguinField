@@ -1,0 +1,104 @@
+@model EndguinField.Models.ProfileViewModel
+
+<div class="notification-header">
+    <h4>Notifications</h4>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        @if (Model.Notifications != null && Model.Notifications.Any(n => !n.IsRead))
+        {
+            <button class="mark-all-btn" onclick="markAllAsRead()">Mark all as read</button>
+        }
+        <button class="notification-close" onclick="closeNotificationModal()">✕</button>
+    </div>
+</div>
+
+<div class="notification-list-container">
+    @if (Model.Notifications != null && Model.Notifications.Any())
+    {
+        <div class="notification-list">
+            @foreach (var notification in Model.Notifications)
+            {
+                <div class="notification-item @(notification.IsRead ? "" : "notification-unread")" id="notification-@notification.Id">
+                    <div class="notification-item-header">
+                        <small class="notification-time">@notification.CreatedAt.ToLocalTime().ToString("g")</small>
+                        @if (!notification.IsRead)
+                        {
+                            <span class="notification-badge-new">New</span>
+                        }
+                    </div>
+                    <p class="notification-detail">@notification.Detail</p>
+                    @if (!notification.IsRead)
+                    {
+                        <div class="notification-actions">
+                            <button class="mark-read-btn" onclick="markAsRead('@notification.Id')">Mark as read</button>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="notification-empty">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="1.5" class="empty-icon">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <p class="notification-empty-text">No notifications yet.</p>
+        </div>
+    }
+</div>
+
+<script>
+    async function markAsRead(id) {
+        try {
+            const response = await fetch(`/api/Notification/${id}/read`, { method: 'POST' });
+            if (response.ok) {
+                const element = document.getElementById(`notification-${id}`);
+                if (element) {
+                    element.classList.remove('notification-unread');
+                    
+                    const badge = element.querySelector('.notification-badge-new');
+                    if (badge) badge.remove();
+                    
+                    const btnContainer = element.querySelector('.notification-actions'); 
+                    if (btnContainer) btnContainer.remove();
+                    
+                    checkUnreadStatus();
+                }
+            }
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    }
+
+    async function markAllAsRead() {
+        try {
+            const response = await fetch('/api/Notification/read-all', { method: 'POST' });
+            if (response.ok) {
+                document.querySelectorAll('.notification-unread').forEach(el => {
+                    el.classList.remove('notification-unread');
+                });
+                document.querySelectorAll('.notification-badge-new').forEach(el => el.remove());
+                document.querySelectorAll('.notification-actions').forEach(el => el.remove());
+                const markAllBtn = document.querySelector('.mark-all-btn');
+                if (markAllBtn) markAllBtn.remove();
+                checkUnreadStatus();
+            }
+        } catch (error) {
+             console.error('Error marking all notifications as read:', error);
+        }
+    }
+
+    async function checkUnreadStatus() {
+        try {
+            const response = await fetch('/api/Notification/unread-count');
+            if (response.ok) {
+                 const data = await response.json();
+                 if (!data.hasUnread) {
+                     const dot = document.querySelector('.notification-badge');
+                     if (dot) dot.remove();
+                 }
+            }
+        } catch (e) { console.error(e); }
+    }
+</script>

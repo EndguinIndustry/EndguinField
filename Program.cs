@@ -38,11 +38,13 @@ builder.Services.AddSingleton<EndguinField.Services.MongoDB.IParticipationMongoS
 builder.Services.AddSingleton<EndguinField.Services.MongoDB.ICommentMongoService, EndguinField.Services.MongoDB.CommentMongoService>();
 builder.Services.AddSingleton<EndguinField.Services.MongoDB.IEventMongoService, EndguinField.Services.MongoDB.EventMongoService>();
 builder.Services.AddSingleton<EndguinField.Services.MongoDB.IUserMongoService, EndguinField.Services.MongoDB.UserMongoService>();
+builder.Services.AddSingleton<EndguinField.Services.MongoDB.INotificationMongoService, EndguinField.Services.MongoDB.NotificationMongoService>();
 
 builder.Services.AddSingleton<EndguinField.Services.IUserService, EndguinField.Services.UserService>();
 builder.Services.AddSingleton<EndguinField.Services.ICommentService, EndguinField.Services.CommentService>();
 builder.Services.AddSingleton<EndguinField.Services.IParticipationService, EndguinField.Services.ParticipationService>();
 builder.Services.AddSingleton<EndguinField.Services.IEventService, EndguinField.Services.EventService>();
+builder.Services.AddSingleton<EndguinField.Services.INotificationService, EndguinField.Services.NotificationService>();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {

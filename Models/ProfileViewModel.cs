@@ -32,6 +32,7 @@ namespace EndguinField.Models
 		public List<EventCardModel> MyEvents { get; set; } = new();
 		public bool IsOwnProfile { get; set; }
 		public bool IsFriend { get; set; }
+        public List<Notification> Notifications { get; set; } = new();
 
 		public static async Task<ProfileViewModel> FromUserAsync(User user, IUserService userService, IEventService eventService, IParticipationService participantService)
 		{

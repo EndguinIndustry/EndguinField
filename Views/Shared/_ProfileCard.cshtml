@@ -67,6 +67,14 @@
                 </div>
                 @if (Model.IsOwnProfile)
                 {
+                    <button class="notification-btn" onclick="openNotificationModal()">
+                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <div class="@(Model.Notifications != null && Model.Notifications.Any(n => !n.IsRead) ? "notification-badge" : "")"></div>
+                    </button>
+
                     <button class="edit-button" onclick="toggleEditMode(true)">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -242,3 +250,70 @@
                 </form>
             </div>
         </div>
+
+@if (Model.IsOwnProfile)
+{
+    <div id="notificationModal" class="notification-overlay">
+        <div class="notification-modal-content">
+            <partial name="_Notifications" model="Model" />
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Move modal to body to ensure correct stacking context (avoids transform issues)
+            const modal = document.getElementById('notificationModal');
+            if (modal && modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
+        });
+
+        function openNotificationModal() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.add('active');
+        }
+
+        function closeNotificationModal() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.remove('active');
+        }
+
+        async function markAsRead(id) {
+            try {
+                const response = await fetch(`/api/notification/read/${id}`, { method: 'POST' });
+                if (response.ok) {
+                    const item = document.getElementById(`notification-${id}`);
+                    if (item) {
+                        item.classList.remove('notification-unread');
+                        const btn = item.querySelector('.mark-read-btn');
+                        if (btn) btn.remove();
+                        const badge = item.querySelector('.notification-badge-new');
+                        if (badge) badge.remove();
+                        
+                        // Ideally update badge count too
+                        const bellBadge = document.querySelector('.notification-btn .notification-badge');
+                        if (bellBadge) bellBadge.style.display = 'none'; // Crude update
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function markAllAsRead() {
+                try {
+                const response = await fetch('/api/notification/read-all', { method: 'POST' });
+                if (response.ok) {
+                    location.reload(); 
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        document.getElementById('notificationModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeNotificationModal();
+            }
+        });
+    </script>
+}
