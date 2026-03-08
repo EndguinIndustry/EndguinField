@@ -1,8 +1,8 @@
 @model EndguinField.Models.ProfileViewModel
 
 <style>
-    div.history-section {
-        width: 85%;
+    div.my-events-section {
+        width: 50%;
         padding: 1vw;
         margin: 1vw auto;
         border: 1px solid lightgray;
@@ -10,7 +10,7 @@
         box-sizing: border-box;
     }
 
-    div.history-list {
+    div.my-events-list {
         display: flex;
         gap: 1vw;
 
@@ -20,15 +20,15 @@
         padding-bottom: 5px;
     }
 
-    .history-list>* {
+    .my-events-list>* {
         flex: 0 0 260px;
     }
 </style>
 
 
-<div class="history-section">
+<div class="my-events-section">
     <h2>My Events</h2>
-    <div class="history-list">
+    <div class="my-events-list">
         @if (Model.MyEvents != null && Model.MyEvents.Count > 0)
         {
             foreach (var eventCard in Model.MyEvents)

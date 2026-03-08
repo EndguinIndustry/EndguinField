@@ -7,20 +7,32 @@
 <style>
     .dashboard-events {
         display: grid;
-        grid-template-columns: 30% 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 2vw;
-
         width: 100%;
         margin: auto;
     }
 
+    .mobile-panel {
+        display: grid;
+        justify-content: center;
+        min-width: max-content;
+        border: 1px solid lightgray;
+        border-radius: 20px;
+        padding: 1vw;
+    }
+
     .left-panel {
+        display: grid;
+        justify-content: center;
+        min-width: max-content;
         border: 1px solid lightgray;
         border-radius: 20px;
         padding: 1vw;
     }
 
     .right-panel {
+        min-width: max-content;
         border: 1px solid lightgray;
         border-radius: 20px;
         padding: 1vw;
@@ -28,7 +40,9 @@
 
     .switch-buttons {
         display: flex;
-        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+        align-items: center;
         gap: 0.5vw;
         margin-bottom: 1vw;
     }
@@ -39,6 +53,10 @@
         border-radius: 20px;
         background: #e5e5e5;
         cursor: pointer;
+    }
+
+    .mobile-panel {
+        display: none;
     }
 
     .switch-buttons button.active {
@@ -52,59 +70,109 @@
     .event-panel.active {
         display: block;
     }
-</style>
 
+    @@media (max-width: 500px) {
+        .mobile-panel {
+            display: block;
+        }
+
+        .left-panel {
+            display: none;
+        }
+
+        .right-panel {
+            display: none;
+        }
+    }
+</style>
 
 @if (User?.Identity?.IsAuthenticated == true)
 {
 
     <div class="dashboard-events">
 
-        <div class="left-panel">
+        <div class="mobile-panel">
 
             <div class="switch-buttons">
-                <button id="btn-pending" class="active" onclick="showPanel('pending')">Pending</button>
-                <button id="btn-participating" onclick="showPanel('participating')">Participating</button>
-                <button id="btn-ongoing" onclick="showPanel('ongoing')">My Ongoing</button>
+
+                <button id="btn-open-mobile" class="active" onclick="showPanel('mobile','open')">Open Events</button>
+                <button id="btn-pending-mobile" onclick="showPanel('mobile','pending')">Pending</button>
+                <button id="btn-participating-mobile" onclick="showPanel('mobile','participating')">Participating</button>
+                <button id="btn-ongoing-mobile" onclick="showPanel('mobile','ongoing')">My Ongoing</button>
+
             </div>
 
 
-            <div id="pending" class="event-panel active">
+            <div id="open-mobile" class="event-panel mobile-view active">
+                @if (Model?.OpenEvents != null)
+                {
+                    <partial name="_EventList" model="Model.OpenEvents" />
+                }
+            </div>
+
+
+            <div id="pending-mobile" class="event-panel mobile-view">
                 @if (Model?.PendingEvents != null)
                 {
                     <partial name="_EventList" model="Model.PendingEvents" />
                 }
-                else
-                {
-                    <p>No pending events.</p>
-                }
             </div>
 
 
-            <div id="participating" class="event-panel">
+            <div id="participating-mobile" class="event-panel mobile-view">
                 @if (Model?.ParticipatingEvents != null)
                 {
                     <partial name="_EventList" model="Model.ParticipatingEvents" />
                 }
-                else
-                {
-                    <p>No participating events.</p>
-                }
             </div>
 
 
-            <div id="ongoing" class="event-panel">
+            <div id="ongoing-mobile" class="event-panel mobile-view">
                 @if (Model?.MyOngoingEvents != null)
                 {
                     <partial name="_EventList" model="Model.MyOngoingEvents" />
                 }
-                else
+            </div>
+
+        </div>
+
+
+        <div class="left-panel">
+
+            <div class="switch-buttons">
+
+                <button id="btn-pending-desktop" class="active" onclick="showPanel('desktop','pending')">Pending</button>
+                <button id="btn-participating-desktop" onclick="showPanel('desktop','participating')">Participating</button>
+                <button id="btn-ongoing-desktop" onclick="showPanel('desktop','ongoing')">My Ongoing</button>
+
+            </div>
+
+
+            <div id="pending-desktop" class="event-panel desktop-view active">
+                @if (Model?.PendingEvents != null)
                 {
-                    <p>No ongoing events.</p>
+                    <partial name="_EventList" model="Model.PendingEvents" />
+                }
+            </div>
+
+
+            <div id="participating-desktop" class="event-panel desktop-view">
+                @if (Model?.ParticipatingEvents != null)
+                {
+                    <partial name="_EventList" model="Model.ParticipatingEvents" />
+                }
+            </div>
+
+
+            <div id="ongoing-desktop" class="event-panel desktop-view">
+                @if (Model?.MyOngoingEvents != null)
+                {
+                    <partial name="_EventList" model="Model.MyOngoingEvents" />
                 }
             </div>
 
         </div>
+
 
         <div class="right-panel">
 
@@ -113,10 +181,6 @@
             @if (Model?.OpenEvents != null)
             {
                 <partial name="_EventList" model="Model.OpenEvents" />
-            }
-            else
-            {
-                <p>No open events.</p>
             }
 
         </div>
@@ -131,22 +195,31 @@ else
     </script>
 }
 
-
-
 <script>
 
-    function showPanel(panel) {
+    function showPanel(group, panel) {
 
-        document.querySelectorAll(".event-panel").forEach(p => {
-            p.classList.remove("active")
-        })
+        if (group === "mobile") {
 
-        document.querySelectorAll(".switch-buttons button").forEach(b => {
-            b.classList.remove("active")
-        })
+            document.querySelectorAll(".mobile-view").forEach(p => p.classList.remove("active"))
+            document.querySelectorAll("#btn-open-mobile,#btn-pending-mobile,#btn-participating-mobile,#btn-ongoing-mobile")
+                .forEach(b => b.classList.remove("active"))
 
-        document.getElementById(panel).classList.add("active")
-        document.getElementById("btn-" + panel).classList.add("active")
+            document.getElementById(panel + "-mobile").classList.add("active")
+            document.getElementById("btn-" + panel + "-mobile").classList.add("active")
+
+        }
+
+        if (group === "desktop") {
+
+            document.querySelectorAll(".desktop-view").forEach(p => p.classList.remove("active"))
+            document.querySelectorAll("#btn-pending-desktop,#btn-participating-desktop,#btn-ongoing-desktop")
+                .forEach(b => b.classList.remove("active"))
+
+            document.getElementById(panel + "-desktop").classList.add("active")
+            document.getElementById("btn-" + panel + "-desktop").classList.add("active")
+
+        }
 
     }
 
