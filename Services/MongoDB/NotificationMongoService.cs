@@ -41,8 +41,9 @@ public class NotificationMongoService : INotificationMongoService
 
     public async Task MarkAsReadAsync(string id, CancellationToken cancellationToken = default)
     {
+        var filter = Builders<Notification>.Filter.Eq(n => n.Id, id);
         var update = Builders<Notification>.Update.Set(n => n.IsRead, true);
-        await _notifications.UpdateOneAsync(n => n.Id == id, update, cancellationToken: cancellationToken);
+        await _notifications.UpdateOneAsync(filter, update, cancellationToken: cancellationToken);
     }
 
     public async Task MarkAllAsReadAsync(string userId, CancellationToken cancellationToken = default)
