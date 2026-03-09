@@ -6,12 +6,16 @@
 <link rel="stylesheet" href="~/css/friendcomponent.css" />
 <link rel="stylesheet" href="~/css/notification.css" />
 
+
 <div class="container">
     <partial name="_ProfileCard" model="Model" />
     <div class="profile-content-container">
         <partial name="_History" model="Model" />
+        <partial name="_MyEvents" model="Model" />
         <partial name="_FriendComponent" model="Model" />
     </div>
 </div>
+
+<partial name="_FriendRequestComponent" model="Model" />
 
 <script src="~/js/profile-card.js"></script>

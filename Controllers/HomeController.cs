@@ -44,8 +44,10 @@ public class HomeController : Controller
             Tags = e.Tags ?? new List<string>()
         }).ToList();
 
-        var openEventsList = await _eventService.GetAllEventsAsync();
-        var openEvents = openEventsList.Select(e => new EventCardModel
+        var participatingEventsIds = await _userService.GetAllParticipatingEventAsync(currentUserId);
+        var participatingEventsList = await Task.WhenAll(participatingEventsIds.Select(e => _eventService.GetEventByIdAsync(e)).ToList());
+
+        var participatingEvents = participatingEventsList.Select(e => new EventCardModel
         {
             Id = e.Id,
             Name = e.Name,
@@ -54,9 +56,39 @@ public class HomeController : Controller
             EndTime = e.EndTime,
             Location = e.Location,
             ParticipantCount = _participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
-            MaxParticipants = e.MaxParticipants,
-            Tags = e.Tags ?? new List<string>()
+            MaxParticipants = e.MaxParticipants
         }).ToList();
+
+
+        var myOngoingEventsIds = await _userService.GetAllMyOngoingEventAsync(currentUserId);
+        var myOngoingEventsList = await Task.WhenAll(myOngoingEventsIds.Select(e => _eventService.GetEventByIdAsync(e)).ToList());
+
+        var myOngoingEvents = myOngoingEventsList.Select(e => new EventCardModel
+        {
+            Id = e.Id,
+            Name = e.Name,
+            ImgSrc = e.Images[0],
+            StartTime = e.StartTime,
+            EndTime = e.EndTime,
+            Location = e.Location,
+            ParticipantCount = _participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
+            MaxParticipants = e.MaxParticipants
+        }).ToList();
+
+        var openEventsList = await _eventService.GetAllEventsAsync();
+        var openEvents = openEventsList
+            .Where(e => e.StartTime > DateTime.Now && e.Status == "Open")
+            .Select(e => new EventCardModel
+            {
+                Id = e.Id,
+                Name = e.Name,
+                ImgSrc = e.Images[0],
+                StartTime = e.StartTime,
+                EndTime = e.EndTime,
+                Location = e.Location,
+                ParticipantCount = _participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
+                MaxParticipants = e.MaxParticipants
+            }).ToList();
 
         ProfileViewModel profileVM = null;
         if (currentUser != null)
@@ -64,12 +96,14 @@ public class HomeController : Controller
             profileVM = await ProfileViewModel.FromUserAsync(currentUser, _userService, _eventService, _participantService);
         }
 
-        var allTags = await _tagService.GetAllAsync();
 
+        var allTags = await _tagService.GetAllAsync();
         var viewModel = new HomeViewModel
         {
+            ParticipatingEvents = participatingEvents,
             PendingEvents = pendingEvents,
             OpenEvents = openEvents,
+            MyOngoingEvents = myOngoingEvents,
             CurrentUserProfile = profileVM,
             AllTags = allTags
         };

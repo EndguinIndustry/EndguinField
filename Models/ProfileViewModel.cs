@@ -3,14 +3,6 @@ using EndguinField.Services;
 using System.ComponentModel.DataAnnotations;
 namespace EndguinField.Models
 {
-	public class HistoryEventViewModel
-	{
-		public string Name { get; set; } = string.Empty;
-		public string Description { get; set; } = string.Empty;
-		public string ImgSrc { get; set; } = string.Empty;
-		public string Date { get; set; } = string.Empty;
-		public string Location { get; set; } = string.Empty;
-	}
 	public class FriendViewModel
 	{
 		public string Id { get; set; } = string.Empty;
@@ -37,6 +29,7 @@ namespace EndguinField.Models
 		public List<string> PendingFriendRequestIds { get; set; } = new();
 		public List<FriendViewModel> PendingRequests { get; set; } = new();
 		public List<EventCardModel> PastEvents { get; set; } = new();
+		public List<EventCardModel> MyEvents { get; set; } = new();
 		public bool IsOwnProfile { get; set; }
 		public bool IsFriend { get; set; }
         public List<Notification> Notifications { get; set; } = new();
@@ -66,6 +59,22 @@ namespace EndguinField.Models
 			var pastEventList = await Task.WhenAll(pastEvents.Select(e => eventService.GetEventByIdAsync(e)).ToList());
 
 			model.PastEvents = pastEventList.Select(e => new EventCardModel
+			{
+				Id = e.Id,
+				Name = e.Name,
+				ImgSrc = e.Images[0],
+				StartTime = e.StartTime,
+				EndTime = e.EndTime,
+				Location = e.Location,
+				ParticipantCount = participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
+				MaxParticipants = e.MaxParticipants
+			}).ToList();
+
+			var myEvents = await userService.GetAllMyEventAsync(user.Id);
+
+			var myEventList = await Task.WhenAll(myEvents.Select(e => eventService.GetEventByIdAsync(e)).ToList());
+
+			model.MyEvents = myEventList.Select(e => new EventCardModel
 			{
 				Id = e.Id,
 				Name = e.Name,
