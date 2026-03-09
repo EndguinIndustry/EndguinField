@@ -90,6 +90,14 @@ public class HomeController : Controller
                 MaxParticipants = e.MaxParticipants
             }).ToList();
 
+        ProfileViewModel profileVM = null;
+        if (currentUser != null)
+        {
+            profileVM = await ProfileViewModel.FromUserAsync(currentUser, _userService, _eventService, _participantService);
+        }
+
+
+        var allTags = await _tagService.GetAllAsync();
         var viewModel = new HomeViewModel
         {
             ParticipatingEvents = participatingEvents,
