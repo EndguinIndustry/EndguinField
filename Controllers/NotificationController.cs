@@ -32,7 +32,7 @@ namespace EndguinField.Controllers
         }
         
         [HttpPost("{id}/read")]
-        public async Task<IActionResult> MarkAsRead(string id)
+        public async Task<IActionResult> MarkAsRead([FromRoute] string id)
         {
             await _notificationService.MarkAsReadAsync(id);
             return Ok();
