@@ -52,7 +52,7 @@
     }
 </style>
 
-<a class="EventLink" href="/Event/@Model.Id">
+<a class="EventLink event-item" href="/Event/@Model.Id" data-tags="@string.Join(",", Model.Tags ?? new List<string>())">
     <div class="EventCard">
         <div class="EventImage">
             <img src="@Model.ImgSrc" alt="EventBanner">

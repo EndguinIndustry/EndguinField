@@ -1,0 +1,283 @@
+.home-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 20px;
+    height: 85vh; /* Keep it fit within viewport */
+    background-color: transparent; /* Assuming main background is handled, but let's give cards white background */
+    margin-top: 10px;
+}
+
+/* Base style for all three columns */
+.dashboard-col {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Slight shadow for depth */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 15px;
+}
+
+/* Specific column sizing */
+.left-col {
+    flex: 0 0 28%; /* Roughly 28% left */
+}
+
+.center-col {
+    flex: 1; /* Takes up middle space */
+    position: relative; /* For sticky action bar */
+}
+
+.right-col {
+    flex: 0 0 22%; /* Roughly 22% right */
+}
+
+/* Scrollable areas */
+.scroll-area {
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-right: 5px;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.scroll-area::-webkit-scrollbar {
+    width: 6px;
+}
+.scroll-area::-webkit-scrollbar-thumb {
+    background-color: #d1d1d1;
+    border-radius: 10px;
+}
+.scroll-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Header pill for left column */
+.header-pill {
+    background-color: #e2e2e2;
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    align-self: flex-start;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+/* -----------------------------
+   Small Event Card (Left)
+   ----------------------------- */
+.event-card-small {
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    background-color: #ffd600; /* Placeholder color if image fails */
+}
+
+.event-info-wrapper {
+    padding: 10px 12px;
+}
+
+.event-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #000;
+}
+
+.event-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.event-meta span {
+    font-size: 11px;
+    color: #555;
+    line-height: 1.4;
+}
+
+.event-participant {
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.d-block { display: block; }
+
+/* -----------------------------
+   Large Event Card (Center)
+   ----------------------------- */
+.event-card-large {
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-img-large {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background-color: #ffd600;
+}
+
+.event-info-wrapper-large {
+    padding: 15px;
+}
+
+.event-title-large {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.event-details-large {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.event-meta-large span {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+}
+
+.event-participant-large {
+    font-size: 22px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* -----------------------------
+   Sticky Bottom Action Bar
+   ----------------------------- */
+.action-bar-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+    background: linear-gradient(to top, rgba(255,255,255,1) 70%, rgba(255,255,255,0));
+    align-items: center;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.btn-primary-action {
+    flex: 1;
+    background-color: #cfcfcf;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary-action:hover {
+    background-color: #bcbcbc;
+}
+
+.btn-icon-action {
+    background-color: #e2e2e2;
+    border: none;
+    height: 48px;
+    width: 48px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
+}
+.btn-icon-action:hover {
+    background-color: #d0d0d0;
+}
+
+/* -----------------------------
+   Friends List (Right)
+   ----------------------------- */
+.friends-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.tab-btn {
+    border: none;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    background-color: #e2e2e2;
+    color: #666;
+    flex: 1;
+}
+
+.tab-btn.active {
+    background-color: #d1d1d1;
+    color: #333;
+    font-weight: bold;
+}
+
+.friends-list {
+    gap: 10px;
+}
+
+.friend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 15px;
+    border: 1px solid #eaeaea;
+    border-radius: 25px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.friend-item:hover {
+    background-color: #f7f7f7;
+}
+
+.friend-item img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.friend-name {
+    font-size: 14px;
+    font-weight: 500;
+}

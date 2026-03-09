@@ -46,6 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
         resultBox.innerHTML = '';
     };
 
+    const renderWithCloseButton = (content) => `
+        <div class="search-results-top">
+            <button type="button" class="search-results-close" aria-label="Close search results">
+                <img src="/assets/icons/decline.svg" alt="Close" class="search-results-close-icon">
+            </button>
+        </div>
+        ${content}
+    `;
+
     const renderSection = (title, items, itemType) => {
         if (!items.length) {
             return '';
@@ -61,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     return `
                             <a class="EventLink search-event-link" href="${escapeHtml(item.url)}">
-                                <div class="EventCard search-event-card">
+                                <div class=" search-event-card">
                                     <img src="${escapeHtml(item.image || '/asset/profile.svg')}" alt="EventBanner">
                                     <div class="CardInfo">
                                         <div class="CardDetail">
@@ -79,16 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 return `
                     <a class="EventLink search-event-link" href="${escapeHtml(item.url)}">
-                        <div class="EventCard search-event-card">
+                        <div class=" search-event-card">
                             <img src="${escapeHtml(item.image || '/asset/profile.svg')}" alt="${escapeHtml(item.name)}">
                             <div class="CardInfo">
                                 <div class="CardDetail">
                                     <h1>${escapeHtml(item.name)}</h1>
                                     <p>User profile</p>
                                 </div>
-                                <div class="Participant">
-                                    <h1>USER</h1>
-                                </div>
+
                             </div>
                         </div>
                     </a>
@@ -116,12 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const matchedUsers = state.users.filter(item => normalize(item.name).includes(keyword));
 
         if (!matchedEvents.length && !matchedUsers.length) {
-            resultBox.innerHTML = '<div class="search-empty">No results found</div>';
+            resultBox.innerHTML = renderWithCloseButton('<div class="search-empty">No results found</div>');
             resultBox.hidden = false;
             return;
         }
 
-        resultBox.innerHTML = `${renderSection('Events', matchedEvents.slice(0, 6), 'event')}${renderSection('Users', matchedUsers.slice(0, 6), 'user')}`;
+        resultBox.innerHTML = renderWithCloseButton(
+            `${renderSection('Events', matchedEvents.slice(0, 6), 'event')}${renderSection('Users', matchedUsers.slice(0, 6), 'user')}`
+        );
         resultBox.hidden = false;
     };
 
@@ -172,6 +181,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (event) => {
         if (!resultBox.contains(event.target) && event.target !== input) {
             hideResults();
+        }
+    });
+
+    resultBox.addEventListener('click', (event) => {
+        if (event.target.closest('.search-results-close')) {
+            hideResults();
+            event.stopPropagation();
         }
     });
 

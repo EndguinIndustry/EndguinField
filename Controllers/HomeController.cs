@@ -12,13 +12,14 @@ public class HomeController : Controller
     private readonly IUserService _userService;
     private readonly IEventService _eventService;
     private readonly IParticipationService _participantService;
+    private readonly ITagSchemaServices _tagService;
 
-
-    public HomeController(IUserService userService, IEventService eventService, IParticipationService participantService)
+    public HomeController(IUserService userService, IEventService eventService, IParticipationService participantService, ITagSchemaServices tagService)
     {
         _userService = userService;
         _eventService = eventService;
         _participantService = participantService;
+        _tagService = tagService;
     }
 
     public async Task<IActionResult> Index()
@@ -39,7 +40,8 @@ public class HomeController : Controller
             EndTime = e.EndTime,
             Location = e.Location,
             ParticipantCount = _participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
-            MaxParticipants = e.MaxParticipants
+            MaxParticipants = e.MaxParticipants,
+            Tags = e.Tags ?? new List<string>()
         }).ToList();
 
         var participatingEventsIds = await _userService.GetAllParticipatingEventAsync(currentUserId);
@@ -93,7 +95,9 @@ public class HomeController : Controller
             ParticipatingEvents = participatingEvents,
             PendingEvents = pendingEvents,
             OpenEvents = openEvents,
-            MyOngoingEvents = myOngoingEvents
+            MyOngoingEvents = myOngoingEvents,
+            CurrentUserProfile = profileVM,
+            AllTags = allTags
         };
         return View(viewModel);
     }
