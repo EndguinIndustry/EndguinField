@@ -10,5 +10,6 @@ namespace EndguinField.Models
         public string Location { get; set; } = string.Empty;
         public int ParticipantCount { get; set; }
         public int MaxParticipants { get; set; }
+        public List<string> Tags { get; set; } = new List<string>();
     }
 }

@@ -15,6 +15,7 @@
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -191,6 +192,43 @@
 .add-friend-button svg {
     color: white;
 }
+
+
+.unfriend-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: linear-gradient(135deg, #d95945 0%, #dd1010 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.unfriend-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.unfriend-button svg {
+    color: white;
+}
+
+.friend-list-button {
+    display: none;
+}
+
+
+.card-friend-request-button{
+    display: none;
+}
+
 
 .profile-bio {
     padding: 20px 30px;
@@ -391,6 +429,7 @@ textarea.form-input {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -417,7 +456,9 @@ textarea.form-input {
 }
 
 @keyframes spin {
-    to { transform: translate(-50%, -50%) rotate(360deg); }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
 }
 
 @media (max-width: 768px) {
@@ -437,12 +478,85 @@ textarea.form-input {
     }
 
     .edit-button,
-    .add-friend-button {
+    .add-friend-button,
+    .unfriend-button {
         top: 15px;
         right: 15px;
         width: 36px;
         height: 36px;
     }
+
+    .friend-list-button {
+        position: absolute;
+        top: 61px;
+        right: 15px;
+
+        height: 36px;
+        padding: 0 10px;
+
+        border: none;
+        background: white;
+
+        border-radius: 20px;
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .friend-list-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .friend-list-button svg {
+        color: #4a5568;
+    }
+
+    .friend-count {
+        font-size: 13px;
+        font-weight: 600;
+        color: #4a5568;
+    }
+
+
+    .card-friend-request-button {
+        position: absolute;
+        top: 107px;
+        right: 15px;
+
+        
+        height: 36px;
+        padding: 0 10px;
+
+        border: none;
+        background: white;
+
+        border-radius: 20px;
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-friend-request-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-friend-request-button svg {
+        color: #4a5568;
+    }
+
+    
 
     .profile-info {
         width: 100%;
@@ -468,24 +582,24 @@ textarea.form-input {
         justify-content: center;
         background: rgba(255, 255, 255, 0.6);
     }
-    
+
     .profile-info-edit {
         padding: 20px 0;
         width: 100%;
         text-align: left;
     }
-    
+
     .form-row {
         flex-direction: column;
         gap: 0;
     }
-    
+
     .profile-edit-actions {
         flex-direction: column;
         gap: 10px;
         padding: 15px 20px;
     }
-    
+
     .btn-cancel,
     .btn-save {
         width: 100%;
@@ -587,8 +701,15 @@ textarea.form-input {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 0.8; }
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
 }
 
 .upload-progress {

@@ -2,7 +2,8 @@
 
 <style>
     div.EventCard {
-        width: 375px;
+        margin: auto;
+        width: 100%;
         height: fit-content;
         border-radius: 16px;
         overflow: hidden;
@@ -45,12 +46,13 @@
     }
 
     a.EventLink {
+        width: 250px;
         text-decoration: none;
         color: inherit;
     }
 </style>
 
-<a class="EventLink" href="/Event/@Model.Id">
+<a class="EventLink event-item" href="/Event/@Model.Id" data-tags="@string.Join(",", Model.Tags ?? new List<string>())">
     <div class="EventCard">
         <div class="EventImage">
             <img src="@Model.ImgSrc" alt="EventBanner">

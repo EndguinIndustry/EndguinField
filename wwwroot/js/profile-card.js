@@ -287,6 +287,15 @@ function toggleFriendRequest(show) {
     }
 }
 
+function toggleFriendList(show){
+
+    const panel = document.getElementById("friendListPanel")
+
+    if(show)
+        panel.classList.add("active")
+    else
+        panel.classList.remove("active")
+}
 
 async function handleFriendRequest(userId, accept) {
 

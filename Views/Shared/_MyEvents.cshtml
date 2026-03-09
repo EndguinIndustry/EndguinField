@@ -1,0 +1,44 @@
+@model EndguinField.Models.ProfileViewModel
+
+<style>
+    div.my-events-section {
+        width: 50%;
+        padding: 1vw;
+        margin: 1vw auto;
+        border: 1px solid lightgray;
+        border-radius: 20px;
+        box-sizing: border-box;
+    }
+
+    div.my-events-list {
+        display: flex;
+        gap: 1vw;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        padding-bottom: 5px;
+    }
+
+    .my-events-list>* {
+        flex: 0 0 260px;
+    }
+</style>
+
+
+<div class="my-events-section">
+    <h2>My Events</h2>
+    <div class="my-events-list">
+        @if (Model.MyEvents != null && Model.MyEvents.Count > 0)
+        {
+            foreach (var eventCard in Model.MyEvents)
+            {
+                <partial name="_EventCard" model="eventCard" />
+            }
+        }
+        else
+        {
+            <p>No my events to show.</p>
+        }
+    </div>
+</div>
