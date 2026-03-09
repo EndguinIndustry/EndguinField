@@ -29,7 +29,7 @@
                     @if (!notification.IsRead)
                     {
                         <div class="notification-actions">
-                            <button class="mark-read-btn" onclick="markAsRead('@notification.Id')">Mark as read</button>
+                            <button type="button" class="mark-read-btn" onclick="markNotificationRead(this, '@notification.Id')">Mark as read</button>
                         </div>
                     }
                 </div>
@@ -49,7 +49,8 @@
 </div>
 
 <script>
-    async function markAsRead(id) {
+    async function markNotificationRead(button, id) {
+        if(button) button.disabled = true;
         try {
             const response = await fetch(`/api/Notification/${id}/read`, { method: 'POST' });
             if (response.ok) {
@@ -65,9 +66,13 @@
                     
                     checkUnreadStatus();
                 }
+            } else {
+                console.error('Failed to mark as read. Status:', response.status);
+                if(button) button.disabled = false;
             }
         } catch (error) {
             console.error('Error marking notification as read:', error);
+            if(button) button.disabled = false;
         }
     }
 

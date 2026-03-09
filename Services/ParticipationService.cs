@@ -63,6 +63,26 @@ public class ParticipationService : IParticipationService
 		{
 			throw new InvalidOperationException("Failed to cancel participation.");
 		}
+
+		if (userId == currentUserId)
+        {
+            var user = await _userService.GetUserByIdAsync(userId);
+            await _notificationService.CreateNotificationAsync(
+                cancelEventData.OwnerId,
+                $"{user?.Name ?? "User"} left your event {cancelEventData.Name}",
+                "EventStatus",
+                eventId
+            );
+        }
+        else if (cancelEventData.OwnerId == currentUserId)
+        {
+            await _notificationService.CreateNotificationAsync(
+                userId,
+                $"You were removed from event {cancelEventData.Name}",
+                "EventStatus",
+                eventId
+            );
+        }
 	}
 
 	public async Task AcceptParticipationAsync(string eventId, string userId, string currentUserId)
@@ -96,6 +116,13 @@ public class ParticipationService : IParticipationService
 		{
 			throw new InvalidOperationException("Failed to accept join request.");
 		}
+		
+		await _notificationService.CreateNotificationAsync(
+            userId,
+            $"You have been accepted to join {eventData.Name}",
+            "EventStatus",
+            eventId
+        );
 	}
 
 	public async Task RejectParticipationAsync(string eventId, string userId, string currentUserId)
