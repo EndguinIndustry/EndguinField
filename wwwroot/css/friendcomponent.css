@@ -5,12 +5,19 @@
     padding-bottom: 5px;
 }
 
-.friend-list-section {
+.profile-content-container .friend-list-section {
     height: 200px;
     overflow: hidden;
 }
 
-.friend-component {
+.collapsible-wrapper .friend-list-section {
+    height: 570px;
+    overflow: hidden;
+}
+
+
+
+.profile-content-container .friend-component {
     border-style: solid;
     border-color: lightgray;
     border-radius: 15px;
@@ -21,6 +28,19 @@
     padding: 7px;
     position: relative;
 }
+
+.collapsible-wrapper .friend-component {
+    border-style: solid;
+    border-color: lightgray;
+    border-radius: 15px;
+    width: 350px;
+    min-width: 350px;
+    max-width: 350px;
+    height: 650px;
+    padding: 7px;
+    position: relative;
+}
+
 
 .friend-each {
     /* border-style: solid;
@@ -216,12 +236,12 @@
 
 @media only screen and (max-width: 768px) {
 
-    .friend-panel{
+    .profile-content-container .friend-panel{
         display:none;
     }
 
 
-    .friend-panel.active {
+    .profile-content-container .friend-panel.active {
         position: fixed;
         inset: 0;
         background: rgba(0, 0, 0, 0.4);
@@ -231,7 +251,7 @@
         z-index: 999;
     }
 
-    .friend-component {
+    .profile-content-container .friend-component {
         position: relative;
         border-style: solid;
         border-color: lightgray;
@@ -244,15 +264,15 @@
         max-width: 700px;
     }
 
-    .friend-list-section {
+    .profile-content-container .friend-list-section {
         height: calc(100% - 70px);
     }
 
-    .friend-request-button{
+    .profile-content-container .friend-request-button{
         display: none;
     }
 
-    .close-friend-list-button{
+    .profile-content-container .close-friend-list-button{
         display:inline-block;
     }
 }
