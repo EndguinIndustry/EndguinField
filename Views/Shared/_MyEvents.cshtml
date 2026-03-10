@@ -2,9 +2,9 @@
 
 <style>
     .my-events-section {
+        position: relative;
         max-width: 500px;
         width: 43%;
-        position: relative;
         padding: 1rem;
         margin: 1rem auto;
         border: 1px solid lightgray;
@@ -68,6 +68,7 @@
     }
 
     .open-my-events-btn {
+        font-size: 30px;
         position: absolute;
         top: 10px;
         right: 16px;
@@ -122,7 +123,7 @@
 
 <div class="my-events-section">
     <h2>My Events</h2>
-    <button class="open-my-events-btn" onclick="openEventsPopup()">Expand</button>
+    <span class="open-my-events-btn" onclick="openHistoryPopup()">⤢</span>
     <div class="my-events-list">
         @if (Model.MyEvents != null && Model.MyEvents.Count > 0)
         {
