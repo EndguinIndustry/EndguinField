@@ -287,11 +287,11 @@ function toggleFriendRequest(show) {
     }
 }
 
-function toggleFriendList(show){
+function toggleFriendList(show) {
 
     const panel = document.getElementById("friendListPanel")
 
-    if(show)
+    if (show)
         panel.classList.add("active")
     else
         panel.classList.remove("active")
@@ -336,3 +336,22 @@ async function unfriend(userId) {
         location.reload();
     }
 }
+
+function toggleProfileMenu() {
+    const actions = document.querySelector(".profile-actions");
+    actions.classList.toggle("menu-open");
+}
+
+
+document.addEventListener("click", function (e) {
+
+    const actions = document.querySelector(".profile-actions");
+    const hamburger = document.querySelector(".hamburger-btn");
+
+    if (!actions || !hamburger) return;
+
+    if (!actions.contains(e.target) && !hamburger.contains(e.target)) {
+        actions.classList.remove("menu-open");
+    }
+
+});
