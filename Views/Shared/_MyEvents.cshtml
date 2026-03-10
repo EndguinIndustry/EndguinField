@@ -1,8 +1,9 @@
 @model EndguinField.Models.ProfileViewModel
 
 <style>
-    div.my-events-section {
-        width: 50%;
+    .my-events-section {
+        position: relative;
+        width: 500px;
         padding: 1vw;
         margin: 1vw auto;
         border: 1px solid lightgray;
@@ -10,7 +11,7 @@
         box-sizing: border-box;
     }
 
-    div.my-events-list {
+    .my-events-list {
         display: flex;
         gap: 1vw;
 
@@ -23,11 +24,87 @@
     .my-events-list>* {
         flex: 0 0 260px;
     }
+
+    .events-popup {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+
+        left: 0;
+        top: 0;
+
+        width: 100%;
+        height: 100%;
+
+        background-color: rgba(0, 0, 0, 0.5);
+
+        justify-content: center;
+        align-items: center;
+    }
+
+    .events-popup-content {
+        position: relative;
+        background: white;
+        padding: 2vw;
+        width: 80%;
+        max-height: 80vh;
+        border-radius: 20px;
+        overflow-y: auto;
+    }
+
+    .events-popup-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1vw;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    .open-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        cursor: pointer;
+    }
+
+    @@media (max-width: 768px) {
+        .my-events-section {
+            width: 400px;
+        }
+    }
 </style>
+
+<div id="eventsPopup" class="events-popup">
+    <div class="events-popup-content">
+        <span class="close-btn" onclick="closeEventsPopup()">&times;</span>
+        <h2>My Events</h2>
+
+        <div class="events-popup-list">
+            @if (Model.MyEvents != null && Model.MyEvents.Count > 0)
+            {
+                foreach (var eventCard in Model.MyEvents)
+                {
+                    <partial name="_EventCard" model="eventCard" />
+                }
+            }
+            else
+            {
+                <p>No my events to show.</p>
+            }
+        </div>
+    </div>
+</div>
 
 
 <div class="my-events-section">
     <h2>My Events</h2>
+    <button class="open-btn" onclick="openEventsPopup()">Expand</button>
     <div class="my-events-list">
         @if (Model.MyEvents != null && Model.MyEvents.Count > 0)
         {
@@ -42,3 +119,13 @@
         }
     </div>
 </div>
+
+<script>
+    function openEventsPopup() {
+        document.getElementById("eventsPopup").style.display = "flex";
+    }
+
+    function closeEventsPopup() {
+        document.getElementById("eventsPopup").style.display = "none";
+    }
+</script>

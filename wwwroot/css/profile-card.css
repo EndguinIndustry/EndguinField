@@ -221,12 +221,72 @@
 }
 
 .friend-list-button {
+    position: absolute;
+
+    height: 36px;
+    padding: 0 10px;
+
+    border: none;
+    background: white;
+
+    border-radius: 20px;
+    cursor: pointer;
+
     display: none;
+    align-items: center;
+    gap: 6px;
+
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.friend-list-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.friend-list-button svg {
+    color: #4a5568;
+}
+
+.friend-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
 }
 
 
-.card-friend-request-button{
+.card-friend-request-button {
+    position: absolute;
+
+    height: 36px;
+    padding: 0 10px;
+
+    border: none;
+    background: white;
+
+    border-radius: 20px;
+    cursor: pointer;
+
     display: none;
+    align-items: center;
+    gap: 6px;
+
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-friend-request-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-friend-request-button svg {
+    color: #4a5568;
+}
+
+.hamburger-btn {
+    display: none
 }
 
 
@@ -477,86 +537,66 @@ textarea.form-input {
         margin-bottom: 15px;
     }
 
-    .edit-button,
-    .add-friend-button,
-    .unfriend-button {
+    .own-profile .hamburger-btn {
+        display: flex;
+        position: absolute;
         top: 15px;
         right: 15px;
         width: 36px;
         height: 36px;
-    }
-
-    .friend-list-button {
-        position: absolute;
-        top: 61px;
-        right: 15px;
-
-        height: 36px;
-        padding: 0 10px;
-
         border: none;
         background: white;
-
-        border-radius: 20px;
-        cursor: pointer;
-
-        display: flex;
+        border-radius: 50%;
         align-items: center;
-        gap: 6px;
-
-        transition: all 0.3s ease;
+        justify-content: center;
+        cursor: pointer;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .friend-list-button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+    .own-profile .notification-btn,
+    .own-profile .edit-button,
+    .own-profile .friend-list-button,
+    .own-profile .card-friend-request-button {
+        display: none;
     }
 
-    .friend-list-button svg {
-        color: #4a5568;
-    }
-
-    .friend-count {
-        font-size: 13px;
-        font-weight: 600;
-        color: #4a5568;
-    }
-
-
-    .card-friend-request-button {
-        position: absolute;
-        top: 107px;
-        right: 15px;
-
-        
-        height: 36px;
-        padding: 0 10px;
-
-        border: none;
-        background: white;
-
-        border-radius: 20px;
-        cursor: pointer;
-
+    .own-profile.menu-open .notification-btn {
         display: flex;
-        align-items: center;
-        gap: 6px;
-
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        top: 60px;
+        right: 15px;
     }
 
-    .card-friend-request-button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    .own-profile.menu-open .edit-button {
+        display: flex;
+        top: 105px;
+        right: 15px;
     }
 
-    .card-friend-request-button svg {
-        color: #4a5568;
+    .own-profile.menu-open .friend-list-button {
+        display: flex;
+        top: 150px;
+        right: 15px;
     }
 
-    
+    .own-profile.menu-open .card-friend-request-button {
+        display: flex;
+        top: 195px;
+        right: 15px;
+    }
+
+    .other-profile .friend-list-button {
+        display: flex;
+        top: 60px;
+        right: 15px;
+    }
+
+    .other-profile .add-friend-button,
+    .other-profile .unfriend-button {
+        display: flex;
+        top: 15px;
+        right: 15px;
+    }
 
     .profile-info {
         width: 100%;
