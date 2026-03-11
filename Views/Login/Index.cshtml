@@ -7,45 +7,56 @@
         background-position: top;
     }
 
+    .login-wrapper {
+        min-height: calc(100vh - 150px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
     div.login-container {
         margin: auto;
         display: grid;
         background-color: rgba(255, 255, 255, 0.785);
         max-width: fit-content;
         min-height: 50vh;
-        row-gap: 2vh;
+        row-gap: 1.5rem;
         padding-top: 2vh;
         padding-bottom: 3vh;
         padding-inline: 5vw;
         border-radius: 40px;
+        text-align: center;
+        width: 100%;
     }
 
     div.login-container h1 {
-        font-size: 2.5vw;
+        font-size: 1.8rem;
         text-align: center;
         color: #333;
     }
 
     div.login-container img {
         margin: auto;
-        height: 20vw;
-        width: 20vw;
+        width: 220px;
+        height: 220px;
         border-radius: 20%;
     }
 
     div.login-container button {
         padding: 2%;
-        font-size: 1.25vw;
+        font-size: 1rem;
         border-radius: 30px;
         border: black solid 1px;
     }
 </style>
-
-<div class="login-container">
-    <h1>Welcome to Endfield Inc.</h1>
-    <img class="endfield-logo"
-         src="https://images.steamusercontent.com/ugc/17548547103578735/EBA5A5F5A6FA158D18837ECC22E0B6EA88C26ED1/?imw=268&imh=268&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true"
-         alt="Endfield Logo">
-    <button onclick="window.location.href='/Login/Login'" onmouseover="this.style.backgroundColor='#e0e0e0';"
-            onmouseout="this.style.backgroundColor='white';">Sign in with Google</button>
+<div class="login-wrapper">
+    <div class="login-container">
+        <h1>Welcome to Endfield Inc.</h1>
+        <img class="endfield-logo"
+             src="https://images.steamusercontent.com/ugc/17548547103578735/EBA5A5F5A6FA158D18837ECC22E0B6EA88C26ED1/?imw=268&imh=268&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true"
+             alt="Endfield Logo">
+        <button onclick="window.location.href='/Login/Login'" onmouseover="this.style.backgroundColor='#e0e0e0';"
+                onmouseout="this.style.backgroundColor='white';">Sign in with Google</button>
+    </div>
 </div>
