@@ -87,7 +87,7 @@ public class EventController : Controller
 				image = eventData.Images[0] ?? string.Empty,
 				startTime = eventData.StartTime,
 				maxParticipants = eventData.MaxParticipants,
-				participantCount = eventData.Participants?.Count ?? 0,
+				participantCount = _participationService.GetAcceptedParticipantCountAsync(eventData.Id).GetAwaiter().GetResult(),
 				url = Url.Action("Index", "Event", new { id = eventData.Id }) ?? $"/Event/{eventData.Id}"
 			})
 			.ToList();
