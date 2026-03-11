@@ -6,16 +6,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: http://+:8080
-      MONGO_CONNECTION_STRING=mongodb+srv://endguin_admin:kFsRmUcK65qAiEKs@endguinind.xznlucf.mongodb.net/?appName=EndguinInd:
-      MONGO_DATABASE_NAME=EndguinDB:
-      AWS_ACCESS_KEY=AKIAUIK4BDMAZWLJPPOM:
-      AWS_SECRET_KEY=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:
-      AWS_REGION=ap-southeast-1:
-      AWS_BUCKET_NAME=aws-s3-endguin-project:
-      Authentication__Google__ClientId=1080958542400-hn9llc3g6mm8pgslmm6hclp7quoqegsf.apps.googleusercontent.com:
-      Authentication__Google__ClientSecret=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:
+      # replace env here
     expose:
       - "8080"
     networks:
