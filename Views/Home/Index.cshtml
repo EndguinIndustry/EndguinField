@@ -362,7 +362,7 @@ else
         const checkboxes = document.querySelectorAll('.tag-filter-checkbox:checked');
         const selectedTags = Array.from(checkboxes).map(cb => cb.value.toLowerCase().trim());
 
-        const openEventItems = document.querySelectorAll('.center-col-wrapper .event-item');
+        const openEventItems = document.querySelectorAll('.center-col-wrapper .EventLink');
 
         openEventItems.forEach(item => {
             if (selectedTags.length === 0) {
