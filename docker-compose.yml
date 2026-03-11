@@ -8,12 +8,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
-      MONGO_CONNECTION_STRING=mongodb+srv://endguin_admin:kFsRmUcK65qAiEKs@endguinind.xznlucf.mongodb.net/?appName=EndguinInd:
-      MONGO_DATABASE_NAME=EndguinDB:
-      AWS_ACCESS_KEY=AKIAUIK4BDMAZWLJPPOM:
-      AWS_SECRET_KEY=OUQsiU1L/lYEK1EeWD+a0aB8pwjbhRI70RKUXQKy:
-      AWS_REGION=ap-southeast-1:
-      AWS_BUCKET_NAME=aws-s3-endguin-project:
+      # replace env here
     expose:
       - "8080"
     networks:
