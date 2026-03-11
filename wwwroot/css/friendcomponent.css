@@ -21,9 +21,9 @@
     border-style: solid;
     border-color: lightgray;
     border-radius: 15px;
-    width: 350px;
-    min-width: 350px;
-    max-width: 350px;
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
     height: 290px;
     padding: 7px;
     position: relative;

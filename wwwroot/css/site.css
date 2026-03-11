@@ -59,6 +59,15 @@ body {
   margin-bottom: 60px;
 }
 
+.container-profile-card {
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+  height: auto;
+}
+
 .container {
   width: 100%;
   padding-right: 1rem;
