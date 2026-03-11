@@ -212,6 +212,8 @@ public class EventService : IEventService
 			throw new KeyNotFoundException("Event not found.");	
 		}
 
+		Console.WriteLine($"Event '{eventData.Name}' Status: {eventData.Status}, EndTime: {eventData.EndTime}, Current Time: {DateTime.Now}");
+
 		return eventData.Status.Equals("Cancelled", StringComparison.OrdinalIgnoreCase) 
 			? "Cancelled" 
 			: (DateTime.Now > eventData.EndTime ? "Ended" : "Open");

@@ -45,8 +45,8 @@ public class EventController : Controller
 			Name = "New Event",
 			Description = string.Empty,
 			Location = string.Empty,
-			StartTime = DateTime.Now,
-			EndTime = DateTime.Now.AddHours(2),
+			StartTime = DateTime.Now.AddHours(7),
+			EndTime = DateTime.Now.AddHours(7+2),
 			Owner = currentUser.ToSummaryViewModel(),
 			IsOwner = true,
 			IsLoggedIn = true,
@@ -144,6 +144,12 @@ public class EventController : Controller
 				}
 			}
 
+			if (newEvent.StartTime != null && newEvent.EndTime != null)
+			{
+				newEvent.StartTime = newEvent.StartTime.AddHours(7);
+				newEvent.EndTime = newEvent.EndTime.AddHours(7);
+			}
+
 			await _eventService.CreateEventAsync(newEvent);
 
 			return Ok(new { success = true, redirectUrl = Url.Action("Index", "Event", new { id = newEvent.Id }) });
@@ -190,6 +196,12 @@ public class EventController : Controller
 				{
 					existingEvent.Images.Add(await _s3Service.UploadFileAsync(file));
 				}
+			}
+
+			if (existingEvent.StartTime != null && existingEvent.EndTime != null)
+			{
+				existingEvent.StartTime = existingEvent.StartTime.AddHours(7);
+				existingEvent.EndTime = existingEvent.EndTime.AddHours(7);
 			}
 
 			await _eventService.UpdateEventAsync(id, existingEvent, currentUserId);

@@ -14,10 +14,8 @@ public class Event
 	public List<string> Participants { get; set; } = new List<string>();
 	public string Location { get; set; } = string.Empty;
 
-	[BsonDateTimeOptions(Kind = DateTimeKind.Local)]
 	public DateTime StartTime { get; set; }
 
-	[BsonDateTimeOptions(Kind = DateTimeKind.Local)]
 	public DateTime EndTime { get; set; }
 
 	public int MaxParticipants { get; set; }

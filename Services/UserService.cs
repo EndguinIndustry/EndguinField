@@ -136,16 +136,6 @@ namespace EndguinField.Services
 				.Distinct()
 				.ToList();
 
-			var myEvents = await _eventStore.GetAllAsync();
-
-			var matchedMyEventIds = myEvents
-				.Where(e => e.OwnerId == userId && e.EndTime < DateTime.Now)
-				.Select(e => e.Id)
-				.Distinct()
-				.ToList();
-
-			matchedEventIds.AddRange(matchedMyEventIds);
-
 			var events = new List<String>();
 			foreach (var eventId in matchedEventIds)
 			{
