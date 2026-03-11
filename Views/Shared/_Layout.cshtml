@@ -6,49 +6,52 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EndguinField</title>
+    <title>@ViewData[index: "Title"] - EndguinField</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EndguinField.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
     <style>
-                    .navbar-brand-text {
-                        display: inline !important;
-                    }
+.navbar-brand-text {
+    display: inline !important;
+}
 
-                    .navbar-brand-mobile {
-                        display: none !important;
-                        width: 34px;
-                        height: 34px;
-                    }
+.navbar-brand-mobile {
+    display: none !important;
+    width: 34px;
+    height: 34px;
+}
 
-                    @@media (max-width: 643px) {
-                        .navbar-brand-text {
-                            display: none !important;
-                        }
+@@media (max-width: 915px) {
+    .navbar-brand-text {
+        display: none !important;
+    }
 
-                        .navbar-brand-mobile {
-                            display: block !important;
-                        }
+    .navbar-brand-mobile {
+        display: block !important;
+    }
 
-                        .search .search-results {
-                            width: min(96vw, 680px) !important;
-                            left: 50% !important;
-                            right: auto !important;
-                            transform: translateX(-50%);
-                            max-height: 50vh !important;
-                            padding: 12px !important;
-                        }
-                    }
+    .search .search-results {
+        width: min(96vw, 680px) !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%);
+        max-height: 50vh !important;
+        padding: 12px !important;
+    }
+}
     </style>
 </head>
 
 <body>
     @{
-        var profileImageUrl = Url.Content("~/asset/profile.svg");
+        var currentPath = Context.Request.Path.Value ?? string.Empty;
+        var hideNavbar = string.Equals(currentPath, "/Login/Index", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(currentPath, "/Login", StringComparison.OrdinalIgnoreCase);
+        string? profileImageUrl = null;
         EndguinField.Models.User? currentUser = null;
-        if (User.Identity?.IsAuthenticated == true)
+        if (!hideNavbar && User.Identity?.IsAuthenticated == true)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!string.IsNullOrWhiteSpace(currentUserId))
@@ -61,48 +64,57 @@
             }
         }
     }
-    <header>
-        <nav class="navbar-custom">
-            <a class="navbar-brand" href="/" aria-label="EndguinField Home">
-                <span class="navbar-brand-text">EndguinField</span>
-                <img class="navbar-brand-mobile" src="~/assets/icons/logo.svg" alt="EndguinField" />
-            </a>
+    @if (!hideNavbar)
+    {
+        <header>
+            <nav class="navbar-custom">
+                <a class="navbar-brand" href="/" aria-label="EndguinField Home">
+                    <span class="navbar-brand-text">EndguinField</span>
+                    <img class="navbar-brand-mobile" src="~/assets/icons/logo.svg" alt="EndguinField" />
+                </a>
 
-            <div class="search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input id="navbar-search-input" type="text" class="search-input" placeholder="Search event"
-                       autocomplete="off">
-                <div id="navbar-search-results" class="search-results" hidden></div>
-            </div>
+                <div class="search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="navbar-search-input" type="text" class="search-input" placeholder="Search event"
+                           autocomplete="off">
+                    <div id="navbar-search-results" class="search-results" hidden></div>
+                </div>
 
-            <div class="profile-section">
-                @if (User.Identity?.IsAuthenticated == true)
-                {
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    <details class="profile-menu">
-                        <summary class="profile-menu-trigger">
-                            <img src="@profileImageUrl" alt="Profile" width="50px" />
-                        </summary>
-                        <div class="profile-menu-content">
-                            <a href="/Profile" class="profile-menu-item">Profile</a>
-                            @if (currentUser?.Role == "Admin")
-                            {
-                                <a href="/Admin" class="profile-menu-item">Admin Console</a>
-                            }
-                            <form asp-controller="Login" asp-action="Logout" method="post">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="profile-menu-item profile-menu-button">Logout</button>
-                            </form>
-                        </div>
-                    </details>
-                }
-                else
-                {
-                    <a href="/Login" class="profile-login-link">Login</a>
-                }
-            </div>
-        </nav>
-    </header>
+                <div class="profile-section">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        <details class="profile-menu">
+                            <summary class="profile-menu-trigger">
+                                <partial name="Components/_UserAvatar"
+                                         model='new EndguinField.Models.ViewModels.Components.UserAvatarViewModel {
+                                             Name = currentUser?.Name ?? "User",
+                                             ImageUrl = profileImageUrl,
+                                             CssClass = "avatar-sm",
+                                             AltText = "Profile"
+                                         }' />
+                            </summary>
+                            <div class="profile-menu-content">
+                                <a href="/Profile" class="profile-menu-item">Profile</a>
+                                @if (currentUser?.Role == "Admin")
+                                {
+                                    <a href="/Admin" class="profile-menu-item">Admin Console</a>
+                                }
+                                <form asp-controller="Login" asp-action="Logout" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="profile-menu-item profile-menu-button">Logout</button>
+                                </form>
+                            </div>
+                        </details>
+                    }
+                    else
+                    {
+                        <a href="/Login" class="profile-login-link">Login</a>
+                    }
+                </div>
+            </nav>
+        </header>
+    }
 
     <div class="container" style="max-width: 1200px; margin: 20px auto; padding: 0 15px;">
         <main role="main">
@@ -115,24 +127,24 @@
     <script type="module" src="~/js/Shared/modal.js" asp-append-version="true"></script>
     <script src="~/js/Shared/navbarSearch.js" asp-append-version="true"></script>
     <script>
-                                                                                                                    document.addEventListener('DOMContentLoaded', function () {
-                                                                                                                        const profileMenu = document.querySelector('.profile-menu');
-                                                                                                                        if (!profileMenu) {
-                                                                                                                            return;
-                                                                                                                        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileMenu = document.querySelector('.profile-menu');
+            if (!profileMenu) {
+                return;
+            }
 
-                                                                                                                        document.addEventListener('click', function (event) {
-                                                                                                                            if (!profileMenu.contains(event.target)) {
-                                                                                                                                profileMenu.removeAttribute('open');
-                                                                                                                            }
-                                                                                                                        });
+            document.addEventListener('click', function (event) {
+                if (!profileMenu.contains(event.target)) {
+                    profileMenu.removeAttribute('open');
+                }
+            });
 
-                                                                                                                        document.addEventListener('keydown', function (event) {
-                                                                                                                            if (event.key === 'Escape') {
-                                                                                                                                profileMenu.removeAttribute('open');
-                                                                                                                            }
-                                                                                                                        });
-                                                                                                                    });
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    profileMenu.removeAttribute('open');
+                }
+            });
+        });
     </script>
 </body>
 
