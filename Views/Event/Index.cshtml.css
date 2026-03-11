@@ -99,6 +99,12 @@
 	}
 }
 
+@media (max-width: 500px) {
+	.event-side-content {
+		width: 100%;
+	}
+}
+
 .event-side-content {
 	display: flex;
 	flex-direction: column;
