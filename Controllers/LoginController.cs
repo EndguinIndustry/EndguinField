@@ -40,7 +40,7 @@ public class LoginController : Controller
         }
 
         var user = await _userService.GetUserByIdAsync(externalId);
-        
+
         if (user != null && user.BanUntil.HasValue && user.BanUntil > DateTime.Now)
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -67,7 +67,7 @@ public class LoginController : Controller
 
         }
 
-        return RedirectToAction("ViewProfile", "Profile", new { id = externalId });
+        return RedirectToAction("Index", "Home");
 
 
     }
