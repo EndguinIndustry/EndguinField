@@ -773,7 +773,7 @@ textarea.form-input {
 .profile-content-container {
     display: flex;
     flex-direction: row;
-    column-gap: 2vw;
+    column-gap: 3px;
     margin-top: 2vw;
 }
 
