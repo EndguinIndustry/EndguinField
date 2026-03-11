@@ -84,7 +84,7 @@ public class EventController : Controller
 				id = eventData.Id,
 				name = eventData.Name,
 				location = eventData.Location ?? string.Empty,
-				image = eventData.BackgroundImage ?? string.Empty,
+				image = eventData.Images[0] ?? string.Empty,
 				startTime = eventData.StartTime,
 				maxParticipants = eventData.MaxParticipants,
 				participantCount = eventData.Participants?.Count ?? 0,
