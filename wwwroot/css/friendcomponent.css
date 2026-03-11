@@ -143,6 +143,7 @@
 .request-card {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
     padding: 10px;
     border-radius: 10px;
@@ -224,6 +225,10 @@
     transform: scale(1.1);
 }
 
+.request-identity{
+    align-items: center;
+    display: flex;
+}
 
 .friend-panel {
     position: static;
