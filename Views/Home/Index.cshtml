@@ -1,4 +1,4 @@
-@model HomeViewModel
+﻿@model HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -211,6 +211,37 @@
     footer {
         display: none !important;
     }
+
+    .filter-menu-container {
+        position: absolute;
+        bottom: 70px;
+        right: 15px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 5px 15px 15px 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        z-index: 1001;
+        width: 250px;
+    }
+
+    .filter-menu-container h4 {
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+
+    .tag-checkboxes {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .tag-label {
+        font-size: 14px;
+        cursor: pointer;
+    }
 </style>
 
 @if (User?.Identity?.IsAuthenticated == true)
@@ -274,7 +305,7 @@
                         foreach (var tag in Model.AllTags)
                         {
                             <label class="tag-label">
-                                <input type="checkbox" class="tag-filter-checkbox" value="@tag.TagName" onchange="applyFilters()" />
+                                <input type="checkbox" class="tag-filter-checkbox" value="@tag.Id" onchange="applyFilters()" />
                                 @tag.TagName
                             </label>
                         }
@@ -319,42 +350,7 @@ else
         section.classList.toggle('show');
         btn.classList.toggle('active');
     }
-</script>
 
-<style>
-    .filter-menu-container {
-        position: absolute;
-        bottom: 70px;
-        right: 15px;
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        padding: 5px 15px 15px 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        z-index: 1001;
-        width: 250px;
-    }
-
-    .filter-menu-container h4 {
-        margin-top: 10px;
-        margin-bottom: 15px;
-    }
-
-    .tag-checkboxes {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-
-    .tag-label {
-        font-size: 14px;
-        cursor: pointer;
-    }
-</style>
-
-<script>
     function toggleFilterMenu() {
         const menu = document.getElementById('filter-menu');
         if (menu) {
@@ -364,7 +360,7 @@ else
 
     function applyFilters() {
         const checkboxes = document.querySelectorAll('.tag-filter-checkbox:checked');
-        const selectedTags = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
+        const selectedTags = Array.from(checkboxes).map(cb => cb.value.toLowerCase().trim());
 
         const openEventItems = document.querySelectorAll('.center-col-wrapper .event-item');
 
@@ -373,7 +369,7 @@ else
                 item.style.display = '';
                 return;
             }
-            const itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(',');
+            const itemTags = (item.getAttribute('data-tags') || '').toLowerCase().split(',').map(tag => tag.trim());
             const hasMatch = selectedTags.every(tag => itemTags.includes(tag));
             if (hasMatch) {
                 item.style.display = '';
