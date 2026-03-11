@@ -288,9 +288,9 @@ public class EventService : IEventService
 			return (false, "Location must be 500 characters or less.");
 		}
 
-		if (eventData.MaxParticipants < 1 || eventData.MaxParticipants > 100)
+		if (eventData.MaxParticipants < 2 || eventData.MaxParticipants > 100)
 		{
-			return (false, "Max participants must be between 1 and 100.");
+			return (false, "Max participants must be between 2 and 100.");
 		}
 
 		if (eventData.Images == null || eventData.Images.Count < 1)
