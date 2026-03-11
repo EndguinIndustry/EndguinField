@@ -15,6 +15,7 @@
   flex-shrink: 0;
   margin-right: 0.5rem;
 }
+
 .user-avatar-image.avatar-sm,
 .user-avatar-placeholder.avatar-sm {
   width: 50px;
