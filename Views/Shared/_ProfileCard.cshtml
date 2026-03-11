@@ -35,7 +35,16 @@
                     </span>
                 </div>
                 <div class="profile-info">
-                    <h2 class="profile-name" id="nameDisplay">@Model.Name</h2>
+                    <h2 class="profile-name" id="nameDisplay" title="@Model.Name">
+                        @if (Model.Name.Length > 24)
+                        {
+                            @(Model.Name.Substring(0, 24) + "...")
+                        }
+                        else
+                        {
+                            @Model.Name
+                        }
+                    </h2>
                     <div class="profile-details">
                         <span class="detail-item" id="emailDisplay">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -155,8 +164,10 @@
 
             @if (!string.IsNullOrEmpty(Model.Bio))
             {
-                <div class="profile-bio">
-                    <p id="bioDisplay">@Model.Bio</p>
+                <div class="profile-bio" onclick="openBioModal()" style="cursor: pointer;">
+                    <p id="bioDisplay">
+                        @Model.Bio
+                    </p>
                 </div>
             }
         </div>
@@ -272,6 +283,40 @@
                 </form>
             </div>
         </div>
+
+        @if (!string.IsNullOrEmpty(Model.Bio))
+        {
+            <div id="bioModal" class="notification-overlay" onclick="if(event.target === this) closeBioModal()">
+                <div class="notification-modal-content" style="max-width: 500px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem;">
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 600;">Bio</h3>
+                        <button onclick="closeBioModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+                    </div>
+                    <div style="max-height: 60vh; overflow-y: auto;">
+                        <p style="white-space: pre-wrap; line-height: 1.6; color: #374151;">@Model.Bio</p>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function openBioModal() {
+                    const bioModal = document.getElementById('bioModal');
+                    if (bioModal) {
+                        bioModal.classList.add('active');
+                        if (bioModal.parentElement !== document.body) {
+                             document.body.appendChild(bioModal);
+                        }
+                    }
+                }
+
+                function closeBioModal() {
+                    const bioModal = document.getElementById('bioModal');
+                    if (bioModal) {
+                        bioModal.classList.remove('active');
+                    }
+                }
+            </script>
+        }
 
         @if (Model.IsOwnProfile)
         {
