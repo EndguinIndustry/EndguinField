@@ -7,11 +7,11 @@
 
 @if (!string.IsNullOrEmpty(Model.ImageUrl))
 {
-    <img src="@Model.ImageUrl" alt="@alt" class="avatar-image @Model.CssClass" id="avatarPreview">
+    <img src="@Model.ImageUrl" alt="@alt" class="user-avatar-image @Model.CssClass" id="avatarPreview">
 }
 else
 {
-    <div class="avatar-placeholder @Model.CssClass" id="avatarPreview">
+    <div class="user-avatar-placeholder @Model.CssClass" id="avatarPreview">
         <span id="avatarInitial">@name.Substring(0, 1).ToUpper()</span>
     </div>
 }
