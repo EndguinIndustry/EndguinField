@@ -3,15 +3,17 @@
 @{
     var name = string.IsNullOrWhiteSpace(Model.Name) ? "U" : Model.Name;
     var alt = string.IsNullOrWhiteSpace(Model.AltText) ? name : Model.AltText;
+    var previewId = Model.UsePreviewIds ? "avatarPreview" : null;
+    var initialId = Model.UsePreviewIds ? "avatarInitial" : null;
 }
 
 @if (!string.IsNullOrEmpty(Model.ImageUrl))
 {
-    <img src="@Model.ImageUrl" alt="@alt" class="user-avatar-image @Model.CssClass" id="avatarPreview">
+    <img src="@Model.ImageUrl" alt="@alt" class="user-avatar-image @Model.CssClass" id="@previewId">
 }
 else
 {
-    <div class="user-avatar-placeholder @Model.CssClass" id="avatarPreview">
-        <span id="avatarInitial">@name.Substring(0, 1).ToUpper()</span>
+    <div class="user-avatar-placeholder @Model.CssClass" id="@previewId">
+        <span id="@initialId">@name.Substring(0, 1).ToUpper()</span>
     </div>
 }

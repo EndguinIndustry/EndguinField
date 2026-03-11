@@ -91,7 +91,7 @@
                                          model='new EndguinField.Models.ViewModels.Components.UserAvatarViewModel {
                                              Name = currentUser?.Name ?? "User",
                                              ImageUrl = profileImageUrl,
-                                             CssClass = "avatar-sm",
+                                             CssClass = "avatar-sm navbar-avatar",
                                              AltText = "Profile"
                                          }' />
                             </summary>
@@ -127,6 +127,7 @@
     <script src="~/js/Shared/slideCapsule.js" asp-append-version="true"></script>
     <script type="module" src="~/js/Shared/modal.js" asp-append-version="true"></script>
     <script src="~/js/Shared/navbarSearch.js" asp-append-version="true"></script>
+    <script src="~/js/Shared/navbarPreview.js" asp-append-version="true"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const profileMenu = document.querySelector('.profile-menu');
