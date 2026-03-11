@@ -5,7 +5,7 @@
     {
         <div class="ban-notice">
             <span>Account Banned Until: @Model.BanUntil?.ToString(format: "dd-MM-yyyy", provider: new
-                                                            System.Globalization.CultureInfo("en-US"))</span>
+                                                                            System.Globalization.CultureInfo("en-US"))</span>
             </div>
         }
 
@@ -73,6 +73,12 @@
                     {
                         <button class="hamburger-btn" onclick="toggleProfileMenu()">
                             ☰
+
+                            @if ((Model.Notifications != null && Model.Notifications.Any(n => !n.IsRead)) ||
+                                                (Model.PendingRequests != null && Model.PendingRequests.Any()))
+                            {
+                                <span class="notification-badge"></span>
+                            }
                         </button>
                     }
 
@@ -128,23 +134,22 @@
                         </span>
                     </button>
 
-                @if (Model.IsOwnProfile)
-                {
-                    <button class="card-friend-request-button" onclick="toggleFriendRequest(true)">
-                        <div class="icon-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
-                                 fill="currentColor">
-                                <path
-                                d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
-                            </svg>
-
+                    @if (Model.IsOwnProfile)
+                    {
+                        <button class="card-friend-request-button" onclick="toggleFriendRequest(true)">
+                            <div class="icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                     fill="currentColor">
+                                    <path
+                                    d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+                                </svg>
+                            </div>
                             @if (Model.PendingRequests != null && Model.PendingRequests.Any())
                             {
-                                <span class="notification-dot"></span>
+                                <span class="notification-badge"></span>
                             }
-                        </div>
-                    </button>
-                }
+                        </button>
+                    }
                 </div>
             </div>
 

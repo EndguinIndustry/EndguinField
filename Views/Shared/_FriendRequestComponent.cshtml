@@ -18,20 +18,24 @@
                     @foreach (var req in Model.PendingRequests)
                     {
                         <div class="request-card">
+                            <div class="request-identity">
+                                @if (!string.IsNullOrEmpty(req.ImageUrl))
+                                {
+                                    <img class="avatar" src="@req.ImageUrl" />
+                                }
+                                else
+                                {
+                                    <div class="avatar-tmp">
+                                        <span>@req.Name.Substring(0, 1).ToUpper()</span>
+                                    </div>
+                                }
+                                <a href="/Profile/View/@req.Id" style="color: black; text-decoration: none;">
+                                    <span class="username">@req.Name</span>
+                                </a>
+                            </div>
 
-                            @if (!string.IsNullOrEmpty(req.ImageUrl))
-                            {
-                                <img class="avatar" src="@req.ImageUrl" />
-                            }
-                            else
-                            {
-                                <div class="avatar-tmp">
-                                    <span>@req.Name.Substring(0, 1).ToUpper()</span>
-                                </div>
-                            }
-                            <a href="/Profile/View/@Model.Id" style="color: black; text-decoration: none;">
-                                <span class="username">@req.Name</span>
-                            </a>
+
+
                             <div class="request-actions">
                                 <button class="accept-btn" onclick="handleFriendRequest('@req.Id', true)">
                                     ✓
