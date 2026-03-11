@@ -6,5 +6,8 @@ namespace EndguinField.Models.ViewModels.Components
         public string? ImageUrl { get; set; }
         public string CssClass { get; set; } = string.Empty;
         public string? AltText { get; set; }
+        public string? ProfileUrl { get; set; }
+        public bool ShowName { get; set; }
+        public bool UsePreviewIds { get; set; }
     }
 }

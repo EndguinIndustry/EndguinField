@@ -1,8 +1,17 @@
 @model EndguinField.Models.ViewModels.Components.UserAvatarViewModel
 
 @{
-    var imgClass = string.IsNullOrEmpty(Model.CssClass) ? "avatar" : Model.CssClass;
-    var imageSrc = !string.IsNullOrEmpty(Model.ImageUrl) ? Model.ImageUrl : "/asset/profile.svg";
+    var name = string.IsNullOrWhiteSpace(Model.Name) ? "U" : Model.Name;
+    var alt = string.IsNullOrWhiteSpace(Model.AltText) ? name : Model.AltText;
 }
 
-<img class="@imgClass" src="@imageSrc" alt="@(Model.AltText ?? Model.Name)" />
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <img src="@Model.ImageUrl" alt="@alt" class="avatar-image @Model.CssClass" id="avatarPreview">
+}
+else
+{
+    <div class="avatar-placeholder @Model.CssClass" id="avatarPreview">
+        <span id="avatarInitial">@name.Substring(0, 1).ToUpper()</span>
+    </div>
+}
