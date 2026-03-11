@@ -3,9 +3,10 @@
 <style>
     .my-events-section {
         position: relative;
-        width: 500px;
-        padding: 1vw;
-        margin: 1vw auto;
+        max-width: 500px;
+        width: 43%;
+        padding: 1rem;
+        margin: 1rem auto;
         border: 1px solid lightgray;
         border-radius: 20px;
         box-sizing: border-box;
@@ -13,11 +14,9 @@
 
     .my-events-list {
         display: flex;
-        gap: 1vw;
-
+        gap: 1rem;
         overflow-x: auto;
         overflow-y: hidden;
-
         padding-bottom: 5px;
     }
 
@@ -25,67 +24,87 @@
         flex: 0 0 260px;
     }
 
-    .events-popup {
+    .my-events-popup {
         display: none;
         position: fixed;
         z-index: 1000;
-
-        left: 0;
-        top: 0;
-
-        width: 100%;
-        height: 100%;
+        inset: 0;
 
         background-color: rgba(0, 0, 0, 0.5);
 
         justify-content: center;
         align-items: center;
+        padding: 1rem;
     }
 
-    .events-popup-content {
+    .my-events-popup-content {
+        display: grid;
         position: relative;
         background: white;
-        padding: 2vw;
-        width: 80%;
-        max-height: 80vh;
+
+        padding: 1.5rem;
+
+        width: min(900px, 95%);
+        max-height: 85vh;
+
         border-radius: 20px;
+
         overflow-y: auto;
     }
 
-    .events-popup-list {
+    .my-events-popup-list {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 1vw;
+        gap: 1rem;
+        justify-items: center;
     }
 
-    .close-btn {
+    .close-my-events-btn {
         position: absolute;
-        top: 15px;
-        right: 20px;
+        top: 10px;
+        right: 16px;
         font-size: 30px;
         cursor: pointer;
     }
 
-    .open-btn {
+    .open-my-events-btn {
+        font-size: 30px;
         position: absolute;
-        top: 15px;
-        right: 20px;
+        top: 10px;
+        right: 16px;
         cursor: pointer;
     }
 
-    @@media (max-width: 768px) {
+    /* Mobile */
+    @@media (max-width: 450px) {
+
         .my-events-section {
-            width: 400px;
+            width: 95%;
+            padding: 1rem;
         }
+
+        .my-events-list>* {
+            flex: 0 0 80%;
+        }
+
+        .my-events-popup-content {
+            width: 95%;
+            max-height: 90vh;
+        }
+
+        .my-events-popup-list {
+            grid-template-columns: 1fr;
+        }
+
     }
 </style>
 
-<div id="eventsPopup" class="events-popup">
-    <div class="events-popup-content">
-        <span class="close-btn" onclick="closeEventsPopup()">&times;</span>
+<div id="myEventsPopup" class="my-events-popup">
+    <div class="my-events-popup-content">
+        <span class="close-my-events-btn" onclick="closeEventsPopup()">&times;</span>
         <h2>My Events</h2>
 
-        <div class="events-popup-list">
+        <div class="my-events-popup-list">
             @if (Model.MyEvents != null && Model.MyEvents.Count > 0)
             {
                 foreach (var eventCard in Model.MyEvents)
@@ -104,7 +123,7 @@
 
 <div class="my-events-section">
     <h2>My Events</h2>
-    <button class="open-btn" onclick="openEventsPopup()">Expand</button>
+    <span class="open-my-events-btn" onclick="openEventsPopup()">⤢</span>
     <div class="my-events-list">
         @if (Model.MyEvents != null && Model.MyEvents.Count > 0)
         {
@@ -122,10 +141,10 @@
 
 <script>
     function openEventsPopup() {
-        document.getElementById("eventsPopup").style.display = "flex";
+        document.getElementById("myEventsPopup").style.display = "flex";
     }
 
     function closeEventsPopup() {
-        document.getElementById("eventsPopup").style.display = "none";
+        document.getElementById("myEventsPopup").style.display = "none";
     }
 </script>

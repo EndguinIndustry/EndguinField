@@ -58,6 +58,11 @@ public class ParticipationService : IParticipationService
 			throw new UnauthorizedAccessException("Forbidden");
 		}
 
+		if (userId == cancelEventData.OwnerId)
+		{
+			throw new InvalidOperationException("Owner cannot quit their own event.");
+		}
+
 		var result = await _participationStore.DeleteAsync(eventId, userId);
 		if (!result)
 		{
