@@ -56,7 +56,8 @@ public class HomeController : Controller
             EndTime = e.EndTime,
             Location = e.Location,
             ParticipantCount = _participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
-            MaxParticipants = e.MaxParticipants
+            MaxParticipants = e.MaxParticipants,
+            Tags = e.Tags ?? new List<string>()
         }).ToList();
 
 
@@ -72,7 +73,8 @@ public class HomeController : Controller
             EndTime = e.EndTime,
             Location = e.Location,
             ParticipantCount = _participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
-            MaxParticipants = e.MaxParticipants
+            MaxParticipants = e.MaxParticipants,
+            Tags = e.Tags ?? new List<string>()
         }).ToList();
 
         var openEventsList = await _eventService.GetAllEventsAsync();
@@ -87,8 +89,9 @@ public class HomeController : Controller
                 EndTime = e.EndTime,
                 Location = e.Location,
                 ParticipantCount = _participantService.GetAcceptedParticipantCountAsync(e.Id).GetAwaiter().GetResult(),
-                MaxParticipants = e.MaxParticipants
-            }).ToList();
+                MaxParticipants = e.MaxParticipants,
+                Tags = e.Tags ?? new List<string>()
+        }).ToList();
 
         ProfileViewModel profileVM = null;
         if (currentUser != null)
