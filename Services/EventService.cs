@@ -22,6 +22,7 @@ public class EventService : IEventService
 	private readonly IEventMongoService _eventStore;
 	private readonly IUserService _userService;
 	private readonly IParticipationService _participationService;
+	private readonly IParticipationMongoService _participationStore;
 	private readonly ICommentService _commentService;
     private readonly INotificationService _notificationService;
 
@@ -29,12 +30,14 @@ public class EventService : IEventService
 		IEventMongoService eventStore,
 		IUserService userService,
 		IParticipationService participationService,
+		IParticipationMongoService participationStore,
 		ICommentService commentService,
         INotificationService notificationService)
 	{
 		_eventStore = eventStore;
 		_userService = userService;
 		_participationService = participationService;
+		_participationStore = participationStore;
 		_commentService = commentService;
         _notificationService = notificationService;
 	}
@@ -82,7 +85,27 @@ public class EventService : IEventService
 			throw new ArgumentException(errorMessage ?? "Invalid event data.");
 		}
 
-		await _eventStore.CreateAsync(eventData);
+		var user = await _userService.GetUserByIdAsync(eventData.OwnerId);
+		if (user != null)
+		{
+			eventData.Participants.Add(user.Id);
+			
+			await _eventStore.CreateAsync(eventData);
+
+			var participation = new Participation
+			{
+				EventId = eventData.Id,
+				UserId = eventData.OwnerId,
+				Status = "Accepted",
+				JoinedTime = DateTime.UtcNow,
+				User = user.Name
+			};
+			await _participationStore.CreateAsync(participation);
+		}
+		else
+		{
+			throw new KeyNotFoundException("User not found.");
+		}
 		
 		return eventData;
 	}

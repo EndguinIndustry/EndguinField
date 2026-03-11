@@ -50,9 +50,12 @@
 									}
 									else
 									{
-										<button class="btn btn-icon-only remove-join-btn" title="Remove">
-											<img src="~/assets/icons/delete.svg" alt="Remove" class="icon participant-icon" />
-										</button>
+										@if (p.UserId != Model.Owner?.Id)
+										{
+											<button class="btn btn-icon-only remove-join-btn" title="Remove">
+												<img src="~/assets/icons/delete.svg" alt="Remove" class="icon participant-icon" />
+											</button>
+										}
 									}
 								</div>
 							}
