@@ -659,6 +659,12 @@ textarea.form-input {
 .avatar-upload {
     cursor: pointer;
     position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .camera-overlay {
